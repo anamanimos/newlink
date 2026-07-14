@@ -11,7 +11,7 @@
         <span data-duo-icons="app" style="width: 22px; height: 22px; margin-right: 12px;" class="text-muted"></span>
         Biolink Builder: {{ $link->url }}
     </h4>
-    <a href="{{ $fullUrl }}" target="_blank" class="btn btn-outline-secondary d-flex align-items-center gap-1.5 py-2 px-3.5 fw-semibold rounded-3 shadow-sm" style="border-radius: 12px !important;">
+    <a href="{{ $fullUrl }}" target="_blank" class="btn btn-outline-secondary d-flex align-items-center gap-2 py-2 px-3.5 fw-semibold rounded-3 shadow-sm" style="border-radius: 12px !important;">
         <span data-duo-icons="external-link" style="width: 16px; height: 16px;"></span>
         Lihat Halaman
     </a>

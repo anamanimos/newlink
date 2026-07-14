@@ -8,7 +8,7 @@
         <span data-duo-icons="folder_open" style="width: 22px; height: 22px; margin-right: 12px;" class="text-muted"></span>
         Projects
     </h4>
-    <button class="btn btn-primary d-flex align-items-center gap-1.5 py-2 px-3.5 fw-semibold rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#createProjectModal" style="background-color: var(--primary-color); border-color: var(--primary-color);">
+    <button class="btn btn-primary d-flex align-items-center gap-2 py-2 px-3.5 fw-semibold rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#createProjectModal" style="background-color: var(--primary-color); border-color: var(--primary-color);">
         <span data-duo-icons="add_circle" style="width: 16px; height: 16px;"></span>
         Create Project
     </button>

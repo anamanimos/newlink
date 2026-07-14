@@ -72,7 +72,7 @@
             </svg>
         </button>
         @if($type == 'biolink')
-            <button class="btn btn-primary d-flex align-items-center gap-1.5 py-2 px-3.5 fw-semibold rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#createBiolinkModal" style="background-color: var(--primary-color); border-color: var(--primary-color);">
+            <button class="btn btn-primary d-flex align-items-center gap-2 py-2 px-3.5 fw-semibold rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#createBiolinkModal" style="background-color: var(--primary-color); border-color: var(--primary-color);">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"></circle>
                     <line x1="12" y1="8" x2="12" y2="16"></line>
@@ -81,7 +81,7 @@
                 Create Biolink
             </button>
         @else
-            <button class="btn btn-primary d-flex align-items-center gap-1.5 py-2 px-3.5 fw-semibold rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#createLinkModal" style="background-color: var(--primary-color); border-color: var(--primary-color);">
+            <button class="btn btn-primary d-flex align-items-center gap-2 py-2 px-3.5 fw-semibold rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#createLinkModal" style="background-color: var(--primary-color); border-color: var(--primary-color);">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"></circle>
                     <line x1="12" y1="8" x2="12" y2="16"></line>

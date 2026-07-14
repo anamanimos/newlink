@@ -44,7 +44,7 @@
     <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
         <span class="text-secondary small fw-semibold">Filter Aktif:</span>
         @foreach($activeFilters as $filter)
-            <span class="badge bg-light text-secondary border d-inline-flex align-items-center gap-1.5 py-1.5 px-2.5 rounded-3 fw-medium" style="font-size: 0.75rem;">
+            <span class="badge bg-light text-secondary border d-inline-flex align-items-center gap-2 py-1.5 px-2.5 rounded-3 fw-medium" style="font-size: 0.75rem;">
                 {{ $filter['label'] }}
                 <button type="button" class="btn-close btn-remove-filter p-0 m-0 bg-none border-0 text-muted hover-text-dark d-inline-flex align-items-center" data-filter-type="{{ $filter['type'] }}" aria-label="Clear filter" style="font-size: 0.65rem; width: 0.65rem; height: 0.65rem; line-height: 1;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -196,8 +196,8 @@
 
                         <!-- Clicks counter -->
                         <td class="px-2 py-2.5" style="border: none; width: 90px;">
-                            <div class="d-flex align-items-center text-secondary small gap-1.5" style="font-size: 0.8rem;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                             <div class="d-flex align-items-center text-secondary small gap-2" style="font-size: 0.8rem;">
+                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                                     <line x1="18" y1="20" x2="18" y2="10"></line>
                                     <line x1="12" y1="20" x2="12" y2="4"></line>
                                     <line x1="6" y1="20" x2="6" y2="14"></line>
