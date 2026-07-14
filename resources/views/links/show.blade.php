@@ -353,7 +353,7 @@
                         <div class="info-list">
                             @foreach($topBrowsers as $browser)
                                 @php 
-                                    $name = empty($browser->browser_name) ? 'Unknown' : $browser->browser_name;
+                                    $name = empty($browser->browser) ? 'Unknown' : $browser->browser;
                                     $percent = $totalClicks > 0 ? ($browser->count / $totalClicks) * 100 : 0;
                                 @endphp
                                 <div class="info-list-item d-block">
