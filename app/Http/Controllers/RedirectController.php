@@ -158,6 +158,11 @@ class RedirectController extends Controller
         
         // 1. Try to get it from the HTTP Referer header
         if (!empty($referer)) {
+            // Check for Android App Intents
+            if (str_contains(strtolower($referer), 'android-app://com.whatsapp')) return 'WhatsApp';
+            if (str_contains(strtolower($referer), 'android-app://com.instagram')) return 'Instagram';
+            if (str_contains(strtolower($referer), 'android-app://com.facebook')) return 'Facebook';
+
             $host = parse_url($referer, PHP_URL_HOST);
             if ($host) {
                 // Simplify common hosts
@@ -166,6 +171,7 @@ class RedirectController extends Controller
                 if (str_contains($host, 'twitter.com') || str_contains($host, 't.co')) return 'Twitter (X)';
                 if (str_contains($host, 'tiktok.com')) return 'TikTok';
                 if (str_contains($host, 'youtube.com') || str_contains($host, 'youtu.be')) return 'YouTube';
+                if (str_contains($host, 'whatsapp.com')) return 'WhatsApp';
                 
                 return str_replace('www.', '', $host);
             }
