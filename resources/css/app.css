@@ -408,6 +408,30 @@ body {
     box-shadow: none !important;
 }
 
+.glass-input-group .form-control:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* Autofill styling overrides */
+.glass-input-group .form-control:-webkit-autofill,
+.glass-input-group .form-control:-webkit-autofill:hover, 
+.glass-input-group .form-control:-webkit-autofill:focus, 
+.glass-input-group .form-control:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+[data-bs-theme="dark"] .glass-input-group .form-control:-webkit-autofill,
+[data-bs-theme="dark"] .glass-input-group .form-control:-webkit-autofill:hover, 
+[data-bs-theme="dark"] .glass-input-group .form-control:-webkit-autofill:focus, 
+[data-bs-theme="dark"] .glass-input-group .form-control:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #1e293b inset !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
+}
+
 .glass-input-group .input-group-text {
     background: transparent !important;
     border: none !important;
