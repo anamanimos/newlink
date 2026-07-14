@@ -639,6 +639,50 @@ body {
     background: var(--card-bg-blur) !important;
     border: 1px solid var(--card-border) !important;
     border-radius: 12px !important;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05) !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04) !important;
+    padding: 12px 18px !important;
+    max-width: 320px !important;
+    align-items: center !important;
+    font-family: var(--font-sans) !important;
+}
+
+[data-bs-theme="dark"] .swal-glass-toast {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25) !important;
+}
+
+.swal-glass-toast .swal2-title {
     color: var(--text-primary) !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.4 !important;
+}
+
+.swal-glass-toast .swal2-icon {
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+    margin: 0 10px 0 0 !important;
+    border-width: 2px !important;
+    transform: scale(0.85);
+}
+
+.swal-glass-toast .swal2-icon.swal2-success {
+    border-color: #5ec489 !important;
+}
+
+.swal-glass-toast .swal2-icon.swal2-success [class^='swal2-success-line'] {
+    background-color: #166534 !important;
+}
+
+[data-bs-theme="dark"] .swal-glass-toast .swal2-icon.swal2-success [class^='swal2-success-line'] {
+    background-color: var(--primary-color) !important;
+}
+
+/* Hide timer bar for cleaner look */
+.swal-glass-toast .swal2-timer-progress-bar {
+    background: var(--primary-color) !important;
+    height: 2px !important;
+    opacity: 0.5;
 }
