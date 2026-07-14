@@ -163,21 +163,34 @@
             @else
                 <div class="d-flex flex-column gap-3" id="blocks-container">
                     @foreach($blocks as $block)
-                        <div class="card border border-secondary border-opacity-10 rounded-3 shadow-sm" style="background: var(--card-bg-blur); border-radius: 12px !important;">
+                        <div class="card border border-secondary border-opacity-10 rounded-3 shadow-sm" data-id="{{ $block->id }}" style="background: var(--card-bg-blur); border-radius: 12px !important;">
                             <div class="card-body d-flex align-items-center justify-content-between p-3">
-                                <div>
-                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                <div class="d-flex align-items-center gap-3">
+                                    <!-- Drag Handle -->
+                                    <div class="drag-handle text-muted" style="cursor: grab; display: flex; align-items: center; padding: 4px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="9" cy="5" r="1.5"></circle>
+                                            <circle cx="9" cy="12" r="1.5"></circle>
+                                            <circle cx="9" cy="19" r="1.5"></circle>
+                                            <circle cx="15" cy="5" r="1.5"></circle>
+                                            <circle cx="15" cy="12" r="1.5"></circle>
+                                            <circle cx="15" cy="19" r="1.5"></circle>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            @if($block->type == 'link')
+                                                <span class="badge rounded-pill px-2.5 py-1" style="background-color: var(--primary-light) !important; color: #166534 !important; border: 1px solid rgba(164, 229, 189, 0.3); font-weight: 600; font-size: 0.725rem;">Link</span>
+                                                <span class="fw-bold text-dark-custom">{{ $block->settings['title'] ?? 'Tanpa Judul' }}</span>
+                                            @elseif($block->type == 'text')
+                                                <span class="badge rounded-pill px-2.5 py-1" style="background-color: rgba(107, 114, 128, 0.1) !important; color: #374151 !important; border: 1px solid rgba(107, 114, 128, 0.15); font-weight: 600; font-size: 0.725rem;">Text</span>
+                                                <span class="fw-bold text-dark-custom">{{ Str::limit(strip_tags($block->settings['content'] ?? ''), 30) }}</span>
+                                            @endif
+                                        </div>
                                         @if($block->type == 'link')
-                                            <span class="badge rounded-pill px-2.5 py-1" style="background-color: var(--primary-light) !important; color: #166534 !important; border: 1px solid rgba(164, 229, 189, 0.3); font-weight: 600; font-size: 0.725rem;">Link</span>
-                                            <span class="fw-bold text-dark-custom">{{ $block->settings['title'] ?? 'Tanpa Judul' }}</span>
-                                        @elseif($block->type == 'text')
-                                            <span class="badge rounded-pill px-2.5 py-1" style="background-color: rgba(107, 114, 128, 0.1) !important; color: #374151 !important; border: 1px solid rgba(107, 114, 128, 0.15); font-weight: 600; font-size: 0.725rem;">Text</span>
-                                            <span class="fw-bold text-dark-custom">{{ Str::limit(strip_tags($block->settings['content'] ?? ''), 30) }}</span>
+                                            <a href="{{ $block->location_url }}" target="_blank" class="small text-muted text-decoration-none d-block ms-1" style="word-break: break-all; opacity: 0.85;">{{ $block->location_url }}</a>
                                         @endif
                                     </div>
-                                    @if($block->type == 'link')
-                                        <a href="{{ $block->location_url }}" target="_blank" class="small text-muted text-decoration-none d-block ms-1" style="word-break: break-all; opacity: 0.85;">{{ $block->location_url }}</a>
-                                    @endif
                                 </div>
                                 <div class="d-flex gap-2">
                                     <form action="{{ route('biolinks.blocks.destroy', [$link->id, $block->id]) }}" method="POST" onsubmit="return confirm('Hapus blok ini?')">
@@ -365,6 +378,7 @@
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -384,6 +398,47 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2500);
     }
 
+    // Initialize SortableJS
+    function initializeSortable() {
+        const el = document.getElementById('blocks-container');
+        if (el) {
+            new Sortable(el, {
+                animation: 150,
+                ghostClass: 'bg-light',
+                handle: '.drag-handle',
+                onEnd: function() {
+                    const orders = {};
+                    $('#blocks-container .card').each(function(index) {
+                        const blockId = $(this).attr('data-id');
+                        orders[blockId] = index;
+                    });
+
+                    $.ajax({
+                        url: '{{ route('biolinks.blocks.reorder', $link->id) }}',
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            orders: orders
+                        },
+                        dataType: 'json',
+                        success: function(response) {
+                            const iframe = document.querySelector('iframe');
+                            if (iframe) {
+                                iframe.contentWindow.location.reload();
+                            }
+                        },
+                        error: function() {
+                            alert('Gagal memperbarui urutan blok.');
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    // Initial SortableJS load
+    initializeSortable();
+
     // Refresh layout, reload iframe
     function refreshBuilderUI(successMessage) {
         const iframe = document.querySelector('iframe');
@@ -398,6 +453,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     icons: window.DuoIcons || {}
                 });
             }
+            initializeSortable();
         });
 
         // Also reload top bio editor content visually
