@@ -10,24 +10,24 @@
 <!-- CSS for Cropper.js & Interactive Editor -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
 <style>
-    /* Desktop layout overrides tabs */
-    @media (min-width: 768px) {
-        #builderTabContent.tab-content > .tab-pane {
-            display: block !important;
-            opacity: 1 !important;
-        }
-        #builderMobileTabs {
-            display: none !important;
-        }
+    /* Tab customizations matching theme */
+    #builderTabs .nav-link {
+        background-color: transparent;
+        color: var(--text-secondary);
+        transition: all 0.2s ease;
+        margin-right: 4px;
+        border-radius: 8px !important;
     }
-
-    /* Theme-specific mobile tab colors */
-    #builderMobileTabs .nav-link.active {
+    #builderTabs .nav-link:hover {
+        background-color: rgba(0, 0, 0, 0.03);
+        color: var(--text-primary);
+    }
+    #builderTabs .nav-link.active {
         background-color: var(--primary-color) !important;
         color: var(--active-text) !important;
     }
-    #builderMobileTabs .nav-link {
-        color: var(--text-secondary) !important;
+    [data-bs-theme="dark"] #builderTabs .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.05);
     }
 
     /* Drag & Drop overlays */
@@ -48,6 +48,18 @@
     .cropper-container-wrapper img {
         max-width: 100%;
         display: block;
+    }
+
+    /* Floating Action Button (FAB) Speed Dial styles */
+    .fab-wrapper:hover .fab-menu,
+    .fab-wrapper.active .fab-menu {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+        pointer-events: auto !important;
+    }
+    .fab-wrapper:hover #fabIcon,
+    .fab-wrapper.active #fabIcon {
+        transform: rotate(45deg);
     }
 </style>
 
@@ -74,273 +86,304 @@
     </a>
 </div>
 
-<!-- Mobile View Toggle Tabs (Only visible on mobile < 768px) -->
-<ul class="nav nav-pills nav-fill d-flex d-md-none mb-4 p-1 bg-light rounded-3 shadow-sm" id="builderMobileTabs" role="tablist" style="border: 1px solid rgba(0,0,0,0.04);">
+<!-- Tabs Navigation -->
+<ul class="nav nav-tabs border-bottom-0 mb-4 g-2" id="builderTabs" role="tablist">
     <li class="nav-item" role="presentation">
-        <button class="nav-link active py-2 fw-semibold d-flex align-items-center justify-content-center gap-1.5" id="design-tab" data-bs-toggle="tab" data-bs-target="#design-pane" type="button" role="tab" aria-controls="design-pane" aria-selected="true" style="border-radius: 8px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
-            Design
+        <button class="nav-link active fw-bold px-4 py-2.5 d-flex align-items-center gap-2 border-0" id="blocks-tab" data-bs-toggle="tab" data-bs-target="#blocks-pane" type="button" role="tab" aria-controls="blocks-pane" aria-selected="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+            Blok Konten
         </button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link py-2 fw-semibold d-flex align-items-center justify-content-center gap-1.5" id="preview-tab" data-bs-toggle="tab" data-bs-target="#preview-pane" type="button" role="tab" aria-controls="preview-pane" aria-selected="false" style="border-radius: 8px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+        <button class="nav-link fw-bold px-4 py-2.5 d-flex align-items-center gap-2 border-0" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-pane" type="button" role="tab" aria-controls="profile-pane" aria-selected="false">
+            <span data-duo-icons="user" style="width: 16px; height: 16px;"></span>
+            Profil
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link fw-bold px-4 py-2.5 d-flex align-items-center gap-2 border-0" id="styling-tab" data-bs-toggle="tab" data-bs-target="#styling-pane" type="button" role="tab" aria-controls="styling-pane" aria-selected="false">
+            <span data-duo-icons="settings" style="width: 16px; height: 16px;"></span>
+            Styling
+        </button>
+    </li>
+    <li class="nav-item d-md-none" role="presentation">
+        <button class="nav-link fw-bold px-4 py-2.5 d-flex align-items-center gap-2 border-0" id="preview-tab" data-bs-toggle="tab" data-bs-target="#preview-pane" type="button" role="tab" aria-controls="preview-pane" aria-selected="false">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
             Pratinjau
         </button>
     </li>
 </ul>
 
-<div class="tab-content row g-4" id="builderTabContent">
-    <!-- Builder Controls Column (Design Pane) -->
-    <div class="tab-pane fade show active col-md-7 col-lg-8" id="design-pane" role="tabpanel" aria-labelledby="design-tab" tabindex="0">
-        
-        <!-- Interactive Cover & Avatar Editor Zone -->
-        <div class="glass-card mb-4 overflow-hidden position-relative" style="border-radius: 16px; border: 1px solid var(--card-border);">
-            <!-- Visual Cover Zone (Drag & Drop or Click) -->
-            <div id="coverDropzone" class="position-relative" style="height: 160px; background: {{ isset($link->settings['cover_url']) ? 'url(' . $link->settings['cover_url'] . ') center/cover no-repeat' : 'linear-gradient(135deg, #a4e5bd 0%, #7dd3a1 100%)' }}; cursor: pointer;">
-                <div class="dropzone-overlay d-flex flex-column align-items-center justify-content-center text-white" style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.45); opacity: 0; transition: opacity 0.2s ease;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="mb-1"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-                    <span class="small fw-semibold">Ubah Cover (Seret & Jatuhkan)</span>
-                </div>
-            </div>
-            <input type="file" id="coverInput" class="d-none" accept="image/*">
+<div class="row g-4">
+    <!-- Left Column (Tab Content Area) -->
+    <div class="col-md-7 col-lg-8">
+        <div class="tab-content" id="builderTabContent">
             
-            <!-- Visual Avatar Zone (Drag & Drop or Click) -->
-            <div class="d-flex flex-column align-items-center" style="margin-top: -60px; padding-bottom: 24px;">
-                <div id="avatarDropzone" class="position-relative rounded-circle" style="width: 110px; height: 110px; border: 4px solid var(--card-bg-blur); box-shadow: 0 4px 12px rgba(0,0,0,0.15); cursor: pointer; overflow: hidden; background: #fff;">
-                    <img id="avatarPreview" src="{{ $link->settings['avatar_url'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($link->settings['title'] ?? 'BL') . '&background=a4e5bd&color=111827&size=128' }}" style="width:100%; height:100%; object-fit:cover;">
-                    <div class="dropzone-overlay d-flex flex-column align-items-center justify-content-center text-white" style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.55); opacity: 0; transition: opacity 0.2s ease; border-radius: 50%;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="mb-1"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-                        <span style="font-size: 0.65rem;" class="fw-semibold">Ubah Foto</span>
-                    </div>
-                </div>
-                <input type="file" id="avatarInput" class="d-none" accept="image/*">
-
-                <div class="d-flex align-items-center gap-1.5 mt-3 mb-1">
-                    <h5 class="fw-bold mb-0 text-dark-custom">{{ $link->settings['title'] ?? 'My Biolink' }}</h5>
-                    @if($link->is_verified)
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#0095f6" style="color: white; flex-shrink: 0;" title="Verified Profile">
-                            <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
-                        </svg>
-                    @endif
-                </div>
-                <p class="text-secondary small mb-0 px-4 text-center text-truncate" style="max-width: 100%;">{{ $link->settings['description'] ?? 'Belum ada deskripsi bio.' }}</p>
-            </div>
-        </div>
-
-        <!-- Builder buttons -->
-        <div class="d-flex flex-column flex-sm-row gap-2 mb-4">
-            <button class="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2 px-3.5 py-2.5 fw-semibold shadow-sm w-100 w-sm-auto" style="border-radius: 12px !important;" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-                <span data-duo-icons="user" style="width: 16px; height: 16px;"></span> Edit Bio
-            </button>
-            <button class="btn btn-primary d-flex align-items-center justify-content-center gap-2 px-3.5 py-2.5 fw-semibold shadow-sm w-100 w-sm-auto" style="border-radius: 12px !important;" data-bs-toggle="modal" data-bs-target="#addLinkBlockModal">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9 17H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3" opacity="0.25" fill="currentColor" style="stroke: none;"></path>
-                    <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
-                    <line x1="8" y1="12" x2="16" y2="12"></line>
-                </svg>
-                Tambah Tautan
-            </button>
-            <button class="btn btn-primary d-flex align-items-center justify-content-center gap-2 px-3.5 py-2.5 fw-semibold shadow-sm w-100 w-sm-auto" style="border-radius: 12px !important;" data-bs-toggle="modal" data-bs-target="#addTextBlockModal">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="21" y1="10" x2="3" y2="10" opacity="0.3"></line>
-                    <line x1="21" y1="18" x2="3" y2="18" opacity="0.3"></line>
-                    <line x1="17" y1="6" x2="3" y2="6"></line>
-                    <line x1="17" y1="14" x2="3" y2="14"></line>
-                </svg>
-                Tambah Teks
-            </button>
-        </div>
-
-        <!-- Content list -->
-        <div id="blocks-container-wrapper" class="glass-card p-4">
-            <h6 class="fw-bold mb-4 d-flex align-items-center gap-2">
-                <span data-duo-icons="folder-open" style="width: 18px; height: 18px;" class="text-muted"></span>
-                Blok Konten
-            </h6>
-            
-            @if($blocks->isEmpty())
-                <div class="text-center py-5 text-secondary">
-                    <div class="d-inline-flex p-3 rounded-circle mb-3" style="background-color: var(--primary-light) !important;">
-                        <span data-duo-icons="info" style="width: 32px; height: 32px; color: #166534;"></span>
-                    </div>
-                    <p class="mb-1 fw-bold text-dark-custom">Belum ada blok konten</p>
-                    <p class="text-muted small mb-0">Mulai tambahkan tautan atau teks di atas untuk mengisi halaman Biolink Anda.</p>
-                </div>
-            @else
-                <div class="d-flex flex-column gap-3" id="blocks-container">
-                    @foreach($blocks as $block)
-                        <div class="card border border-secondary border-opacity-10 rounded-3 shadow-sm" data-id="{{ $block->id }}" style="background: var(--card-bg-blur); border-radius: 12px !important;">
-                            <div class="card-body d-flex align-items-center justify-content-between p-3">
-                                <div class="d-flex align-items-center gap-3">
-                                    <!-- Drag Handle -->
-                                    <div class="drag-handle text-muted" style="cursor: grab; display: flex; align-items: center; padding: 4px;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                            <circle cx="9" cy="5" r="1.5"></circle>
-                                            <circle cx="9" cy="12" r="1.5"></circle>
-                                            <circle cx="9" cy="19" r="1.5"></circle>
-                                            <circle cx="15" cy="5" r="1.5"></circle>
-                                            <circle cx="15" cy="12" r="1.5"></circle>
-                                            <circle cx="15" cy="19" r="1.5"></circle>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <div class="d-flex align-items-center gap-2 mb-1">
-                                            @if($block->type == 'link')
-                                                <span class="badge rounded-pill px-2.5 py-1" style="background-color: var(--primary-light) !important; color: #166534 !important; border: 1px solid rgba(164, 229, 189, 0.3); font-weight: 600; font-size: 0.725rem;">Link</span>
-                                                <span class="fw-bold text-dark-custom">{{ $block->settings['title'] ?? 'Tanpa Judul' }}</span>
-                                            @elseif($block->type == 'text')
-                                                <span class="badge rounded-pill px-2.5 py-1" style="background-color: rgba(107, 114, 128, 0.1) !important; color: #374151 !important; border: 1px solid rgba(107, 114, 128, 0.15); font-weight: 600; font-size: 0.725rem;">Text</span>
-                                                <span class="fw-bold text-dark-custom">{{ Str::limit(strip_tags($block->settings['content'] ?? ''), 30) }}</span>
-                                            @endif
+            <!-- TAB 1: Blok Konten -->
+            <div class="tab-pane fade show active position-relative" id="blocks-pane" role="tabpanel" aria-labelledby="blocks-tab" tabindex="0" style="min-height: 480px;">
+                <div id="blocks-container-wrapper" class="glass-card p-4">
+                    <h6 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                        <span data-duo-icons="folder-open" style="width: 18px; height: 18px;" class="text-muted"></span>
+                        Blok Konten
+                    </h6>
+                    
+                    @if($blocks->isEmpty())
+                        <div class="text-center py-5 text-secondary">
+                            <div class="d-inline-flex p-3 rounded-circle mb-3" style="background-color: var(--primary-light) !important;">
+                                <span data-duo-icons="info" style="width: 32px; height: 32px; color: #166534;"></span>
+                            </div>
+                            <p class="mb-1 fw-bold text-dark-custom">Belum ada blok konten</p>
+                            <p class="text-muted small mb-0">Mulai tambahkan tautan atau teks menggunakan tombol + di sudut bawah.</p>
+                        </div>
+                    @else
+                        <div class="d-flex flex-column gap-3" id="blocks-container">
+                            @foreach($blocks as $block)
+                                <div class="card border border-secondary border-opacity-10 rounded-3 shadow-sm" data-id="{{ $block->id }}" style="background: var(--card-bg-blur); border-radius: 12px !important;">
+                                    <div class="card-body d-flex align-items-center justify-content-between p-3">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <!-- Drag Handle -->
+                                            <div class="drag-handle text-muted" style="cursor: grab; display: flex; align-items: center; padding: 4px;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                    <circle cx="9" cy="5" r="1.5"></circle>
+                                                    <circle cx="9" cy="12" r="1.5"></circle>
+                                                    <circle cx="9" cy="19" r="1.5"></circle>
+                                                    <circle cx="15" cy="5" r="1.5"></circle>
+                                                    <circle cx="15" cy="12" r="1.5"></circle>
+                                                    <circle cx="15" cy="19" r="1.5"></circle>
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <div class="d-flex align-items-center gap-2 mb-1">
+                                                    @if($block->type == 'link')
+                                                        <span class="badge rounded-pill px-2.5 py-1" style="background-color: var(--primary-light) !important; color: #166534 !important; border: 1px solid rgba(164, 229, 189, 0.3); font-weight: 600; font-size: 0.725rem;">Link</span>
+                                                        <span class="fw-bold text-dark-custom">{{ $block->settings['title'] ?? 'Tanpa Judul' }}</span>
+                                                    @elseif($block->type == 'text')
+                                                        <span class="badge rounded-pill px-2.5 py-1" style="background-color: rgba(107, 114, 128, 0.1) !important; color: #374151 !important; border: 1px solid rgba(107, 114, 128, 0.15); font-weight: 600; font-size: 0.725rem;">Text</span>
+                                                        <span class="fw-bold text-dark-custom">{{ Str::limit(strip_tags($block->settings['content'] ?? ''), 30) }}</span>
+                                                    @endif
+                                                </div>
+                                                @if($block->type == 'link')
+                                                    <a href="{{ $block->location_url }}" target="_blank" class="small text-muted text-decoration-none d-block ms-1" style="word-break: break-all; opacity: 0.85;">{{ $block->location_url }}</a>
+                                                @endif
+                                            </div>
                                         </div>
-                                        @if($block->type == 'link')
-                                            <a href="{{ $block->location_url }}" target="_blank" class="small text-muted text-decoration-none d-block ms-1" style="word-break: break-all; opacity: 0.85;">{{ $block->location_url }}</a>
-                                        @endif
+                                        <div class="d-flex gap-2">
+                                            <form action="{{ route('biolinks.blocks.destroy', [$link->id, $block->id]) }}" method="POST" onsubmit="return confirm('Hapus blok ini?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger p-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-radius: 8px;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" opacity="0.25" fill="currentColor" style="stroke: none;"></path>
+                                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="d-flex gap-2">
-                                    <form action="{{ route('biolinks.blocks.destroy', [$link->id, $block->id]) }}" method="POST" onsubmit="return confirm('Hapus blok ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger p-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-radius: 8px;">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" opacity="0.25" fill="currentColor" style="stroke: none;"></path>
-                                                <polyline points="3 6 5 6 21 6"></polyline>
-                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                                            </svg>
-                                        </button>
-                                    </form>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Flying Action Button (FAB) Speed Dial -->
+                <div class="fab-wrapper" style="position: absolute; bottom: 24px; right: 24px; z-index: 999; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                    <!-- Floating Speed Dial Menu Options -->
+                    <div class="fab-menu d-flex flex-column gap-2 mb-1" style="opacity: 0; transform: translateY(15px); pointer-events: none; transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                        <button type="button" class="btn rounded-circle d-flex align-items-center justify-content-center shadow-lg border-0" style="width: 44px; height: 44px; background-color: var(--primary-color);" data-bs-toggle="modal" data-bs-target="#addLinkBlockModal" title="Tambah Tautan">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 17H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3" opacity="0.25" fill="currentColor" style="stroke: none;"></path>
+                                <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
+                                <line x1="8" y1="12" x2="16" y2="12"></line>
+                            </svg>
+                        </button>
+                        <button type="button" class="btn rounded-circle d-flex align-items-center justify-content-center shadow-lg border-0" style="width: 44px; height: 44px; background-color: #6b7280;" data-bs-toggle="modal" data-bs-target="#addTextBlockModal" title="Tambah Teks">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="21" y1="10" x2="3" y2="10" opacity="0.3"></line>
+                                <line x1="21" y1="18" x2="3" y2="18" opacity="0.3"></line>
+                                <line x1="17" y1="6" x2="3" y2="6"></line>
+                                <line x1="17" y1="14" x2="3" y2="14"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <!-- Main FAB Button -->
+                    <button type="button" id="mainFabBtn" class="btn rounded-circle d-flex align-items-center justify-content-center shadow-lg border-0" style="width: 56px; height: 56px; background-color: var(--primary-color);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" id="fabIcon" style="transition: transform 0.25s ease;">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB 2: Profil -->
+            <div class="tab-pane fade" id="profile-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                <!-- Visual Cover & Avatar Editor Zone -->
+                <div class="glass-card mb-4 overflow-hidden position-relative" style="border-radius: 16px; border: 1px solid var(--card-border);">
+                    <div id="coverDropzone" class="position-relative" style="height: 160px; background: {{ isset($link->settings['cover_url']) ? 'url(' . $link->settings['cover_url'] . ') center/cover no-repeat' : 'linear-gradient(135deg, #a4e5bd 0%, #7dd3a1 100%)' }}; cursor: pointer;">
+                        <div class="dropzone-overlay d-flex flex-column align-items-center justify-content-center text-white" style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.45); opacity: 0; transition: opacity 0.2s ease;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="mb-1"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                            <span class="small fw-semibold">Ubah Cover (Seret & Jatuhkan)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex flex-column align-items-center" style="margin-top: -60px; padding-bottom: 24px;">
+                        <div id="avatarDropzone" class="position-relative rounded-circle" style="width: 110px; height: 110px; border: 4px solid var(--card-bg-blur); box-shadow: 0 4px 12px rgba(0,0,0,0.15); cursor: pointer; overflow: hidden; background: #fff;">
+                            <img id="avatarPreview" src="{{ $link->settings['avatar_url'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($link->settings['title'] ?? 'BL') . '&background=a4e5bd&color=111827&size=128' }}" style="width:100%; height:100%; object-fit:cover;">
+                            <div class="dropzone-overlay d-flex flex-column align-items-center justify-content-center text-white" style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.55); opacity: 0; transition: opacity 0.2s ease; border-radius: 50%;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="mb-1"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                                <span style="font-size: 0.65rem;" class="fw-semibold">Ubah Foto</span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-1.5 mt-3 mb-1">
+                            <h5 class="fw-bold mb-0 text-dark-custom">{{ $link->settings['title'] ?? 'My Biolink' }}</h5>
+                            @if($link->is_verified)
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#0095f6" style="color: white; flex-shrink: 0;" title="Verified Profile">
+                                    <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+                                </svg>
+                            @endif
+                        </div>
+                        <p class="text-secondary small mb-0 px-4 text-center text-truncate" style="max-width: 100%;">{{ $link->settings['description'] ?? 'Belum ada deskripsi bio.' }}</p>
+                    </div>
+                </div>
+                <input type="file" id="coverInput" class="d-none" accept="image/*">
+                <input type="file" id="avatarInput" class="d-none" accept="image/*">
+
+                <div class="glass-card p-4">
+                    <form action="{{ route('biolinks.settings.update', $link->id) }}" method="POST" id="profileTabForm" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold text-secondary">Nama / Judul</label>
+                            <div class="input-group glass-input-group">
+                                <span class="input-group-text d-flex align-items-center justify-content-center" style="width: 46px; border: none; background: transparent;">
+                                    <span data-duo-icons="user" style="width: 18px; height: 18px;"></span>
+                                </span>
+                                <input type="text" name="title" class="form-control border-0 ps-1 pe-0 bg-transparent" placeholder="Nama Anda" value="{{ $link->settings['title'] ?? '' }}">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold text-secondary">Deskripsi Singkat</label>
+                            <div class="input-group glass-input-group align-items-start">
+                                <span class="input-group-text d-flex align-items-center justify-content-center" style="width: 46px; height: 46px; border: none; background: transparent;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary);">
+                                        <line x1="21" y1="10" x2="3" y2="10" opacity="0.3"></line>
+                                        <line x1="21" y1="18" x2="3" y2="18" opacity="0.3"></line>
+                                        <line x1="17" y1="6" x2="3" y2="6"></line>
+                                        <line x1="17" y1="14" x2="3" y2="14"></line>
+                                    </svg>
+                                </span>
+                                <textarea name="description" class="form-control border-0 ps-1 pe-0 pt-2.5 bg-transparent" rows="3" placeholder="Tulis bio singkat...">{{ $link->settings['description'] ?? '' }}</textarea>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="submit" class="btn btn-primary px-4 py-2.5 fw-semibold rounded-3 shadow-sm border-0" style="background-color: var(--primary-color); color: var(--active-text);">Simpan Profil</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TAB 3: Styling -->
+            <div class="tab-pane fade" id="styling-pane" role="tabpanel" aria-labelledby="styling-tab" tabindex="0">
+                <div class="glass-card p-4">
+                    <form action="{{ route('biolinks.settings.update', $link->id) }}" method="POST" id="stylingTabForm">
+                        @csrf
+                        @method('PUT')
+                        
+                        <!-- Keep Title and Description values inside hidden sync fields -->
+                        <input type="hidden" name="title" value="{{ $link->settings['title'] ?? '' }}">
+                        <input type="hidden" name="description" value="{{ $link->settings['description'] ?? '' }}">
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold text-secondary">Tipe Background</label>
+                            <select name="settings[bg_type]" id="bgTypeSelectorTab" class="form-select bg-transparent border border-secondary border-opacity-15 py-2.5 rounded-3 text-secondary small" style="border-radius: 8px !important;">
+                                <option value="solid" {{ ($link->settings['bg_type'] ?? 'solid') == 'solid' ? 'selected' : '' }}>Warna Solid</option>
+                                <option value="gradient" {{ ($link->settings['bg_type'] ?? 'solid') == 'gradient' ? 'selected' : '' }}>Warna Gradasi (Gradient)</option>
+                            </select>
+                        </div>
+
+                        <!-- Solid Background Color Input -->
+                        <div class="mb-3" id="solidBgWrapperTab">
+                            <label class="form-label small fw-semibold text-secondary">Warna Background</label>
+                            <div class="input-group glass-input-group align-items-center">
+                                <span class="input-group-text d-flex align-items-center justify-content-center" style="width: 46px; border: none; background: transparent;">
+                                    <div style="width: 20px; height: 20px; border-radius: 4px; background: #9ca3af; border: 1px solid rgba(0,0,0,0.1);"></div>
+                                </span>
+                                <input type="color" name="settings[bg_color]" class="form-control form-control-color border-0 ps-1 pe-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['bg_color'] ?? '#f3f4f1' }}">
+                            </div>
+                        </div>
+
+                        <!-- Gradient Background Color Inputs -->
+                        <div class="row g-2 mb-3 d-none" id="gradientBgWrapperTab">
+                            <div class="col-6">
+                                <label class="form-label small fw-semibold text-secondary">Gradasi Mulai</label>
+                                <div class="input-group glass-input-group align-items-center">
+                                    <input type="color" name="settings[bg_gradient_start]" class="form-control form-control-color border-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['bg_gradient_start'] ?? '#a4e5bd' }}">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-semibold text-secondary">Gradasi Selesai</label>
+                                <div class="input-group glass-input-group align-items-center">
+                                    <input type="color" name="settings[bg_gradient_end]" class="form-control form-control-color border-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['bg_gradient_end'] ?? '#7dd3a1' }}">
                                 </div>
                             </div>
                         </div>
-                    @endforeach
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-4">
+                                <label class="form-label small fw-semibold text-secondary">Warna Tombol</label>
+                                <div class="input-group glass-input-group align-items-center">
+                                    <input type="color" name="settings[btn_bg_color]" class="form-control form-control-color border-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['btn_bg_color'] ?? '#ffffff' }}">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label small fw-semibold text-secondary">Teks Tombol</label>
+                                <div class="input-group glass-input-group align-items-center">
+                                    <input type="color" name="settings[btn_text_color]" class="form-control form-control-color border-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['btn_text_color'] ?? '#111827' }}">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label small fw-semibold text-secondary">Teks Profil</label>
+                                <div class="input-group glass-input-group align-items-center">
+                                    <input type="color" name="settings[text_color]" class="form-control form-control-color border-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['text_color'] ?? '#111827' }}">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="submit" class="btn btn-primary px-4 py-2.5 fw-semibold rounded-3 shadow-sm border-0" style="background-color: var(--primary-color); color: var(--active-text);">Simpan Tampilan</button>
+                        </div>
+                    </form>
                 </div>
-            @endif
+            </div>
+
+            <!-- TAB 4: Pratinjau (Mobile Only) -->
+            <div class="tab-pane fade d-md-none" id="preview-pane" role="tabpanel" aria-labelledby="preview-tab" tabindex="0">
+                <div class="d-flex justify-content-center">
+                    <div style="width: 320px; height: 640px; border: 12px solid #333; border-radius: 40px; overflow: hidden; background: #f8f9fa; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); flex-shrink:0;">
+                        <!-- Mobile Notch -->
+                        <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 25px; background: #333; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; z-index: 10;"></div>
+                        
+                        <iframe src="{{ $fullUrl }}" style="width: 100%; height: 100%; border: none; padding-top: 30px;"></iframe>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- Mobile Preview Column -->
-    <div class="tab-pane fade d-md-block col-md-5 col-lg-4 d-flex justify-content-center" id="preview-pane" role="tabpanel" aria-labelledby="preview-tab" tabindex="0">
-        <div style="width: 320px; height: 640px; border: 12px solid #333; border-radius: 40px; overflow: hidden; background: #f8f9fa; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); flex-shrink:0;">
+    <!-- Right Column: Desktop Preview Panel (d-none on mobile) -->
+    <div class="col-md-5 col-lg-4 d-none d-md-flex justify-content-center align-items-start">
+        <div style="width: 320px; height: 640px; border: 12px solid #333; border-radius: 40px; overflow: hidden; background: #f8f9fa; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); flex-shrink:0; position: sticky; top: 100px;">
             <!-- Mobile Notch -->
             <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 25px; background: #333; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; z-index: 10;"></div>
             
             <iframe src="{{ $fullUrl }}" style="width: 100%; height: 100%; border: none; padding-top: 30px;"></iframe>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Edit Profile -->
-<div class="modal fade" id="editProfileModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
-            <form action="{{ route('biolinks.settings.update', $link->id) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <div class="modal-header border-bottom-0 pb-1">
-                    <h5 class="modal-title fw-bold">Edit Profil Biolink</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body py-2">
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Nama / Judul</label>
-                        <div class="input-group glass-input-group">
-                            <span class="input-group-text d-flex align-items-center justify-content-center" style="width: 46px; border: none; background: transparent;">
-                                <span data-duo-icons="user" style="width: 18px; height: 18px;"></span>
-                            </span>
-                            <input type="text" name="title" class="form-control border-0 ps-1 pe-0 bg-transparent" placeholder="Nama Anda" value="{{ $link->settings['title'] ?? '' }}">
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Deskripsi Singkat</label>
-                        <div class="input-group glass-input-group align-items-start">
-                            <span class="input-group-text d-flex align-items-center justify-content-center" style="width: 46px; height: 46px; border: none; background: transparent;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary);">
-                                    <line x1="21" y1="10" x2="3" y2="10" opacity="0.3"></line>
-                                    <line x1="21" y1="18" x2="3" y2="18" opacity="0.3"></line>
-                                    <line x1="17" y1="6" x2="3" y2="6"></line>
-                                    <line x1="17" y1="14" x2="3" y2="14"></line>
-                                </svg>
-                            </span>
-                            <textarea name="description" class="form-control border-0 ps-1 pe-0 pt-2.5 bg-transparent" rows="3" placeholder="Tulis bio singkat...">{{ $link->settings['description'] ?? '' }}</textarea>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Foto Profil</label>
-                        <input type="file" name="avatar" class="form-control" accept="image/*" style="border-radius: 8px !important;">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Gambar Header Belakang</label>
-                        <input type="file" name="cover" class="form-control" accept="image/*" style="border-radius: 8px !important;">
-                    </div>
-
-                    <hr class="my-3 opacity-25">
-                    <h6 class="fw-bold mb-3 text-dark-custom" style="font-size: 0.9rem;">Kustomisasi Tampilan</h6>
-                    
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Tipe Background</label>
-                        <select name="settings[bg_type]" id="bgTypeSelector" class="form-select bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 text-secondary small" style="border-radius: 8px !important;">
-                            <option value="solid" {{ ($link->settings['bg_type'] ?? 'solid') == 'solid' ? 'selected' : '' }}>Warna Solid</option>
-                            <option value="gradient" {{ ($link->settings['bg_type'] ?? 'solid') == 'gradient' ? 'selected' : '' }}>Warna Gradasi (Gradient)</option>
-                        </select>
-                    </div>
-
-                    <!-- Solid Background Input -->
-                    <div class="mb-3" id="solidBgWrapper">
-                        <label class="form-label small fw-semibold text-secondary">Warna Background</label>
-                        <div class="input-group glass-input-group align-items-center">
-                            <span class="input-group-text d-flex align-items-center justify-content-center" style="width: 46px; border: none; background: transparent;">
-                                <div style="width: 20px; height: 20px; border-radius: 4px; background: #9ca3af; border: 1px solid rgba(0,0,0,0.1);"></div>
-                            </span>
-                            <input type="color" name="settings[bg_color]" class="form-control form-control-color border-0 ps-1 pe-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['bg_color'] ?? '#f3f4f1' }}">
-                        </div>
-                    </div>
-
-                    <!-- Gradient Background Inputs -->
-                    <div class="row g-2 mb-3 d-none" id="gradientBgWrapper">
-                        <div class="col-6">
-                            <label class="form-label small fw-semibold text-secondary">Gradasi Mulai</label>
-                            <div class="input-group glass-input-group align-items-center">
-                                <input type="color" name="settings[bg_gradient_start]" class="form-control form-control-color border-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['bg_gradient_start'] ?? '#a4e5bd' }}">
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label small fw-semibold text-secondary">Gradasi Selesai</label>
-                            <div class="input-group glass-input-group align-items-center">
-                                <input type="color" name="settings[bg_gradient_end]" class="form-control form-control-color border-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['bg_gradient_end'] ?? '#7dd3a1' }}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row g-2 mb-3">
-                        <div class="col-4">
-                            <label class="form-label small fw-semibold text-secondary">Warna Tombol</label>
-                            <div class="input-group glass-input-group align-items-center">
-                                <input type="color" name="settings[btn_bg_color]" class="form-control form-control-color border-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['btn_bg_color'] ?? '#ffffff' }}">
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <label class="form-label small fw-semibold text-secondary">Teks Tombol</label>
-                            <div class="input-group glass-input-group align-items-center">
-                                <input type="color" name="settings[btn_text_color]" class="form-control form-control-color border-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['btn_text_color'] ?? '#111827' }}">
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <label class="form-label small fw-semibold text-secondary">Teks Profil</label>
-                            <div class="input-group glass-input-group align-items-center">
-                                <input type="color" name="settings[text_color]" class="form-control form-control-color border-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['text_color'] ?? '#111827' }}">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer border-top-0 pt-1">
-                    <button type="button" class="btn btn-light btn-sm rounded-3 px-3.5 py-2 fw-semibold" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary btn-sm rounded-3 px-3.5 py-2 fw-semibold" style="background-color: var(--primary-color); border-color: var(--primary-color);">Simpan Profil</button>
-                </div>
-            </form>
         </div>
     </div>
 </div>
@@ -472,7 +515,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2500);
     }
 
-    // Initialize SortableJS
+    // Initialize SortableJS for block sorting
     function initializeSortable() {
         const el = document.getElementById('blocks-container');
         if (el) {
@@ -513,31 +556,62 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initial SortableJS load
     initializeSortable();
 
-    // Toggle solid vs gradient background color picker in Edit Profile Modal
+    // Toggle solid vs gradient background color picker in styling tab form
     function toggleBgSettings() {
-        const bgType = $('#bgTypeSelector').val();
+        const bgType = $('#bgTypeSelectorTab').val();
         if (bgType === 'gradient') {
-            $('#solidBgWrapper').addClass('d-none');
-            $('#gradientBgWrapper').removeClass('d-none');
+            $('#solidBgWrapperTab').addClass('d-none');
+            $('#gradientBgWrapperTab').removeClass('d-none');
         } else {
-            $('#solidBgWrapper').removeClass('d-none');
-            $('#gradientBgWrapper').addClass('d-none');
+            $('#solidBgWrapperTab').removeClass('d-none');
+            $('#gradientBgWrapperTab').addClass('d-none');
         }
     }
 
     // Call on dropdown change
-    $('#bgTypeSelector').on('change', toggleBgSettings);
+    $('#bgTypeSelectorTab').on('change', toggleBgSettings);
     
-    // Also run on modal show to pre-populate correct state
-    $('#editProfileModal').on('shown.bs.modal', toggleBgSettings);
-    $('#editProfileModal').on('show.bs.modal', toggleBgSettings);
+    // Run initially to match loaded settings
+    toggleBgSettings();
+
+    // Sync title & description inputs between Profile and Styling forms in real-time
+    $('input[name="title"]').on('input', function() {
+        $('input[name="title"]').val($(this).val());
+    });
+    $('textarea[name="description"]').on('input', function() {
+        $('textarea[name="description"]').val($(this).val());
+    });
+
+    // Save and persist active tab ID in session storage to survive page reloads
+    $('#builderTabs button[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
+        sessionStorage.setItem('active_builder_tab', e.target.id);
+    });
+
+    // Restore active tab on load
+    const activeTabId = sessionStorage.getItem('active_builder_tab');
+    if (activeTabId) {
+        const tabEl = document.getElementById(activeTabId);
+        if (tabEl) {
+            const tab = new bootstrap.Tab(tabEl);
+            tab.show();
+        }
+    }
+
+    // Mobile tap support for Floating Action Button (FAB) Speed Dial
+    $('#mainFabBtn').on('click', function(e) {
+        e.stopPropagation();
+        $('.fab-wrapper').toggleClass('active');
+    });
+    $(document).on('click', function() {
+        $('.fab-wrapper').removeClass('active');
+    });
 
     // Refresh layout, reload iframe
     function refreshBuilderUI(successMessage) {
-        const iframe = document.querySelector('iframe');
-        if (iframe) {
-            iframe.contentWindow.location.reload();
-        }
+        const iframe = document.querySelectorAll('iframe');
+        iframe.forEach(ifr => {
+            ifr.contentWindow.location.reload();
+        });
         
         // Reload blocks list dynamically
         $('#blocks-container-wrapper').load(window.location.href + ' #blocks-container-wrapper > *', function() {
@@ -549,20 +623,17 @@ document.addEventListener('DOMContentLoaded', function() {
             initializeSortable();
         });
 
-        // Also reload top bio editor content visually
-        location.reload(); // Reloading the page visually matches new cover and avatar instantly
-
         if (successMessage) {
             showSuccessToast(successMessage);
         }
     }
 
-    // Modal submit interceptor
-    $('#editProfileModal form, #addLinkBlockModal form, #addTextBlockModal form').on('submit', function(e) {
+    // Intercept form submissions via AJAX (Add Link, Add Text, Profile Form, Styling Form)
+    $('#addLinkBlockModal form, #addTextBlockModal form, #profileTabForm, #stylingTabForm').on('submit', function(e) {
         e.preventDefault();
         const form = $(this);
         const modalEl = form.closest('.modal')[0];
-        const modal = bootstrap.Modal.getInstance(modalEl);
+        const modal = modalEl ? bootstrap.Modal.getInstance(modalEl) : null;
         const submitBtn = form.find('button[type="submit"]');
         const originalText = submitBtn.text();
 
@@ -577,13 +648,10 @@ document.addEventListener('DOMContentLoaded', function() {
             contentType: false,
             dataType: 'json',
             success: function(response) {
-                modal.hide();
-                if (modalEl.id !== 'editProfileModal') {
+                if (modal) {
+                    modal.hide();
                     form[0].reset();
-                } else {
-                    form.find('input[type="file"]').val('');
                 }
-                
                 refreshBuilderUI(response.message || 'Berhasil disimpan!');
             },
             error: function() {
@@ -626,11 +694,11 @@ document.addEventListener('DOMContentLoaded', function() {
     $('#avatarDropzone').on('click', function() { $('#avatarInput').click(); });
     $('#coverDropzone').on('click', function() { $('#coverInput').click(); });
 
-    // Handle standard file selection
+    // Handle file selection
     $('#avatarInput').on('change', function(e) { handleFileSelect(e.target.files[0], 'avatar'); });
     $('#coverInput').on('change', function(e) { handleFileSelect(e.target.files[0], 'cover'); });
 
-    // Drag and drop event listeners
+    // Drag and drop listeners
     setupDragAndDrop(document.getElementById('avatarDropzone'), 'avatar');
     setupDragAndDrop(document.getElementById('coverDropzone'), 'cover');
 
@@ -660,12 +728,8 @@ document.addEventListener('DOMContentLoaded', function() {
         targetType = type;
         const reader = new FileReader();
         reader.onload = function(e) {
-            // Set image source and open modal
             cropperImage.src = e.target.result;
-            
-            // Set modal title depending on target
             document.getElementById('cropperModalTitle').textContent = type === 'avatar' ? 'Sesuaikan Foto Profil' : 'Sesuaikan Sampul Belakang';
-
             cropperModal.show();
         };
         reader.readAsDataURL(file);
@@ -698,7 +762,6 @@ document.addEventListener('DOMContentLoaded', function() {
             cropper.destroy();
             cropper = null;
         }
-        // Clear file input inputs so same image can be re-selected
         $('#avatarInput').val('');
         $('#coverInput').val('');
     });
@@ -710,7 +773,6 @@ document.addEventListener('DOMContentLoaded', function() {
         cropAndSaveBtn.disabled = true;
         cropAndSaveBtn.textContent = 'Menyimpan...';
 
-        // Get canvas
         const canvas = cropper.getCroppedCanvas({
             width: targetType === 'avatar' ? 300 : 960,
             height: targetType === 'avatar' ? 300 : 360,
@@ -718,14 +780,13 @@ document.addEventListener('DOMContentLoaded', function() {
             imageSmoothingQuality: 'high'
         });
 
-        // Convert canvas to Blob
         canvas.toBlob(function(blob) {
             const formData = new FormData();
             formData.append(targetType, blob, targetType + '_cropped.png');
             
-            // Append profile name and description from form, or empty strings to satisfy backend merges
-            formData.append('title', $('input[name="title"]').val() || '{{ $link->settings['title'] ?? '' }}');
-            formData.append('description', $('textarea[name="description"]').val() || '{{ $link->settings['description'] ?? '' }}');
+            // Sync values from active form fields
+            formData.append('title', $('input[name="title"]').first().val() || '{{ $link->settings['title'] ?? '' }}');
+            formData.append('description', $('textarea[name="description"]').first().val() || '{{ $link->settings['description'] ?? '' }}');
             formData.append('_token', '{{ csrf_token() }}');
             formData.append('_method', 'PUT');
 
@@ -740,7 +801,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     cropperModal.hide();
                     showSuccessToast(response.message || 'Gambar berhasil diperbarui!');
                     
-                    // Delay reload slightly to let user read toast and see changes
+                    // Reload window slightly after visual sync
                     setTimeout(() => {
                         location.reload();
                     }, 1200);
