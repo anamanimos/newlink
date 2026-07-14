@@ -39,19 +39,19 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end glass-card border-0 shadow-lg mt-2 p-2">
                         <li>
-                            <a class="dropdown-item rounded-3 sidebar-link py-2" href="{{ route('profile.edit') }}">
-                                <span data-duo-icons="settings" style="width: 16px; height: 16px;" class="me-2"></span>Settings
+                            <a class="dropdown-item rounded-2 py-2 px-3 d-flex align-items-center gap-2" href="{{ route('profile.edit') }}">
+                                <span data-duo-icons="settings" style="width: 16px; height: 16px;"></span>Settings
                             </a>
                         </li>
                         @if(Auth::check() && Auth::user()->type === 1)
                             <li>
                                 @if(request()->is('admin*'))
-                                    <a class="dropdown-item rounded-3 sidebar-link py-2" href="{{ route('dashboard') }}">
-                                        <span data-duo-icons="world" style="width: 16px; height: 16px;" class="me-2"></span>Go to User Panel
+                                    <a class="dropdown-item rounded-2 py-2 px-3 d-flex align-items-center gap-2" href="{{ route('dashboard') }}">
+                                        <span data-duo-icons="world" style="width: 16px; height: 16px;"></span>Go to User Panel
                                     </a>
                                 @else
-                                    <a class="dropdown-item rounded-3 sidebar-link py-2" href="{{ route('admin.dashboard') }}">
-                                        <span data-duo-icons="dashboard" style="width: 16px; height: 16px;" class="me-2"></span>Go to Admin Panel
+                                    <a class="dropdown-item rounded-2 py-2 px-3 d-flex align-items-center gap-2" href="{{ route('admin.dashboard') }}">
+                                        <span data-duo-icons="dashboard" style="width: 16px; height: 16px;"></span>Go to Admin Panel
                                     </a>
                                 @endif
                             </li>
@@ -60,8 +60,8 @@
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="dropdown-item rounded-3 text-danger sidebar-link py-2 border-0 w-100 text-start bg-transparent m-0">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="me-2 text-danger">
+                                <button type="submit" class="dropdown-item rounded-2 text-danger py-2 px-3 border-0 w-100 text-start bg-transparent m-0 d-flex align-items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="text-danger">
                                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                                         <polyline points="16 17 21 12 16 7"></polyline>
                                         <line x1="21" y1="12" x2="9" y2="12"></line>
