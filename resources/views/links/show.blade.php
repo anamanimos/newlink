@@ -281,6 +281,61 @@
             </div>
         </div>
 
+        @if($link->type === 'biolink' && count($biolinkBlocks) > 0)
+            <!-- Button Clicks Statistics Section -->
+            <div class="detail-card p-4 mb-4">
+                <h5 class="fw-bold mb-4 d-flex align-items-center gap-2" style="color: var(--text-primary);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-primary" style="color: var(--primary-color);">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                    </svg>
+                    <span>Statistik Klik per Tombol Biolink</span>
+                </h5>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 text-dark-custom" style="font-size: 0.9rem;">
+                        <thead>
+                            <tr class="text-secondary small fw-bold" style="border-bottom: 2px solid var(--glass-border);">
+                                <th class="pb-3" style="width: 40%;">Judul Tombol</th>
+                                <th class="pb-3" style="width: 35%;">URL Tujuan</th>
+                                <th class="pb-3 text-center" style="width: 10%;">Jumlah Klik</th>
+                                <th class="pb-3 text-end" style="width: 15%;">Persentase</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($biolinkBlocks as $block)
+                                @php
+                                    $blockPercent = $totalClicks > 0 ? ($block->clicks / $totalClicks) * 100 : 0;
+                                @endphp
+                                <tr style="border-bottom: 1px solid var(--glass-border);">
+                                    <td class="py-3 fw-semibold text-dark-custom">
+                                        {{ $block->settings['title'] ?? 'Tautan Tanpa Judul' }}
+                                    </td>
+                                    <td class="py-3 text-muted text-truncate" style="max-width: 250px;">
+                                        <a href="{{ $block->location_url }}" target="_blank" rel="noopener" class="text-secondary text-decoration-none hover-primary">
+                                            {{ $block->location_url }}
+                                        </a>
+                                    </td>
+                                    <td class="py-3 text-center fw-bold text-primary">
+                                        {{ number_format($block->clicks) }}
+                                    </td>
+                                    <td class="py-3">
+                                        <div class="d-flex align-items-center justify-content-end gap-2">
+                                            <div class="progress-bar-custom mb-1" style="width: 80px; height: 6px; margin-top: 0;">
+                                                <div class="progress-bar-fill" style="width: {{ $blockPercent }}%; background-color: var(--primary-color);"></div>
+                                            </div>
+                                            <span class="small fw-semibold text-muted" style="min-width: 36px; text-align: right;">
+                                                {{ number_format($blockPercent, 0) }}%
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
+
         <!-- Breakdown Section -->
         <div class="row g-4">
             <!-- Referrers -->

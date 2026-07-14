@@ -161,7 +161,7 @@
         <div class="blocks-section">
             @foreach($blocks as $block)
                 @if($block->type == 'link')
-                    <a href="{{ $block->location_url }}" class="block-link" target="_blank" rel="noopener">
+                    <a href="{{ route('biolinks.blocks.redirect', $block->id) }}" class="block-link" target="_blank" rel="noopener">
                         {{ $block->settings['title'] ?? 'Link' }}
                     </a>
                 @elseif($block->type == 'text')

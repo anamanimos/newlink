@@ -148,5 +148,8 @@ Route::get('/api/restore-sql', function (Request $request) {
     }
 });
 
+// Public Biolink Block Redirect and Click Tracking Route
+Route::get('/biolink/block/{id}/redirect', [RedirectController::class, 'redirectBlock'])->name('biolinks.blocks.redirect');
+
 // Wildcard Route for Redirects (MUST BE LAST)
 Route::get('/{slug}', [RedirectController::class, 'resolve'])->name('redirect.resolve');

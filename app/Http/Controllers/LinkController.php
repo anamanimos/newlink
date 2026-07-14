@@ -213,10 +213,14 @@ class LinkController extends Controller
             $chartDates[] = $date->format('d M');
             $chartData[] = $clicksByDate[$dateStr] ?? 0;
         }
+        $biolinkBlocks = collect();
+        if ($link->type === 'biolink') {
+            $biolinkBlocks = $link->biolinkBlocks()->where('type', 'link')->orderByDesc('clicks')->get();
+        }
 
         return view('links.show', compact(
             'link', 'totalClicks', 'uniqueClicks', 'chartDates', 'chartData', 
-            'topReferrers', 'topCountries', 'topOs', 'topBrowsers', 'startDate', 'endDate', 'rawClicks'
+            'topReferrers', 'topCountries', 'topOs', 'topBrowsers', 'startDate', 'endDate', 'rawClicks', 'biolinkBlocks'
         ));
     }
 

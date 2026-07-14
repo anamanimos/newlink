@@ -82,6 +82,20 @@ class RedirectController extends Controller
         abort(404);
     }
 
+    public function redirectBlock(Request $request, $id)
+    {
+        $block = \App\Models\BiolinkBlock::findOrFail($id);
+        
+        $userAgent = $request->header('User-Agent');
+        $isBot = preg_match('/bot|crawl|slurp|spider|mediapartners|facebookexternalhit|whatsapp|telegrambot|twitterbot|linkedinbot/i', $userAgent);
+
+        if (!$isBot) {
+            $block->increment('clicks');
+        }
+
+        return redirect()->away($block->location_url ?? url('/'));
+    }
+
     private function getOS($userAgent)
     {
         $osPlatform = "Unknown OS Platform";
