@@ -660,12 +660,8 @@ body {
 }
 
 .swal-glass-toast .swal2-icon {
-    width: 20px !important;
-    height: 20px !important;
-    min-width: 20px !important;
+    font-size: 10px !important;
     margin: 0 10px 0 0 !important;
-    border-width: 2px !important;
-    transform: scale(0.85);
 }
 
 .swal-glass-toast .swal2-icon.swal2-success {
