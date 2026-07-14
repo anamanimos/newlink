@@ -21,8 +21,15 @@
         }
         .auth-card {
             width: 100%;
-            max-width: 380px;
-            padding: 30px 12px;
+            max-width: 420px;
+            padding: 40px 32px;
+            background: var(--card-bg-blur);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+            border-radius: 16px;
+        }
+        [data-bs-theme="dark"] .auth-card {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
@@ -35,12 +42,12 @@
     </div>
 
     <div class="auth-container">
-        <!-- Radial background accents -->
-        <div class="position-absolute top-25 start-25 translate-middle w-50 h-50 rounded-full opacity-10 bg-primary filter-blur" style="filter: blur(80px); pointer-events: none; z-index: -1;"></div>
-        <div class="position-absolute bottom-25 end-25 translate-middle w-50 h-50 rounded-full opacity-10 bg-info filter-blur" style="filter: blur(80px); pointer-events: none; z-index: -1;"></div>
+        <!-- Radial background accents matching mint green theme -->
+        <div class="position-absolute top-25 start-25 translate-middle w-50 h-50 rounded-circle opacity-15 filter-blur" style="background-color: var(--primary-color); filter: blur(100px); pointer-events: none; z-index: -1;"></div>
+        <div class="position-absolute bottom-25 end-25 translate-middle w-50 h-50 rounded-circle opacity-10 filter-blur" style="background-color: var(--primary-color); filter: blur(100px); pointer-events: none; z-index: -1;"></div>
 
-        <div class="auth-card text-center">
-            <div class="mb-4">
+        <div class="auth-card">
+            <div class="mb-4 text-center">
                 <h2 class="fw-bold tracking-tight mb-1" style="color: var(--text-primary); letter-spacing: -0.5px;">{{ config('app.name', 'NamsLink') }}</h2>
                 <p class="text-muted small">Modern Link-in-Bio & Shortener</p>
             </div>
