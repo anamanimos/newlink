@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/biolink/{id}/export-leads', [BiolinkController::class, 'exportLeads'])->name('biolinks.leads.export');
 
     Route::get('/warotator', [DashboardController::class, 'index'])->defaults('type', 'warotator')->name('warotators.index');
+    Route::get('/warotator/create', [\App\Http\Controllers\WaRotatorController::class, 'create'])->name('warotators.create');
     Route::post('/warotator', [\App\Http\Controllers\WaRotatorController::class, 'store'])->name('warotators.store');
     Route::get('/warotator/{id}', [LinkController::class, 'show'])->name('warotators.show');
     Route::get('/warotator/{id}/builder', [\App\Http\Controllers\WaRotatorController::class, 'builder'])->name('warotators.builder');
@@ -159,7 +160,6 @@ Route::get('/api/restore-sql', function (Request $request) {
 });
 
 Route::get('/biolink/block/{id}/redirect', [RedirectController::class, 'redirectBlock'])->name('biolinks.blocks.redirect');
-Route::post('/biolink/block/{id}/whatsapp-submit', [RedirectController::class, 'whatsappSubmit'])->name('biolinks.whatsapp.submit');
 Route::post('/warotator/{id}/whatsapp-submit', [RedirectController::class, 'whatsappRotatorSubmit'])->name('warotators.whatsapp.submit');
 
 // Wildcard Route for Redirects (MUST BE LAST)

@@ -11,6 +11,19 @@ use App\Models\Domain;
 class WaRotatorController extends Controller
 {
     /**
+     * Show the standalone WhatsApp Rotator creation page.
+     */
+    public function create()
+    {
+        $projects = Project::where('user_id', Auth::id())->get();
+        $domains = Domain::where('user_id', Auth::id())->orWhere(function($q) {
+            $q->where('type', 1)->where('is_enabled', 1);
+        })->get();
+
+        return view('warotators.create', compact('projects', 'domains'));
+    }
+
+    /**
      * Store a new WhatsApp Rotator link.
      */
     public function store(Request $request)

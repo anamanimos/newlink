@@ -76,10 +76,10 @@
                 Create Biolink
             </button>
         @elseif($type == 'warotator')
-            <button class="btn btn-primary d-flex align-items-center gap-2 py-2 px-3.5 fw-semibold rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#createWaRotatorModal" style="background-color: var(--primary-color); border-color: var(--primary-color);">
+            <a href="{{ route('warotators.create') }}" class="btn btn-primary d-flex align-items-center gap-2 py-2 px-3.5 fw-semibold rounded-3 shadow-sm" style="background-color: var(--primary-color); border-color: var(--primary-color); text-decoration: none;">
                 <span data-duo-icons="add-circle" style="width: 16px; height: 16px;"></span>
                 Create WA Rotator
-            </button>
+            </a>
         @else
             <button class="btn btn-primary d-flex align-items-center gap-2 py-2 px-3.5 fw-semibold rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#createLinkModal" style="background-color: var(--primary-color); border-color: var(--primary-color);">
                 <span data-duo-icons="add-circle" style="width: 16px; height: 16px;"></span>
@@ -417,86 +417,6 @@
     </div>
 </div>
 
-<!-- Create WA Rotator Modal -->
-<div class="modal fade" id="createWaRotatorModal" tabindex="-1" aria-labelledby="createWaRotatorModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content glass-card border border-secondary border-opacity-10 rounded-3 p-3" style="background: var(--header-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
-            <div class="modal-header border-0 pb-1">
-                <h6 class="modal-title fw-bold text-dark-custom" id="createWaRotatorModalLabel">Buat Halaman WhatsApp Rotator</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="{{ route('warotators.store') }}" method="POST">
-                @csrf
-                <div class="modal-body py-2">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <!-- Custom Domain -->
-                            <div class="mb-3">
-                                <label class="form-label small fw-semibold text-secondary">Domain</label>
-                                <select name="domain_id" id="create_wa_domain_id" class="form-select bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 text-secondary small">
-                                    <option value="0" selected>Domain Bawaan ({{ parse_url(url('/'), PHP_URL_HOST) }})</option>
-                                    @foreach($domains as $domain)
-                                        <option value="{{ $domain->id }}">{{ $domain->host }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <!-- Custom Alias Path -->
-                            <div class="mb-3">
-                                <label class="form-label small fw-semibold text-secondary">Alias URL <span class="text-danger">*</span></label>
-                                <div class="glass-input-group d-flex align-items-center border rounded-3 p-1">
-                                    <span class="px-2 text-muted small fw-bold" id="create_wa_domain_prefix">
-                                        {{ parse_url(url('/'), PHP_URL_HOST) }}/
-                                    </span>
-                                    <input type="text" name="url" id="create_wa_url" class="form-control bg-transparent border-0 py-1 small" placeholder="custom-alias" required value="{{ old('url') }}">
-                                </div>
-                                <div id="create_wa_alias_feedback" class="mt-1.5" style="font-size: 0.725rem;"></div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label small fw-semibold text-secondary">Judul Form <span class="text-danger">*</span></label>
-                                <input type="text" name="title" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small" required placeholder="Contoh: CS Fast Response">
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label small fw-semibold text-secondary">Subtitle / Deskripsi Form</label>
-                                <textarea name="description" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small" rows="2" placeholder="Contoh: Silakan isi form untuk terhubung ke admin kami."></textarea>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label small fw-semibold text-secondary">Nomor WhatsApp Tujuan (Dirotasi) <span class="text-danger">*</span></label>
-                                <textarea name="numbers" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small" rows="2" required placeholder="Masukkan nomor WhatsApp, satu per baris atau dipisah koma (Contoh: 628123456789, 628987654321)"></textarea>
-                                <div class="form-text text-muted" style="font-size: 0.725rem;">Format kode negara tanpa simbol + (Contoh: 628xxxxxxxx)</div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label small fw-semibold text-secondary">Template Pesan WhatsApp <span class="text-danger">*</span></label>
-                                <textarea name="template" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small" rows="2" required placeholder="Contoh: Halo admin, nama saya [nama] dari [kota]...">Halo admin, nama saya [nama] dari [kota]. Nomor saya [nomor]. Pesan: [pesan]</textarea>
-                                <div class="form-text text-muted" style="font-size: 0.725rem;">Placeholders: <code>[nama]</code>, <code>[kota]</code>, <code>[nomor]</code>, <code>[pesan]</code></div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label small fw-semibold text-secondary">Teks Tombol Form <span class="text-danger">*</span></label>
-                                <input type="text" name="button_text" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small" required placeholder="Contoh: Hubungi CS Sekarang" value="Hubungi CS Sekarang">
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label small fw-semibold text-secondary">Pilihan Kota / Kabupaten (Pisah Koma)</label>
-                                <textarea name="cities" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small" rows="1" placeholder="Contoh: Jakarta, Bandung, Surabaya, Yogyakarta, Semarang, Medan"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer border-0 pt-1">
-                    <button type="button" class="btn btn-light btn-sm rounded-3 px-3 py-2 fw-semibold" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary btn-sm rounded-3 px-3 py-2 fw-semibold" style="background-color: var(--primary-color); border-color: var(--primary-color);">Buat WA Rotator</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 <!-- Edit Link Modal -->
 <div class="modal fade" id="editLinkModal" tabindex="-1" aria-labelledby="editLinkModalLabel" aria-hidden="true">
@@ -919,20 +839,6 @@
             const alias = $('#create_bio_url').val();
             const domainId = $(this).val();
             checkAlias(alias, domainId, null, '#create_bio_alias_feedback', '#createBiolinkModal button[type="submit"]');
-        });
-
-        // Event listeners for Create WA Rotator Modal availability check
-        $('#create_wa_url').on('input', function() {
-            const alias = $(this).val();
-            const domainId = $('#create_wa_domain_id').val();
-            checkAlias(alias, domainId, null, '#create_wa_alias_feedback', '#createWaRotatorModal button[type="submit"]');
-        });
-
-        $('#create_wa_domain_id').on('change', function() {
-            updateDomainPrefix('#create_wa_domain_id', '#create_wa_domain_prefix');
-            const alias = $('#create_wa_url').val();
-            const domainId = $(this).val();
-            checkAlias(alias, domainId, null, '#create_wa_alias_feedback', '#createWaRotatorModal button[type="submit"]');
         });
 
         // Event listeners for Edit Modal availability check

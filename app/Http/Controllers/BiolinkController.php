@@ -68,7 +68,7 @@ class BiolinkController extends Controller
         $link = Link::where('user_id', Auth::id())->where('type', 'biolink')->findOrFail($id);
 
         $request->validate([
-            'type' => 'required|string|in:text,link,socials,whatsapp_rotator',
+            'type' => 'required|string|in:text,link,socials',
             'location_url' => 'nullable|url|max:512',
             'settings' => 'nullable|array'
         ]);
