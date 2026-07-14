@@ -782,47 +782,48 @@ body {
    ────────────────────────────────────────────────────────────────────────── */
 [data-bs-theme="dark"] .modal-content,
 [data-bs-theme="dark"] .modal-content.glass-card {
-    background-color: #1e293b !important;
-    background: #1e293b !important;
-    border-color: rgba(71, 85, 105, 0.3) !important;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2) !important;
+    background-color: var(--card-bg-blur) !important;
+    background: var(--card-bg-blur) !important;
+    border-color: var(--card-border) !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3) !important;
 }
 
 [data-bs-theme="dark"] .modal-content .form-control,
 [data-bs-theme="dark"] .modal-content .form-select,
 [data-bs-theme="dark"] .modal-content .glass-input-group,
 [data-bs-theme="dark"] .modal-content .input-group {
-    background-color: #0f172a !important; /* Solid dark input background */
-    border-color: #334155 !important;
-    color: #cbd5e1 !important;
+    background-color: #0f1117 !important; /* Solid dark background matching body bg */
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    color: var(--text-primary) !important;
 }
 
 [data-bs-theme="dark"] .modal-content .form-control:focus,
 [data-bs-theme="dark"] .modal-content .form-select:focus,
 [data-bs-theme="dark"] .modal-content .glass-input-group:focus-within,
 [data-bs-theme="dark"] .modal-content .input-group:focus-within {
-    background-color: #1e293b !important;
-    border-color: #38e8ad !important;
-    box-shadow: 0 0 0 3px rgba(56, 232, 173, 0.25) !important;
+    background-color: var(--card-bg-blur) !important; /* Slightly lighter on focus */
+    border-color: var(--primary-color) !important; /* Mint green accent */
+    box-shadow: 0 0 0 3px rgba(125, 211, 161, 0.15) !important; /* Soft mint green glow */
 }
 
 [data-bs-theme="dark"] .modal-content .select2-container--default .select2-selection--single {
-    background-color: #0f172a !important;
-    border-color: #334155 !important;
+    background-color: #0f1117 !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
 [data-bs-theme="dark"] .modal-content .select2-container--default.select2-container--focus .select2-selection--single,
 [data-bs-theme="dark"] .modal-content .select2-container--default.select2-container--open .select2-selection--single {
-    background-color: #1e293b !important;
-    border-color: #38e8ad !important;
-    box-shadow: 0 0 0 3px rgba(56, 232, 173, 0.25) !important;
+    background-color: var(--card-bg-blur) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(125, 211, 161, 0.15) !important;
 }
 
 [data-bs-theme="dark"] .modal-content .btn-light {
-    background-color: #334155 !important;
-    color: #f1f5f9 !important;
-    border-color: #475569 !important;
+    background-color: #14171f !important;
+    color: var(--text-secondary) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
 }
 [data-bs-theme="dark"] .modal-content .btn-light:hover {
-    background-color: #475569 !important;
+    background-color: #1a1d27 !important;
+    color: var(--text-primary) !important;
 }
