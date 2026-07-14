@@ -682,3 +682,147 @@ body {
     height: 2px !important;
     opacity: 0.5;
 }
+
+/* ==========================================================================
+   GLOBAL MODAL STYLE OVERRIDES
+   Solid white background, solid gray form controls transitioning to mint green
+   ========================================================================== */
+
+/* Modal Content Base */
+.modal-content, 
+.modal-content.glass-card {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 1px solid rgba(226, 232, 240, 0.8) !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02) !important;
+    border-radius: 16px !important;
+}
+
+/* Modal Headers, Footers, and Text */
+.modal-header, 
+.modal-footer {
+    border: none !important;
+    background-color: transparent !important;
+}
+.modal-header .modal-title {
+    color: var(--text-primary) !important;
+    font-weight: 700 !important;
+}
+
+/* Modal Form Controls (Inputs, Selects, Input Groups) */
+.modal-content .form-control,
+.modal-content .form-select,
+.modal-content .glass-input-group,
+.modal-content .input-group {
+    background-color: #f8fafc !important; /* Solid soft gray background */
+    border: 1px solid #cbd5e1 !important; /* Solid gray border */
+    color: #334155 !important;
+    font-weight: 500 !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+/* Nested input alignment inside input groups */
+.modal-content .glass-input-group .form-control,
+.modal-content .input-group .form-control {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding-left: 8px !important;
+}
+
+/* On Focus / Active state: Solid white background with mint green highlight */
+.modal-content .form-control:focus,
+.modal-content .form-select:focus,
+.modal-content .glass-input-group:focus-within,
+.modal-content .input-group:focus-within {
+    background-color: #ffffff !important;
+    border-color: #38e8ad !important; /* Mint green accent */
+    box-shadow: 0 0 0 3px rgba(56, 232, 173, 0.15) !important; /* Mint green soft glow */
+    outline: none !important;
+}
+
+.modal-content .form-control::placeholder {
+    color: #94a3b8 !important;
+    opacity: 0.8;
+}
+
+/* Select2 overrides inside modals */
+.modal-content .select2-container--default .select2-selection--single {
+    background-color: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    height: 42px !important;
+    transition: all 0.2s ease !important;
+}
+
+.modal-content .select2-container--default.select2-container--focus .select2-selection--single,
+.modal-content .select2-container--default.select2-container--open .select2-selection--single {
+    background-color: #ffffff !important;
+    border-color: #38e8ad !important;
+    box-shadow: 0 0 0 3px rgba(56, 232, 173, 0.15) !important;
+}
+
+/* Modal Buttons (Batal/Biasa & Submit/Primary) */
+.modal-content .btn-light {
+    background-color: #f1f5f9 !important;
+    color: #475569 !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease !important;
+}
+.modal-content .btn-light:hover {
+    background-color: #e2e8f0 !important;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   DARK THEME OVERRIDES FOR MODALS
+   ────────────────────────────────────────────────────────────────────────── */
+[data-bs-theme="dark"] .modal-content,
+[data-bs-theme="dark"] .modal-content.glass-card {
+    background-color: #1e293b !important;
+    background: #1e293b !important;
+    border-color: rgba(71, 85, 105, 0.3) !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-bs-theme="dark"] .modal-content .form-control,
+[data-bs-theme="dark"] .modal-content .form-select,
+[data-bs-theme="dark"] .modal-content .glass-input-group,
+[data-bs-theme="dark"] .modal-content .input-group {
+    background-color: #0f172a !important; /* Solid dark input background */
+    border-color: #334155 !important;
+    color: #cbd5e1 !important;
+}
+
+[data-bs-theme="dark"] .modal-content .form-control:focus,
+[data-bs-theme="dark"] .modal-content .form-select:focus,
+[data-bs-theme="dark"] .modal-content .glass-input-group:focus-within,
+[data-bs-theme="dark"] .modal-content .input-group:focus-within {
+    background-color: #1e293b !important;
+    border-color: #38e8ad !important;
+    box-shadow: 0 0 0 3px rgba(56, 232, 173, 0.25) !important;
+}
+
+[data-bs-theme="dark"] .modal-content .select2-container--default .select2-selection--single {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+}
+
+[data-bs-theme="dark"] .modal-content .select2-container--default.select2-container--focus .select2-selection--single,
+[data-bs-theme="dark"] .modal-content .select2-container--default.select2-container--open .select2-selection--single {
+    background-color: #1e293b !important;
+    border-color: #38e8ad !important;
+    box-shadow: 0 0 0 3px rgba(56, 232, 173, 0.25) !important;
+}
+
+[data-bs-theme="dark"] .modal-content .btn-light {
+    background-color: #334155 !important;
+    color: #f1f5f9 !important;
+    border-color: #475569 !important;
+}
+[data-bs-theme="dark"] .modal-content .btn-light:hover {
+    background-color: #475569 !important;
+}
