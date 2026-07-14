@@ -288,14 +288,17 @@
     </div>
 
     <!-- Bulk Action Panel -->
-    <div id="bulkActionsBar" class="d-none mb-3 p-2.5 rounded-3 border align-items-center justify-content-between" style="background: var(--primary-light); border-color: rgba(164, 229, 189, 0.3);">
+    <div id="bulkActionsBar" class="d-none mb-4 p-3 rounded-3 border align-items-center justify-content-between" style="background: var(--primary-light); border-color: rgba(164, 229, 189, 0.2); border-radius: 12px !important;">
         <div class="d-flex align-items-center gap-2">
-            <span class="text-secondary small fw-semibold"><span id="selectedCount" class="fw-bold">0</span> terpilih</span>
+            <span class="small fw-semibold d-flex align-items-center gap-2" style="color: var(--text-primary);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-success"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span id="selectedCount" class="badge rounded-pill px-2.5 py-1" style="background-color: var(--primary-color) !important; color: var(--active-text) !important; font-size: 0.75rem; font-weight: 700;">0</span> item terpilih
+            </span>
         </div>
         <div class="d-flex align-items-center gap-2">
-            <button type="button" class="btn btn-outline-primary btn-sm rounded-3 py-1.5 px-3 fw-semibold bulk-btn" data-action="enable" style="font-size: 0.75rem;">Aktifkan</button>
-            <button type="button" class="btn btn-outline-secondary btn-sm rounded-3 py-1.5 px-3 fw-semibold bulk-btn" data-action="disable" style="font-size: 0.75rem;">Nonaktifkan</button>
-            <button type="button" class="btn btn-danger btn-sm rounded-3 py-1.5 px-3 fw-semibold bulk-btn" data-action="delete" style="font-size: 0.75rem;">Hapus</button>
+            <button type="button" class="btn btn-outline-theme btn-sm py-1.5 px-3 fw-semibold bulk-btn" data-action="enable" style="font-size: 0.75rem; border-radius: 8px !important;">Aktifkan</button>
+            <button type="button" class="btn btn-outline-gray btn-sm py-1.5 px-3 fw-semibold bulk-btn" data-action="disable" style="font-size: 0.75rem; border-radius: 8px !important;">Nonaktifkan</button>
+            <button type="button" class="btn btn-soft-danger btn-sm py-1.5 px-3 fw-semibold bulk-btn" data-action="delete" style="font-size: 0.75rem; border-radius: 8px !important;">Hapus</button>
         </div>
     </div>
 

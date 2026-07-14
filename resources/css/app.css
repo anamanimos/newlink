@@ -514,3 +514,54 @@ body {
 [data-bs-theme="dark"] .dropdown-item.text-danger:hover {
     color: #f87171 !important;
 }
+
+/* Custom Elegant Buttons */
+.btn-outline-theme {
+    color: #166534 !important;
+    border: 1px solid var(--primary-color) !important;
+    background-color: transparent !important;
+    transition: all 0.2s ease;
+}
+.btn-outline-theme:hover {
+    background-color: var(--primary-color) !important;
+    color: var(--active-text) !important;
+}
+[data-bs-theme="dark"] .btn-outline-theme {
+    color: var(--primary-color) !important;
+    border: 1px solid var(--primary-color) !important;
+}
+[data-bs-theme="dark"] .btn-outline-theme:hover {
+    background-color: var(--primary-color) !important;
+    color: var(--active-text) !important;
+}
+
+.btn-outline-gray {
+    color: var(--text-secondary) !important;
+    border: 1px solid var(--card-border) !important;
+    background-color: transparent !important;
+    transition: all 0.2s ease;
+}
+.btn-outline-gray:hover {
+    background-color: var(--card-border) !important;
+    color: var(--text-primary) !important;
+}
+
+.btn-soft-danger {
+    color: #b91c1c !important;
+    background-color: rgba(239, 68, 68, 0.08) !important;
+    border: 1px solid rgba(239, 68, 68, 0.15) !important;
+    transition: all 0.2s ease;
+}
+.btn-soft-danger:hover {
+    background-color: #b91c1c !important;
+    color: #ffffff !important;
+}
+[data-bs-theme="dark"] .btn-soft-danger {
+    color: #f87171 !important;
+    background-color: rgba(239, 68, 68, 0.15) !important;
+    border: 1px solid rgba(239, 68, 68, 0.25) !important;
+}
+[data-bs-theme="dark"] .btn-soft-danger:hover {
+    background-color: #b91c1c !important;
+    color: #ffffff !important;
+}
