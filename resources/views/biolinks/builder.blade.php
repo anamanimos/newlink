@@ -6,6 +6,42 @@
 @php
     $fullUrl = $link->domain_id && $link->domain ? $link->domain->scheme . $link->domain->host . '/' . $link->url : url('/') . '/' . $link->url;
 @endphp
+
+<!-- CSS for Cropper.js & Interactive Editor -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+<style>
+    /* Desktop layout overrides tabs */
+    @media (min-width: 768px) {
+        #builderTabContent.tab-content > .tab-pane {
+            display: block !important;
+            opacity: 1 !important;
+        }
+        #builderMobileTabs {
+            display: none !important;
+        }
+    }
+
+    /* Drag & Drop overlays */
+    #coverDropzone:hover .dropzone-overlay,
+    #avatarDropzone:hover .dropzone-overlay {
+        opacity: 1 !important;
+    }
+
+    .dropzone-overlay {
+        pointer-events: none;
+    }
+
+    /* Image Cropper sizing */
+    .cropper-container-wrapper {
+        max-height: 400px;
+        overflow: hidden;
+    }
+    .cropper-container-wrapper img {
+        max-width: 100%;
+        display: block;
+    }
+</style>
+
 <div class="d-flex align-items-center justify-content-between mb-4 mt-2">
     <h4 class="fw-bold mb-0 d-flex align-items-center text-dark-custom" style="font-size: 1.5rem; letter-spacing: -0.5px;">
         <span data-duo-icons="app" style="width: 22px; height: 22px; margin-right: 12px;" class="text-muted"></span>
@@ -13,9 +49,7 @@
     </h4>
     <a href="{{ $fullUrl }}" target="_blank" class="btn btn-outline-secondary d-flex align-items-center gap-2 py-2 px-3.5 fw-semibold rounded-3 shadow-sm" style="border-radius: 12px !important;">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <!-- Shaded background box (Secondary layer) -->
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" opacity="0.25" fill="currentColor" style="stroke: none;"></path>
-            <!-- Outlines and arrow (Primary layer) -->
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
             <polyline points="15 3 21 3 21 9"></polyline>
             <line x1="10" y1="14" x2="21" y2="3"></line>
@@ -24,12 +58,64 @@
     </a>
 </div>
 
-<div class="row g-4">
-    <!-- Builder Controls -->
-    <div class="col-md-7 col-lg-8">
+<!-- Mobile View Toggle Tabs (Only visible on mobile < 768px) -->
+<ul class="nav nav-pills nav-fill d-flex d-md-none mb-4 p-1 bg-light rounded-3 shadow-sm" id="builderMobileTabs" role="tablist" style="border: 1px solid rgba(0,0,0,0.04);">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active py-2 fw-semibold d-flex align-items-center justify-content-center gap-1.5" id="design-tab" data-bs-toggle="tab" data-bs-target="#design-pane" type="button" role="tab" aria-controls="design-pane" aria-selected="true" style="border-radius: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+            Design
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link py-2 fw-semibold d-flex align-items-center justify-content-center gap-1.5" id="preview-tab" data-bs-toggle="tab" data-bs-target="#preview-pane" type="button" role="tab" aria-controls="preview-pane" aria-selected="false" style="border-radius: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+            Pratinjau
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content row g-4" id="builderTabContent">
+    <!-- Builder Controls Column (Design Pane) -->
+    <div class="tab-pane fade show active col-md-7 col-lg-8" id="design-pane" role="tabpanel" aria-labelledby="design-tab" tabindex="0">
+        
+        <!-- Interactive Cover & Avatar Editor Zone -->
+        <div class="glass-card mb-4 overflow-hidden position-relative" style="border-radius: 16px; border: 1px solid var(--card-border);">
+            <!-- Visual Cover Zone (Drag & Drop or Click) -->
+            <div id="coverDropzone" class="position-relative" style="height: 160px; background: {{ isset($link->settings['cover_url']) ? 'url(' . $link->settings['cover_url'] . ') center/cover no-repeat' : 'linear-gradient(135deg, #a4e5bd 0%, #7dd3a1 100%)' }}; cursor: pointer;">
+                <div class="dropzone-overlay d-flex flex-column align-items-center justify-content-center text-white" style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.45); opacity: 0; transition: opacity 0.2s ease;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="mb-1"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                    <span class="small fw-semibold">Ubah Cover (Seret & Jatuhkan)</span>
+                </div>
+                <input type="file" id="coverInput" class="d-none" accept="image/*">
+            </div>
+            
+            <!-- Visual Avatar Zone (Drag & Drop or Click) -->
+            <div class="d-flex flex-column align-items-center" style="margin-top: -60px; padding-bottom: 24px;">
+                <div id="avatarDropzone" class="position-relative rounded-circle" style="width: 110px; height: 110px; border: 4px solid var(--card-bg-blur); box-shadow: 0 4px 12px rgba(0,0,0,0.15); cursor: pointer; overflow: hidden; background: #fff;">
+                    <img id="avatarPreview" src="{{ $link->settings['avatar_url'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($link->settings['title'] ?? 'BL') . '&background=a4e5bd&color=111827&size=128' }}" style="width:100%; height:100%; object-fit:cover;">
+                    <div class="dropzone-overlay d-flex flex-column align-items-center justify-content-center text-white" style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.55); opacity: 0; transition: opacity 0.2s ease; border-radius: 50%;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="mb-1"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                        <span style="font-size: 0.65rem;" class="fw-semibold">Ubah Foto</span>
+                    </div>
+                    <input type="file" id="avatarInput" class="d-none" accept="image/*">
+                </div>
+
+                <div class="d-flex align-items-center gap-1.5 mt-3 mb-1">
+                    <h5 class="fw-bold mb-0 text-dark-custom">{{ $link->settings['title'] ?? 'My Biolink' }}</h5>
+                    @if($link->is_verified)
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#0095f6" style="color: white; flex-shrink: 0;" title="Verified Profile">
+                            <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+                        </svg>
+                    @endif
+                </div>
+                <p class="text-secondary small mb-0 px-4 text-center text-truncate" style="max-width: 100%;">{{ $link->settings['description'] ?? 'Belum ada deskripsi bio.' }}</p>
+            </div>
+        </div>
+
+        <!-- Builder buttons -->
         <div class="d-flex gap-2 mb-4">
             <button class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3.5 py-2.5 fw-semibold shadow-sm" style="border-radius: 12px !important;" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-                <span data-duo-icons="user" style="width: 16px; height: 16px;"></span> Edit Profil
+                <span data-duo-icons="user" style="width: 16px; height: 16px;"></span> Edit Bio
             </button>
             <button class="btn btn-primary d-flex align-items-center gap-2 px-3.5 py-2.5 fw-semibold shadow-sm" style="border-radius: 12px !important;" data-bs-toggle="modal" data-bs-target="#addLinkBlockModal">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -41,10 +127,8 @@
             </button>
             <button class="btn btn-primary d-flex align-items-center gap-2 px-3.5 py-2.5 fw-semibold shadow-sm" style="border-radius: 12px !important;" data-bs-toggle="modal" data-bs-target="#addTextBlockModal">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <!-- Shaded secondary line blocks (Secondary layer) -->
                     <line x1="21" y1="10" x2="3" y2="10" opacity="0.3"></line>
                     <line x1="21" y1="18" x2="3" y2="18" opacity="0.3"></line>
-                    <!-- Solid primary line blocks (Primary layer) -->
                     <line x1="17" y1="6" x2="3" y2="6"></line>
                     <line x1="17" y1="14" x2="3" y2="14"></line>
                 </svg>
@@ -52,6 +136,7 @@
             </button>
         </div>
 
+        <!-- Content list -->
         <div id="blocks-container-wrapper" class="glass-card p-4">
             <h6 class="fw-bold mb-4 d-flex align-items-center gap-2">
                 <span data-duo-icons="folder-open" style="width: 18px; height: 18px;" class="text-muted"></span>
@@ -108,9 +193,9 @@
         </div>
     </div>
 
-    <!-- Mobile Preview -->
-    <div class="col-md-5 col-lg-4 d-flex justify-content-center">
-        <div style="width: 320px; height: 640px; border: 12px solid #333; border-radius: 40px; overflow: hidden; background: #f8f9fa; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);">
+    <!-- Mobile Preview Column -->
+    <div class="tab-pane fade d-md-block col-md-5 col-lg-4 d-flex justify-content-center" id="preview-pane" role="tabpanel" aria-labelledby="preview-tab" tabindex="0">
+        <div style="width: 320px; height: 640px; border: 12px solid #333; border-radius: 40px; overflow: hidden; background: #f8f9fa; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); flex-shrink:0;">
             <!-- Mobile Notch -->
             <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 25px; background: #333; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; z-index: 10;"></div>
             
@@ -153,14 +238,6 @@
                             </span>
                             <textarea name="description" class="form-control border-0 ps-1 pe-0 pt-2.5 bg-transparent" rows="3" placeholder="Tulis bio singkat...">{{ $link->settings['description'] ?? '' }}</textarea>
                         </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Foto Profil</label>
-                        <input type="file" name="avatar" class="form-control" accept="image/*">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Gambar Header Belakang</label>
-                        <input type="file" name="cover" class="form-control" accept="image/*">
                     </div>
                 </div>
                 <div class="modal-footer border-top-0 pt-1">
@@ -255,9 +332,33 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Image Cropper -->
+<div class="modal fade" id="cropperModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+            <div class="modal-header border-bottom-0 pb-1">
+                <h5 class="modal-title fw-bold" id="cropperModalTitle">Sesuaikan Gambar</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body py-2">
+                <div class="cropper-container-wrapper rounded-3 border">
+                    <img id="cropperImage" src="">
+                </div>
+            </div>
+            <div class="modal-footer border-top-0 pt-1">
+                <button type="button" class="btn btn-light btn-sm rounded-3 px-3.5 py-2 fw-semibold" data-bs-dismiss="modal">Batal</button>
+                <button type="button" id="cropAndSaveBtn" class="btn btn-primary btn-sm rounded-3 px-3.5 py-2 fw-semibold" style="background-color: var(--primary-color); border-color: var(--primary-color);">Potong & Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Show a premium floating success toast
+    // Show success toast
     function showSuccessToast(message) {
         const toast = $('<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">' +
             '<div class="toast show align-items-center text-white border-0" role="alert" style="background-color: #10b981; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">' +
@@ -273,9 +374,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2500);
     }
 
-    // Helper function to reload the iframe and blocks container
+    // Refresh layout, reload iframe
     function refreshBuilderUI(successMessage) {
-        // Reload Mobile Preview iframe
         const iframe = document.querySelector('iframe');
         if (iframe) {
             iframe.contentWindow.location.reload();
@@ -283,7 +383,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Reload blocks list dynamically
         $('#blocks-container-wrapper').load(window.location.href + ' #blocks-container-wrapper > *', function() {
-            // Re-initialize duo-icons for the new elements
             if (typeof createIcons === 'function') {
                 createIcons({
                     icons: window.DuoIcons || {}
@@ -291,12 +390,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
+        // Also reload top bio editor content visually
+        location.reload(); // Reloading the page visually matches new cover and avatar instantly
+
         if (successMessage) {
             showSuccessToast(successMessage);
         }
     }
 
-    // Intercept modal form submissions (Edit Profile, Add Link, Add Text)
+    // Modal submit interceptor
     $('#editProfileModal form, #addLinkBlockModal form, #addTextBlockModal form').on('submit', function(e) {
         e.preventDefault();
         const form = $(this);
@@ -306,8 +408,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const originalText = submitBtn.text();
 
         submitBtn.prop('disabled', true).text('Loading...');
-
-        // Use FormData to support file uploads
         const formData = new FormData(form[0]);
 
         $.ajax({
@@ -318,20 +418,16 @@ document.addEventListener('DOMContentLoaded', function() {
             contentType: false,
             dataType: 'json',
             success: function(response) {
-                // Hide modal
                 modal.hide();
-                // Reset file fields and standard inputs (except for edit profile since it holds current data)
                 if (modalEl.id !== 'editProfileModal') {
                     form[0].reset();
                 } else {
-                    // Clear file input values on success
                     form.find('input[type="file"]').val('');
                 }
                 
-                // Refresh UI and show toast
                 refreshBuilderUI(response.message || 'Berhasil disimpan!');
             },
-            error: function(xhr) {
+            error: function() {
                 alert('Terjadi kesalahan, silakan coba lagi.');
             },
             complete: function() {
@@ -340,11 +436,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Intercept block delete form submissions (delegated to document/wrapper)
+    // Block delete handler
     $(document).on('submit', '#blocks-container-wrapper form', function(e) {
         e.preventDefault();
         const form = $(this);
-        
         $.ajax({
             url: form.attr('action'),
             method: 'POST',
@@ -353,10 +448,151 @@ document.addEventListener('DOMContentLoaded', function() {
             success: function(response) {
                 refreshBuilderUI(response.message || 'Blok berhasil dihapus!');
             },
-            error: function(xhr) {
+            error: function() {
                 alert('Gagal menghapus blok.');
             }
         });
+    });
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // CROPPING & DRAG-AND-DROP FILE UPLOAD LOGIC
+    // ──────────────────────────────────────────────────────────────────────────
+    let cropper = null;
+    let targetType = 'avatar'; // 'avatar' or 'cover'
+    const cropperModal = new bootstrap.Modal(document.getElementById('cropperModal'));
+    const cropperImage = document.getElementById('cropperImage');
+    const cropAndSaveBtn = document.getElementById('cropAndSaveBtn');
+
+    // Trigger file dialog on click
+    $('#avatarDropzone').on('click', function() { $('#avatarInput').click(); });
+    $('#coverDropzone').on('click', function() { $('#coverInput').click(); });
+
+    // Handle standard file selection
+    $('#avatarInput').on('change', function(e) { handleFileSelect(e.target.files[0], 'avatar'); });
+    $('#coverInput').on('change', function(e) { handleFileSelect(e.target.files[0], 'cover'); });
+
+    // Drag and drop event listeners
+    setupDragAndDrop(document.getElementById('avatarDropzone'), 'avatar');
+    setupDragAndDrop(document.getElementById('coverDropzone'), 'cover');
+
+    function setupDragAndDrop(element, type) {
+        element.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            element.classList.add('border-primary');
+        });
+        element.addEventListener('dragleave', () => {
+            element.classList.remove('border-primary');
+        });
+        element.addEventListener('drop', (e) => {
+            e.preventDefault();
+            element.classList.remove('border-primary');
+            if (e.dataTransfer.files.length > 0) {
+                handleFileSelect(e.dataTransfer.files[0], type);
+            }
+        });
+    }
+
+    function handleFileSelect(file, type) {
+        if (!file || !file.type.match(/^image\//)) {
+            alert('Silakan pilih file gambar yang valid.');
+            return;
+        }
+
+        targetType = type;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // Set image source and open modal
+            cropperImage.src = e.target.result;
+            
+            // Set modal title depending on target
+            document.getElementById('cropperModalTitle').textContent = type === 'avatar' ? 'Sesuaikan Foto Profil' : 'Sesuaikan Sampul Belakang';
+
+            cropperModal.show();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Initialize Cropper when modal finishes showing
+    document.getElementById('cropperModal').addEventListener('shown.bs.modal', function() {
+        if (cropper) {
+            cropper.destroy();
+        }
+
+        cropper = new Cropper(cropperImage, {
+            aspectRatio: targetType === 'avatar' ? 1 : (16 / 6),
+            viewMode: 1,
+            dragMode: 'move',
+            autoCropArea: 1,
+            restore: false,
+            guides: true,
+            center: true,
+            highlight: false,
+            cropBoxMovable: true,
+            cropBoxResizable: true,
+            toggleDragModeOnDblclick: false
+        });
+    });
+
+    // Cleanup Cropper when modal is hidden
+    document.getElementById('cropperModal').addEventListener('hidden.bs.modal', function() {
+        if (cropper) {
+            cropper.destroy();
+            cropper = null;
+        }
+        // Clear file input inputs so same image can be re-selected
+        $('#avatarInput').val('');
+        $('#coverInput').val('');
+    });
+
+    // Save Cropped image via AJAX
+    cropAndSaveBtn.addEventListener('click', function() {
+        if (!cropper) return;
+
+        cropAndSaveBtn.disabled = true;
+        cropAndSaveBtn.textContent = 'Menyimpan...';
+
+        // Get canvas
+        const canvas = cropper.getCroppedCanvas({
+            width: targetType === 'avatar' ? 300 : 960,
+            height: targetType === 'avatar' ? 300 : 360,
+            imageSmoothingEnabled: true,
+            imageSmoothingQuality: 'high'
+        });
+
+        // Convert canvas to Blob
+        canvas.toBlob(function(blob) {
+            const formData = new FormData();
+            formData.append(targetType, blob, targetType + '_cropped.png');
+            
+            // Append profile name and description from form, or empty strings to satisfy backend merges
+            formData.append('title', $('input[name="title"]').val() || '{{ $link->settings['title'] ?? '' }}');
+            formData.append('description', $('textarea[name="description"]').val() || '{{ $link->settings['description'] ?? '' }}');
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('_method', 'PUT');
+
+            $.ajax({
+                url: '{{ route('biolinks.settings.update', $link->id) }}',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'json',
+                success: function(response) {
+                    cropperModal.hide();
+                    showSuccessToast(response.message || 'Gambar berhasil diperbarui!');
+                    
+                    // Delay reload slightly to let user read toast and see changes
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1200);
+                },
+                error: function() {
+                    alert('Gagal mengunggah foto. Silakan coba lagi.');
+                    cropAndSaveBtn.disabled = false;
+                    cropAndSaveBtn.textContent = 'Potong & Simpan';
+                }
+            });
+        }, 'image/png');
     });
 });
 </script>
