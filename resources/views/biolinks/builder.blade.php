@@ -316,99 +316,81 @@
                         <!-- Presets Section -->
                         <div class="mb-4">
                             <label class="form-label small fw-semibold text-secondary mb-2">Preset Kombinasi Tampilan Siap Pakai</label>
-                            <div class="d-flex flex-wrap gap-2.5">
+                            <div class="d-flex flex-wrap gap-2">
                                 <!-- Preset 1: Mint Tea (Default green tosca) -->
-                                <div class="preset-card p-2 rounded-3 border text-center position-relative shadow-sm"
+                                <div class="preset-card px-3 py-1.5 rounded-pill border d-flex align-items-center gap-2 shadow-sm"
                                      data-bg-type="gradient"
                                      data-bg-start="#a4e5bd"
                                      data-bg-end="#7dd3a1"
                                      data-btn-bg="#ffffff"
                                      data-btn-text="#111827"
                                      data-text="#111827"
-                                     style="width: calc(33.3% - 8px); min-width: 90px; cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
-                                    <div class="d-flex justify-content-center mb-1.5">
-                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, #a4e5bd 0%, #7dd3a1 100%); border: 1px solid rgba(0,0,0,0.1); margin-right: -6px; z-index: 2;"></div>
-                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: #ffffff; border: 1px solid rgba(0,0,0,0.1); z-index: 1;"></div>
-                                    </div>
-                                    <span style="font-size: 0.65rem;" class="fw-bold d-block text-dark-custom text-truncate">Mint Tea</span>
+                                     style="cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
+                                    <div style="width: 14px; height: 14px; border-radius: 50%; background: linear-gradient(135deg, #a4e5bd 0%, #7dd3a1 100%); border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0;"></div>
+                                    <span style="font-size: 0.75rem;" class="fw-semibold text-dark-custom">Mint Tea</span>
                                 </div>
 
                                 <!-- Preset 2: Midnight Aurora -->
-                                <div class="preset-card p-2 rounded-3 border text-center position-relative shadow-sm"
+                                <div class="preset-card px-3 py-1.5 rounded-pill border d-flex align-items-center gap-2 shadow-sm"
                                      data-bg-type="gradient"
                                      data-bg-start="#0f172a"
                                      data-bg-end="#1e1b4b"
                                      data-btn-bg="#1e293b"
                                      data-btn-text="#f8fafc"
                                      data-text="#f8fafc"
-                                     style="width: calc(33.3% - 8px); min-width: 90px; cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
-                                    <div class="d-flex justify-content-center mb-1.5">
-                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); border: 1px solid rgba(255,255,255,0.1); margin-right: -6px; z-index: 2;"></div>
-                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: #1e293b; border: 1px solid rgba(255,255,255,0.1); z-index: 1;"></div>
-                                    </div>
-                                    <span style="font-size: 0.65rem;" class="fw-bold d-block text-dark-custom text-truncate">Midnight</span>
+                                     style="cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
+                                    <div style="width: 14px; height: 14px; border-radius: 50%; background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); border: 1px solid rgba(255,255,255,0.15); flex-shrink: 0;"></div>
+                                    <span style="font-size: 0.75rem;" class="fw-semibold text-dark-custom">Midnight</span>
                                 </div>
 
                                 <!-- Preset 3: Sunset Peach -->
-                                <div class="preset-card p-2 rounded-3 border text-center position-relative shadow-sm"
+                                <div class="preset-card px-3 py-1.5 rounded-pill border d-flex align-items-center gap-2 shadow-sm"
                                      data-bg-type="gradient"
                                      data-bg-start="#ff7e5f"
                                      data-bg-end="#feb47b"
                                      data-btn-bg="#ffffff"
                                      data-btn-text="#ff7e5f"
                                      data-text="#ffffff"
-                                     style="width: calc(33.3% - 8px); min-width: 90px; cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
-                                    <div class="d-flex justify-content-center mb-1.5">
-                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%); border: 1px solid rgba(0,0,0,0.1); margin-right: -6px; z-index: 2;"></div>
-                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: #ffffff; border: 1px solid rgba(0,0,0,0.1); z-index: 1;"></div>
-                                    </div>
-                                    <span style="font-size: 0.65rem;" class="fw-bold d-block text-dark-custom text-truncate">Sunset</span>
+                                     style="cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
+                                    <div style="width: 14px; height: 14px; border-radius: 50%; background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%); border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0;"></div>
+                                    <span style="font-size: 0.75rem;" class="fw-semibold text-dark-custom">Sunset</span>
                                 </div>
 
                                 <!-- Preset 4: Ocean Breeze -->
-                                <div class="preset-card p-2 rounded-3 border text-center position-relative shadow-sm"
+                                <div class="preset-card px-3 py-1.5 rounded-pill border d-flex align-items-center gap-2 shadow-sm"
                                      data-bg-type="gradient"
                                      data-bg-start="#2b5876"
                                      data-bg-end="#4e4376"
                                      data-btn-bg="#ffffff"
                                      data-btn-text="#2b5876"
                                      data-text="#ffffff"
-                                     style="width: calc(33.3% - 8px); min-width: 90px; cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
-                                    <div class="d-flex justify-content-center mb-1.5">
-                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%); border: 1px solid rgba(0,0,0,0.1); margin-right: -6px; z-index: 2;"></div>
-                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: #ffffff; border: 1px solid rgba(0,0,0,0.1); z-index: 1;"></div>
-                                    </div>
-                                    <span style="font-size: 0.65rem;" class="fw-bold d-block text-dark-custom text-truncate">Ocean</span>
+                                     style="cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
+                                    <div style="width: 14px; height: 14px; border-radius: 50%; background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%); border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0;"></div>
+                                    <span style="font-size: 0.75rem;" class="fw-semibold text-dark-custom">Ocean</span>
                                 </div>
 
                                 <!-- Preset 5: Minimalist Light -->
-                                <div class="preset-card p-2 rounded-3 border text-center position-relative shadow-sm"
+                                <div class="preset-card px-3 py-1.5 rounded-pill border d-flex align-items-center gap-2 shadow-sm"
                                      data-bg-type="solid"
                                      data-bg-color="#f3f4f6"
                                      data-btn-bg="#ffffff"
                                      data-btn-text="#1f2937"
                                      data-text="#1f2937"
-                                     style="width: calc(33.3% - 8px); min-width: 90px; cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
-                                    <div class="d-flex justify-content-center mb-1.5">
-                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; border: 1px solid rgba(0,0,0,0.1); margin-right: -6px; z-index: 2;"></div>
-                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: #ffffff; border: 1px solid rgba(0,0,0,0.1); z-index: 1;"></div>
-                                    </div>
-                                    <span style="font-size: 0.65rem;" class="fw-bold d-block text-dark-custom text-truncate">Minimalist</span>
+                                     style="cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
+                                    <div style="width: 14px; height: 14px; border-radius: 50%; background: #f3f4f6; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0;"></div>
+                                    <span style="font-size: 0.75rem;" class="fw-semibold text-dark-custom">Minimalist</span>
                                 </div>
 
                                 <!-- Preset 6: Obsidian Black -->
-                                <div class="preset-card p-2 rounded-3 border text-center position-relative shadow-sm"
+                                <div class="preset-card px-3 py-1.5 rounded-pill border d-flex align-items-center gap-2 shadow-sm"
                                      data-bg-type="solid"
                                      data-bg-color="#121212"
                                      data-btn-bg="#1e1e1e"
                                      data-btn-text="#e0e0e0"
                                      data-text="#e0e0e0"
-                                     style="width: calc(33.3% - 8px); min-width: 90px; cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
-                                    <div class="d-flex justify-content-center mb-1.5">
-                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: #121212; border: 1px solid rgba(255,255,255,0.1); margin-right: -6px; z-index: 2;"></div>
-                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: #1e1e1e; border: 1px solid rgba(255,255,255,0.1); z-index: 1;"></div>
-                                    </div>
-                                    <span style="font-size: 0.65rem;" class="fw-bold d-block text-dark-custom text-truncate">Obsidian</span>
+                                     style="cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
+                                    <div style="width: 14px; height: 14px; border-radius: 50%; background: #121212; border: 1px solid rgba(255,255,255,0.15); flex-shrink: 0;"></div>
+                                    <span style="font-size: 0.75rem;" class="fw-semibold text-dark-custom">Obsidian</span>
                                 </div>
                             </div>
                         </div>
