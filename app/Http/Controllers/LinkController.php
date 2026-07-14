@@ -40,7 +40,7 @@ class LinkController extends Controller
             }
         }
 
-        Link::create([
+        $link = Link::create([
             'user_id' => $user->id,
             'project_id' => $request->project_id,
             'domain_id' => $request->domain_id ?? 0,
@@ -51,7 +51,11 @@ class LinkController extends Controller
             'is_enabled' => 1,
         ]);
 
-        return back()->with('success', $type === 'biolink' ? 'Halaman Biolink berhasil dibuat!' : 'Tautan pendek berhasil dibuat!');
+        if ($type === 'biolink') {
+            return redirect()->route('biolinks.builder', $link->id)->with('success', 'Halaman Biolink berhasil dibuat!');
+        }
+
+        return back()->with('success', 'Tautan pendek berhasil dibuat!');
     }
 
     /**
