@@ -726,11 +726,21 @@ body {
 
 /* Nested input alignment inside input groups */
 .modal-content .glass-input-group .form-control,
-.modal-content .input-group .form-control {
+.modal-content .input-group .form-control,
+.modal-content .glass-input-group .form-control:focus,
+.modal-content .input-group .form-control:focus {
     background-color: transparent !important;
     border: none !important;
     box-shadow: none !important;
     padding-left: 8px !important;
+    outline: none !important;
+}
+
+.modal-content .glass-input-group .input-group-text,
+.modal-content .input-group .input-group-text {
+    border: none !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
 }
 
 /* On Focus / Active state: Solid white background with mint green highlight */
