@@ -12,7 +12,14 @@
         Biolink Builder: {{ $link->url }}
     </h4>
     <a href="{{ $fullUrl }}" target="_blank" class="btn btn-outline-secondary d-flex align-items-center gap-2 py-2 px-3.5 fw-semibold rounded-3 shadow-sm" style="border-radius: 12px !important;">
-        <span data-duo-icons="external-link" style="width: 16px; height: 16px;"></span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Shaded background box (Secondary layer) -->
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" opacity="0.25" fill="currentColor" style="stroke: none;"></path>
+            <!-- Outlines and arrow (Primary layer) -->
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
         Lihat Halaman
     </a>
 </div>
@@ -25,10 +32,23 @@
                 <span data-duo-icons="user" style="width: 16px; height: 16px;"></span> Edit Profil
             </button>
             <button class="btn btn-primary d-flex align-items-center gap-2 px-3.5 py-2.5 fw-semibold shadow-sm" style="border-radius: 12px !important;" data-bs-toggle="modal" data-bs-target="#addLinkBlockModal">
-                <span data-duo-icons="link" style="width: 16px; height: 16px;"></span> Tambah Tautan
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 17H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3" opacity="0.25" fill="currentColor" style="stroke: none;"></path>
+                    <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
+                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+                Tambah Tautan
             </button>
             <button class="btn btn-primary d-flex align-items-center gap-2 px-3.5 py-2.5 fw-semibold shadow-sm" style="border-radius: 12px !important;" data-bs-toggle="modal" data-bs-target="#addTextBlockModal">
-                <span data-duo-icons="text-align-left" style="width: 16px; height: 16px;"></span> Tambah Teks
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <!-- Shaded secondary line blocks (Secondary layer) -->
+                    <line x1="21" y1="10" x2="3" y2="10" opacity="0.3"></line>
+                    <line x1="21" y1="18" x2="3" y2="18" opacity="0.3"></line>
+                    <!-- Solid primary line blocks (Primary layer) -->
+                    <line x1="17" y1="6" x2="3" y2="6"></line>
+                    <line x1="17" y1="14" x2="3" y2="14"></line>
+                </svg>
+                Tambah Teks
             </button>
         </div>
 
