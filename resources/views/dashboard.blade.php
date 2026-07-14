@@ -168,7 +168,7 @@
 <!-- Links List Section -->
 <div class="glass-card p-4 rounded-3 border border-secondary border-opacity-10 mb-5" style="background: var(--card-bg-blur);">
     <!-- Card Header: Pagination Limit & Filters -->
-    <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom" style="border-color: var(--glass-border) !important;">
+    <div class="d-flex align-items-center justify-content-between pb-3 border-bottom" style="border-color: var(--glass-border) !important;">
         <!-- Left Side: Pagination size selector -->
         <div class="d-flex align-items-center gap-2">
             <span class="text-secondary small fw-semibold">Tampilkan</span>
@@ -288,7 +288,7 @@
     </div>
 
     <!-- Bulk Action Panel -->
-    <div id="bulkActionsBar" class="d-none mb-4 p-3 align-items-center justify-content-between" style="background: var(--primary-light); border-top: 1px solid rgba(164, 229, 189, 0.2); border-bottom: 1px solid rgba(164, 229, 189, 0.2); margin-left: -1.5rem; margin-right: -1.5rem; padding-left: 1.5rem; padding-right: 1.5rem;">
+    <div id="bulkActionsBar" class="d-none p-3 align-items-center justify-content-between" style="background: var(--primary-light); border-top: 1px solid rgba(164, 229, 189, 0.2); border-bottom: 1px solid rgba(164, 229, 189, 0.2); margin-left: -1.5rem; margin-right: -1.5rem; padding-left: 1.5rem; padding-right: 1.5rem;">
         <div class="d-flex align-items-center gap-2">
             <span class="small fw-semibold d-flex align-items-center gap-2" style="color: var(--text-primary);">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-success"><polyline points="20 6 9 17 4 12"></polyline></svg>
