@@ -4,9 +4,14 @@
 
 @section('content')
 <div class="row mb-4">
-    <div class="col-12">
-        <h2 class="fw-bold tracking-tight mb-1">Domains</h2>
-        <p class="text-secondary small">Manage and approve user submitted custom domains.</p>
+    <div class="col-12 d-flex align-items-center justify-content-between">
+        <div>
+            <h2 class="fw-bold tracking-tight mb-1">Domains</h2>
+            <p class="text-secondary small">Manage and approve user submitted custom domains.</p>
+        </div>
+        <button class="btn btn-primary rounded-3 px-3 fw-semibold shadow-sm d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#createDomainModal">
+            <span data-duo-icons="add-circle" class="me-1" style="width: 14px; height: 14px;"></span>Add System Domain
+        </button>
     </div>
 </div>
 
@@ -139,6 +144,41 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create System Domain Modal -->
+<div class="modal fade" id="createDomainModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content glass-card border-0">
+            <div class="modal-header border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold">Add System Domain</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('admin.domains.store') }}" method="POST">
+                    @csrf
+                    
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small fw-medium">Host (e.g. link.yourdomain.com)</label>
+                        <input type="text" class="form-control" name="host" placeholder="link.yourdomain.com" required>
+                        <div class="form-text">System domains can be used globally by all users.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small fw-medium">Custom Index URL (Optional)</label>
+                        <input type="url" class="form-control" name="custom_index_url" placeholder="https://yourwebsite.com">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-secondary small fw-medium">Custom 404 URL (Optional)</label>
+                        <input type="url" class="form-control" name="custom_not_found_url" placeholder="https://yourwebsite.com/404">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 rounded-3 fw-semibold">Add System Domain</button>
+                </form>
             </div>
         </div>
     </div>
