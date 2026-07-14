@@ -496,7 +496,7 @@
                         <!-- Mobile Notch -->
                         <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 25px; background: #333; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; z-index: 10;"></div>
                         
-                        <iframe src="{{ $fullUrl }}" style="width: 100%; height: 100%; border: none; padding-top: 30px;"></iframe>
+                        <iframe src="{{ $fullUrl }}" style="width: 100%; height: 100%; border: none;"></iframe>
                     </div>
                 </div>
             </div>
@@ -510,7 +510,7 @@
             <!-- Mobile Notch -->
             <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 25px; background: #333; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; z-index: 10;"></div>
             
-            <iframe src="{{ $fullUrl }}" style="width: 100%; height: 100%; border: none; padding-top: 30px;"></iframe>
+            <iframe src="{{ $fullUrl }}" style="width: 100%; height: 100%; border: none;"></iframe>
         </div>
     </div>
 </div>
