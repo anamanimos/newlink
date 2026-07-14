@@ -130,8 +130,14 @@ class LinkController extends Controller
                 $clicksByDate[$day->date] = $day->count;
             }
 
-            // Top Referrers (Not tracked in new schema yet, returning empty)
-            $topReferrers = collect();
+            // Top Referrers
+            $topReferrers = \App\Models\TrackLink::select('referrer_host', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
+                ->where('link_id', $link->link_id ?? $link->id)
+                ->whereBetween('datetime', [$startDate->toDateTimeString(), $endDate->toDateTimeString()])
+                ->groupBy('referrer_host')
+                ->orderByDesc('count')
+                ->limit(5)
+                ->get();
 
             // Top Countries
             $topCountries = \App\Models\TrackLink::select('country_code', \Illuminate\Support\Facades\DB::raw('count(*) as count'))

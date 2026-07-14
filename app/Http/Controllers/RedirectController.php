@@ -32,14 +32,20 @@ class RedirectController extends Controller
         // Increment clicks
         $link->increment('clicks');
         
-        // Fetch country from IP
+        // Fetch country and city from IP
         $countryCode = null;
+        $cityName = null;
         $ip = $request->ip();
         if ($ip !== '127.0.0.1' && $ip !== '::1') {
             try {
-                $geo = json_decode(file_get_contents("http://ip-api.com/json/{$ip}?fields=countryCode"));
-                if ($geo && isset($geo->countryCode)) {
-                    $countryCode = $geo->countryCode;
+                $geo = json_decode(file_get_contents("http://ip-api.com/json/{$ip}?fields=countryCode,city"));
+                if ($geo) {
+                    if (isset($geo->countryCode)) {
+                        $countryCode = $geo->countryCode;
+                    }
+                    if (isset($geo->city)) {
+                        $cityName = $geo->city;
+                    }
                 }
             } catch (\Exception $e) {
                 // Silently ignore geo-location failures
@@ -52,9 +58,11 @@ class RedirectController extends Controller
             'user_id' => $link->user_id,
             'ip' => $ip,
             'country_code' => $countryCode,
+            'city_name' => $cityName,
             'os' => $this->getOS($request->header('User-Agent')),
             'browser' => $this->getBrowser($request->header('User-Agent')),
             'device_type' => $this->getDevice($request->header('User-Agent')),
+            'referrer_host' => $request->headers->get('referer'),
         ]);
 
         if ($link->type === 'link') {

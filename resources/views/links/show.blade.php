@@ -407,6 +407,8 @@
                                 </td>
                                 <td>
                                     <div class="fw-medium">{{ empty($click->country_code) ? 'Unknown' : strtoupper($click->country_code) }}</div>
+                                    <div class="text-muted small">{{ empty($click->city_name) ? '-' : $click->city_name }}</div>
+                                    <div class="text-muted small" style="font-size: 0.75rem;">{{ empty($click->ip) ? '-' : $click->ip }}</div>
                                 </td>
                                 <td>
                                     <div class="fw-medium">{{ empty($click->os) ? 'Unknown OS' : $click->os }}</div>
@@ -418,8 +420,8 @@
                                     </div>
                                 </td>
                                 <td style="max-width: 200px;">
-                                    <div class="text-truncate" title="Direct">
-                                        Direct / Direct
+                                    <div class="text-truncate" title="{{ empty($click->referrer_host) ? 'Direct' : $click->referrer_host }}">
+                                        {{ empty($click->referrer_host) ? 'Direct' : $click->referrer_host }}
                                     </div>
                                 </td>
                                 <td class="text-center">
