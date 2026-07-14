@@ -52,7 +52,7 @@
             </button>
         </div>
 
-        <div class="glass-card p-4">
+        <div id="blocks-container-wrapper" class="glass-card p-4">
             <h6 class="fw-bold mb-4 d-flex align-items-center gap-2">
                 <span data-duo-icons="folder-open" style="width: 18px; height: 18px;" class="text-muted"></span>
                 Blok Konten
@@ -133,11 +133,26 @@
                 <div class="modal-body py-2">
                     <div class="mb-3">
                         <label class="form-label small fw-semibold text-secondary">Nama / Judul</label>
-                        <input type="text" name="title" class="form-control" placeholder="Nama Anda" value="{{ $link->settings['title'] ?? '' }}">
+                        <div class="input-group glass-input-group">
+                            <span class="input-group-text d-flex align-items-center justify-content-center" style="width: 46px; border: none; background: transparent;">
+                                <span data-duo-icons="user" style="width: 18px; height: 18px;"></span>
+                            </span>
+                            <input type="text" name="title" class="form-control border-0 ps-1 pe-0 bg-transparent" placeholder="Nama Anda" value="{{ $link->settings['title'] ?? '' }}">
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-semibold text-secondary">Deskripsi Singkat</label>
-                        <textarea name="description" class="form-control" rows="3" placeholder="Tulis bio singkat...">{{ $link->settings['description'] ?? '' }}</textarea>
+                        <div class="input-group glass-input-group align-items-start">
+                            <span class="input-group-text d-flex align-items-center justify-content-center" style="width: 46px; height: 46px; border: none; background: transparent;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary);">
+                                    <line x1="21" y1="10" x2="3" y2="10" opacity="0.3"></line>
+                                    <line x1="21" y1="18" x2="3" y2="18" opacity="0.3"></line>
+                                    <line x1="17" y1="6" x2="3" y2="6"></line>
+                                    <line x1="17" y1="14" x2="3" y2="14"></line>
+                                </svg>
+                            </span>
+                            <textarea name="description" class="form-control border-0 ps-1 pe-0 pt-2.5 bg-transparent" rows="3" placeholder="Tulis bio singkat...">{{ $link->settings['description'] ?? '' }}</textarea>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer border-top-0 pt-1">
@@ -232,4 +247,101 @@
         </div>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Show a premium floating success toast
+    function showSuccessToast(message) {
+        const toast = $('<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">' +
+            '<div class="toast show align-items-center text-white border-0" role="alert" style="background-color: #10b981; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">' +
+            '<div class="d-flex py-2 px-3 align-items-center gap-2">' +
+            '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>' +
+            '<span class="fw-semibold small">' + message + '</span>' +
+            '</div>' +
+            '</div>' +
+            '</div>');
+        $('body').append(toast);
+        setTimeout(() => {
+            toast.fadeOut(400, function() { $(this).remove(); });
+        }, 2500);
+    }
+
+    // Helper function to reload the iframe and blocks container
+    function refreshBuilderUI(successMessage) {
+        // Reload Mobile Preview iframe
+        const iframe = document.querySelector('iframe');
+        if (iframe) {
+            iframe.contentWindow.location.reload();
+        }
+        
+        // Reload blocks list dynamically
+        $('#blocks-container-wrapper').load(window.location.href + ' #blocks-container-wrapper > *', function() {
+            // Re-initialize duo-icons for the new elements
+            if (typeof createIcons === 'function') {
+                createIcons({
+                    icons: window.DuoIcons || {}
+                });
+            }
+        });
+
+        if (successMessage) {
+            showSuccessToast(successMessage);
+        }
+    }
+
+    // Intercept modal form submissions (Edit Profile, Add Link, Add Text)
+    $('#editProfileModal form, #addLinkBlockModal form, #addTextBlockModal form').on('submit', function(e) {
+        e.preventDefault();
+        const form = $(this);
+        const modalEl = form.closest('.modal')[0];
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        const submitBtn = form.find('button[type="submit"]');
+        const originalText = submitBtn.text();
+
+        submitBtn.prop('disabled', true).text('Loading...');
+
+        $.ajax({
+            url: form.attr('action'),
+            method: form.attr('method') || 'POST',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function(response) {
+                // Hide modal
+                modal.hide();
+                // Reset form fields (except for edit profile since it holds current data)
+                if (modalEl.id !== 'editProfileModal') {
+                    form[0].reset();
+                }
+                
+                // Refresh UI and show toast
+                refreshBuilderUI(response.message || 'Berhasil disimpan!');
+            },
+            error: function(xhr) {
+                alert('Terjadi kesalahan, silakan coba lagi.');
+            },
+            complete: function() {
+                submitBtn.prop('disabled', false).text(originalText);
+            }
+        });
+    });
+
+    // Intercept block delete form submissions (delegated to document/wrapper)
+    $(document).on('submit', '#blocks-container-wrapper form', function(e) {
+        e.preventDefault();
+        const form = $(this);
+        
+        $.ajax({
+            url: form.attr('action'),
+            method: 'POST',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function(response) {
+                refreshBuilderUI(response.message || 'Blok berhasil dihapus!');
+            },
+            error: function(xhr) {
+                alert('Gagal menghapus blok.');
+            }
+        });
+    });
+});
+</script>
 @endsection

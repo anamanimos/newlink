@@ -33,6 +33,10 @@ class BiolinkController extends Controller
 
         $link->update(['settings' => $settings]);
 
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Pengaturan profil biolink berhasil diperbarui!']);
+        }
+
         return back()->with('success', 'Pengaturan profil biolink berhasil diperbarui!');
     }
 
@@ -56,6 +60,10 @@ class BiolinkController extends Controller
             'order' => $order,
             'is_enabled' => 1
         ]);
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Blok berhasil ditambahkan!']);
+        }
 
         return back()->with('success', 'Blok berhasil ditambahkan!');
     }
@@ -87,6 +95,10 @@ class BiolinkController extends Controller
         $block = $link->biolinkBlocks()->findOrFail($blockId);
         
         $block->delete();
+
+        if (request()->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Blok berhasil dihapus!']);
+        }
 
         return back()->with('success', 'Blok berhasil dihapus!');
     }
