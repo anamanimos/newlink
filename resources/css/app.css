@@ -565,3 +565,80 @@ body {
     background-color: #b91c1c !important;
     color: #ffffff !important;
 }
+
+/* SweetAlert 2 Elegant Redesign */
+.swal2-container {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+}
+
+.swal-glass-popup {
+    background: var(--card-bg-blur) !important;
+    border: 1px solid var(--card-border) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08) !important;
+    padding: 30px 24px !important;
+    font-family: var(--font-sans) !important;
+}
+
+[data-bs-theme="dark"] .swal-glass-popup {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4) !important;
+}
+
+.swal2-title {
+    color: var(--text-primary) !important;
+    font-weight: 700 !important;
+    font-size: 1.35rem !important;
+}
+
+.swal2-html-container {
+    color: var(--text-secondary) !important;
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+}
+
+.swal-confirm-btn {
+    background-color: var(--primary-color) !important;
+    border: 1px solid var(--primary-color) !important;
+    color: var(--active-text) !important;
+    padding: 10px 24px !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    margin: 0 8px !important;
+    transition: all 0.2s ease !important;
+    box-shadow: none !important;
+}
+
+.swal-confirm-btn:hover {
+    background-color: var(--primary-darker) !important;
+    border-color: var(--primary-darker) !important;
+    transform: translateY(-1px) !important;
+}
+
+.swal-cancel-btn {
+    background-color: transparent !important;
+    border: 1px solid var(--card-border) !important;
+    color: var(--text-secondary) !important;
+    padding: 10px 24px !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    margin: 0 8px !important;
+    transition: all 0.2s ease !important;
+    box-shadow: none !important;
+}
+
+.swal-cancel-btn:hover {
+    background-color: var(--card-border) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Toast styling updates */
+.swal-glass-toast {
+    background: var(--card-bg-blur) !important;
+    border: 1px solid var(--card-border) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05) !important;
+    color: var(--text-primary) !important;
+}
