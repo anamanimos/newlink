@@ -21,7 +21,7 @@ class DashboardController extends Controller
         
         // Determine active filter type (either via route default, e.g. /link defaults type = link, or via query string ?type=link)
         $type = $request->route('type') ?? $request->get('type');
-        if (!in_array($type, ['biolink', 'link', 'qrcode'])) {
+        if (!in_array($type, ['biolink', 'link', 'qrcode', 'warotator'])) {
             $type = null;
         }
 
@@ -30,6 +30,7 @@ class DashboardController extends Controller
         $shortlinksCount = Link::where('user_id', $user->id)->where('type', 'link')->count();
         $qrcodesCount = Link::where('user_id', $user->id)->where('type', 'qrcode')->count();
         $cardlinksCount = Link::where('user_id', $user->id)->where('type', 'card')->count();
+        $warotatorsCount = Link::where('user_id', $user->id)->where('type', 'warotator')->count();
 
         // Default stats card settings (Dashboard Overview)
         $card1_val = $biolinksCount;
@@ -98,6 +99,35 @@ class DashboardController extends Controller
                 $clicksThisMonth = \App\Models\TrackLink::where('user_id', $user->id)
                     ->whereHas('link', function($q) {
                         $q->where('type', 'biolink');
+                    })
+                    ->where('datetime', '>=', $startOfMonth->toDateTimeString())
+                    ->count();
+            } catch (\Exception $e) {
+                // fallback
+            }
+            $card4_val = $clicksThisMonth;
+            $card4_lbl = 'Clicks This Month';
+            $card4_icon = 'chart';
+        } elseif ($type == 'warotator') {
+            $card1_val = $warotatorsCount;
+            $card1_lbl = 'Total WhatsApp Rotators';
+            $card1_icon = 'clicks';
+
+            $totalClicks = Link::where('user_id', $user->id)->where('type', 'warotator')->sum('clicks');
+            $card2_val = $totalClicks;
+            $card2_lbl = 'Total Clicks';
+            $card2_icon = 'clicks';
+
+            $linksThisMonth = Link::where('user_id', $user->id)->where('type', 'warotator')->where('created_at', '>=', $startOfMonth)->count();
+            $card3_val = $linksThisMonth;
+            $card3_lbl = 'Created This Month';
+            $card3_icon = 'calendar';
+
+            $clicksThisMonth = 0;
+            try {
+                $clicksThisMonth = \App\Models\TrackLink::where('user_id', $user->id)
+                    ->whereHas('link', function($q) {
+                        $q->where('type', 'warotator');
                     })
                     ->where('datetime', '>=', $startOfMonth->toDateTimeString())
                     ->count();
@@ -223,6 +253,7 @@ class DashboardController extends Controller
             'shortlinksCount',
             'qrcodesCount',
             'cardlinksCount',
+            'warotatorsCount',
             'links',
             'chartLabels',
             'chartData',

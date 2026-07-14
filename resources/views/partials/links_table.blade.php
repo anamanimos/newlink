@@ -145,6 +145,10 @@
                                 <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: rgba(164, 229, 189, 0.2); color: #166534;">
                                     <span data-duo-icons="app" style="width: 16px; height: 16px;"></span>
                                 </div>
+                            @elseif($link->type == 'warotator')
+                                <div class="rounded-circle d-flex align-items-center justify-content-center text-success" style="width: 36px; height: 36px; background: rgba(37, 211, 102, 0.15); color: #15803d;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                                </div>
                             @else
                                 <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: rgba(164, 229, 189, 0.2); color: #166534;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -159,7 +163,13 @@
                         <!-- Link Title & URL -->
                         <td class="px-2 py-2.5" style="border: none;">
                             @php
-                                $detailRoute = $link->type === 'biolink' ? route('biolinks.show', $link->id) : route('links.show', $link->id);
+                                if ($link->type === 'biolink') {
+                                    $detailRoute = route('biolinks.show', $link->id);
+                                } elseif ($link->type === 'warotator') {
+                                    $detailRoute = route('warotators.show', $link->id);
+                                } else {
+                                    $detailRoute = route('links.show', $link->id);
+                                }
                             @endphp
                             <a href="{{ $detailRoute }}" class="fw-semibold text-decoration-none text-primary d-block mb-0.5" style="font-size: 0.925rem; letter-spacing: -0.2px;">
                                 {{ $link->url }}
@@ -171,9 +181,15 @@
 
                         <!-- Original URL -->
                         <td class="px-2 py-2.5" style="border: none; max-width: 220px;">
-                            <span class="text-muted small d-block text-truncate" style="max-width: 200px; font-size: 0.8rem;" title="{{ $link->location_url }}">
-                                {{ $link->location_url }}
-                            </span>
+                            @if($link->type == 'warotator')
+                                <span class="text-muted small d-block text-truncate" style="max-width: 200px; font-size: 0.8rem;" title="{{ $link->settings['numbers'] ?? '' }}">
+                                    Rotator: {{ $link->settings['numbers'] ?? '' }}
+                                </span>
+                            @else
+                                <span class="text-muted small d-block text-truncate" style="max-width: 200px; font-size: 0.8rem;" title="{{ $link->location_url }}">
+                                    {{ $link->location_url }}
+                                </span>
+                            @endif
                         </td>
 
                         <!-- Project -->
@@ -242,6 +258,10 @@
                                              @if($link->type == 'biolink')
                                                  <a class="dropdown-item rounded-2 py-1.5 small" href="{{ route('biolinks.builder', $link->id) }}">
                                                      Edit Biolink
+                                                 </a>
+                                             @elseif($link->type == 'warotator')
+                                                 <a class="dropdown-item rounded-2 py-1.5 small" href="{{ route('warotators.builder', $link->id) }}">
+                                                     Edit WA Rotator
                                                  </a>
                                              @else
                                                  <a class="dropdown-item rounded-2 py-1.5 small btn-edit-link" href="#"

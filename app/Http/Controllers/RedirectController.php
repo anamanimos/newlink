@@ -77,6 +77,8 @@ class RedirectController extends Controller
         } elseif ($link->type === 'biolink') {
             $blocks = $link->biolinkBlocks()->where('is_enabled', 1)->orderBy('order')->get();
             return view('biolinks.public', compact('link', 'blocks'));
+        } elseif ($link->type === 'warotator') {
+            return view('warotators.public', compact('link'));
         }
 
         abort(404);
@@ -212,6 +214,101 @@ class RedirectController extends Controller
 
         // Compile pre-filled message
         $template = $block->settings['template'] ?? '';
+        $msg = str_replace(
+            ['[nama]', '[name]', '[kota]', '[city]', '[nomor]', '[phone]', '[pesan]', '[message]'],
+            [$lead->name, $lead->name, $lead->city, $lead->city, $lead->phone, $lead->phone, $lead->message, $lead->message],
+            $template
+        );
+
+        $waUrl = 'https://api.whatsapp.com/send?phone=' . urlencode($targetPhone) . '&text=' . urlencode($msg);
+
+        return response()->json([
+            'success' => true,
+            'redirect_url' => $waUrl
+        ]);
+    }
+
+    public function whatsappRotatorSubmit(Request $request, $id)
+    {
+        $link = \App\Models\Link::where('type', 'warotator')->findOrFail($id);
+        
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'city' => 'required|string|max:100',
+            'phone' => 'required|string|max:30',
+            'message' => 'nullable|string'
+        ]);
+
+        $numbersSetting = $link->settings['numbers'] ?? '';
+        $rawNumbers = preg_split('/[\n,]+/', $numbersSetting);
+        $numbers = array_filter(array_map(function($num) {
+            $cleaned = preg_replace('/\D/', '', $num);
+            return trim($cleaned);
+        }, $rawNumbers));
+
+        if (empty($numbers)) {
+            return response()->json(['success' => false, 'message' => 'Nomor WhatsApp tujuan belum dikonfigurasi.'], 422);
+        }
+
+        // Round-robin selection based on lead counts
+        $counts = [];
+        foreach ($numbers as $num) {
+            $counts[$num] = \App\Models\WhatsappLead::where('link_id', $link->id)
+                ->where('whatsapp_number_used', $num)
+                ->count();
+        }
+
+        asort($counts);
+        $targetPhone = key($counts);
+
+        // Save detailed track log as a link click as well
+        $userAgent = $request->header('User-Agent');
+        $countryCode = null;
+        $cityName = null;
+        $ip = $request->ip();
+        if ($ip !== '127.0.0.1' && $ip !== '::1') {
+            try {
+                $geo = json_decode(file_get_contents("http://ip-api.com/json/{$ip}?fields=countryCode,city"));
+                if ($geo) {
+                    if (isset($geo->countryCode)) {
+                        $countryCode = $geo->countryCode;
+                    }
+                    if (isset($geo->city)) {
+                        $cityName = $geo->city;
+                    }
+                }
+            } catch (\Exception $e) {
+                // Ignore geo failures
+            }
+        }
+
+        // Log link click count and entry
+        $link->increment('clicks');
+        \App\Models\TrackLink::create([
+            'link_id' => $link->id,
+            'user_id' => $link->user_id,
+            'ip' => $ip,
+            'country_code' => $countryCode,
+            'city_name' => $cityName,
+            'os' => $this->getOS($userAgent),
+            'browser' => $this->getBrowser($userAgent),
+            'device_type' => $this->getDevice($userAgent),
+            'referrer_host' => $this->getReferrer($request),
+        ]);
+
+        // Save lead response
+        $lead = \App\Models\WhatsappLead::create([
+            'link_id' => $link->id,
+            'name' => $request->name,
+            'city' => $request->city,
+            'phone' => $request->phone,
+            'message' => $request->message ?? '',
+            'whatsapp_number_used' => $targetPhone,
+            'ip' => $ip
+        ]);
+
+        // Compile pre-filled message
+        $template = $link->settings['template'] ?? '';
         $msg = str_replace(
             ['[nama]', '[name]', '[kota]', '[city]', '[nomor]', '[phone]', '[pesan]', '[message]'],
             [$lead->name, $lead->name, $lead->city, $lead->city, $lead->phone, $lead->phone, $lead->message, $lead->message],

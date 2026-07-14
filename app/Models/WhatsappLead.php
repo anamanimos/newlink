@@ -12,4 +12,9 @@ class WhatsappLead extends Model
     {
         return $this->belongsTo(BiolinkBlock::class, 'biolink_block_id');
     }
+
+    public function link()
+    {
+        return $this->belongsTo(Link::class, 'link_id');
+    }
 }

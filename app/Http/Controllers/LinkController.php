@@ -110,6 +110,9 @@ class LinkController extends Controller
         if ($link->type === 'biolink' && $currentRoute !== 'biolinks.show') {
             return redirect()->route('biolinks.show', array_merge(['id' => $id], $request->query()));
         }
+        if ($link->type === 'warotator' && $currentRoute !== 'warotators.show') {
+            return redirect()->route('warotators.show', array_merge(['id' => $id], $request->query()));
+        }
         if ($link->type === 'link' && $currentRoute !== 'links.show') {
             return redirect()->route('links.show', array_merge(['id' => $id], $request->query()));
         }
@@ -236,9 +239,19 @@ class LinkController extends Controller
             $whatsappLeads = \App\Models\WhatsappLead::whereIn('biolink_block_id', $blockIds)
                 ->orderBy('created_at', 'desc')
                 ->paginate(25, ['*'], 'leads_page');
+        } elseif ($link->type === 'warotator') {
+            $whatsappLeads = \App\Models\WhatsappLead::where('link_id', $link->id)
+                ->orderBy('created_at', 'desc')
+                ->paginate(25, ['*'], 'leads_page');
         }
 
-        $viewName = $link->type === 'biolink' ? 'biolinks.show' : 'links.show';
+        if ($link->type === 'biolink') {
+            $viewName = 'biolinks.show';
+        } elseif ($link->type === 'warotator') {
+            $viewName = 'warotators.show';
+        } else {
+            $viewName = 'links.show';
+        }
 
         return view($viewName, compact(
             'link', 'totalClicks', 'uniqueClicks', 'chartDates', 'chartData', 

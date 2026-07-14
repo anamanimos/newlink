@@ -48,6 +48,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/biolink/block/{id}/analytics', [BiolinkController::class, 'blockAnalytics'])->name('biolinks.blocks.analytics');
     Route::get('/biolink/{id}/export-leads', [BiolinkController::class, 'exportLeads'])->name('biolinks.leads.export');
 
+    Route::get('/warotator', [DashboardController::class, 'index'])->defaults('type', 'warotator')->name('warotators.index');
+    Route::post('/warotator', [\App\Http\Controllers\WaRotatorController::class, 'store'])->name('warotators.store');
+    Route::get('/warotator/{id}', [LinkController::class, 'show'])->name('warotators.show');
+    Route::get('/warotator/{id}/builder', [\App\Http\Controllers\WaRotatorController::class, 'builder'])->name('warotators.builder');
+    Route::put('/warotator/{id}/settings', [\App\Http\Controllers\WaRotatorController::class, 'updateSettings'])->name('warotators.settings.update');
+    Route::get('/warotator/{id}/export-leads', [\App\Http\Controllers\WaRotatorController::class, 'exportLeads'])->name('warotators.leads.export');
+
     Route::get('/qrcode', [DashboardController::class, 'index'])->defaults('type', 'qrcode')->name('qrcodes.index');
     
     // Projects Module
@@ -151,9 +158,9 @@ Route::get('/api/restore-sql', function (Request $request) {
     }
 });
 
-// Public Biolink Block Redirect and Click Tracking Route
 Route::get('/biolink/block/{id}/redirect', [RedirectController::class, 'redirectBlock'])->name('biolinks.blocks.redirect');
 Route::post('/biolink/block/{id}/whatsapp-submit', [RedirectController::class, 'whatsappSubmit'])->name('biolinks.whatsapp.submit');
+Route::post('/warotator/{id}/whatsapp-submit', [RedirectController::class, 'whatsappRotatorSubmit'])->name('warotators.whatsapp.submit');
 
 // Wildcard Route for Redirects (MUST BE LAST)
 Route::get('/{slug}', [RedirectController::class, 'resolve'])->name('redirect.resolve');
