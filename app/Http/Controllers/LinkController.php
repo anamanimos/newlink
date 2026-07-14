@@ -173,6 +173,19 @@ class LinkController extends Controller
                 ->paginate(25)
                 ->withQueryString();
                 
+            // Calculate uniqueness for the current page items
+            foreach ($rawClicks as $click) {
+                if (empty($click->ip)) {
+                    $click->is_unique = false;
+                } else {
+                    $previousClickExists = \App\Models\TrackLink::where('link_id', $link->link_id ?? $link->id)
+                        ->where('ip', $click->ip)
+                        ->where('id', '<', $click->id)
+                        ->exists();
+                    $click->is_unique = !$previousClickExists;
+                }
+            }
+                
         } catch (\Exception $e) {
             // Silently handle if legacy DB is unavailable
             // Use empty paginator for view

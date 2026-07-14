@@ -423,7 +423,11 @@
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    <span data-duo-icons="check-circle" style="width: 18px; height: 18px; color: #10b981;"></span>
+                                    @if($click->is_unique)
+                                        <span data-duo-icons="check-circle" style="width: 18px; height: 18px; color: #10b981;"></span>
+                                    @else
+                                        <span data-duo-icons="alert-octagon" style="width: 18px; height: 18px; color: #ef4444;"></span>
+                                    @endif
                                 </td>
                             </tr>
                         @empty
