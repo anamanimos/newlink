@@ -288,7 +288,7 @@
     </div>
 
     <!-- Bulk Action Panel -->
-    <div id="bulkActionsBar" class="d-none mb-4 p-3 rounded-3 border align-items-center justify-content-between" style="background: var(--primary-light); border-color: rgba(164, 229, 189, 0.2); border-radius: 12px !important;">
+    <div id="bulkActionsBar" class="d-none mb-4 p-3 align-items-center justify-content-between" style="background: var(--primary-light); border-top: 1px solid rgba(164, 229, 189, 0.2); border-bottom: 1px solid rgba(164, 229, 189, 0.2); margin-left: -1.5rem; margin-right: -1.5rem; padding-left: 1.5rem; padding-right: 1.5rem;">
         <div class="d-flex align-items-center gap-2">
             <span class="small fw-semibold d-flex align-items-center gap-2" style="color: var(--text-primary);">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-success"><polyline points="20 6 9 17 4 12"></polyline></svg>
