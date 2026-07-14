@@ -685,37 +685,48 @@
             });
         }
         // ──────────────────────────────────────────────────────────────────────────
-        // Biolink Button Level Analytics Modal Controller
+        // Biolink Button Level Analytics Modal Controller (Vanilla JS)
         // ──────────────────────────────────────────────────────────────────────────
         let blockChartInstance = null;
-        const blockModal = new bootstrap.Modal(document.getElementById('blockAnalyticsModal'));
+        const blockModalElement = document.getElementById('blockAnalyticsModal');
+        let blockModal = null;
+        if (blockModalElement) {
+            blockModal = new bootstrap.Modal(blockModalElement);
+        }
 
-        $(document).on('click', '.btn-block-analytics', function() {
-            const blockId = $(this).data('id');
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.btn-block-analytics');
+            if (!btn) return;
+
+            const blockId = btn.getAttribute('data-id');
             
             // Set Loading state
-            $('#blockAnalyticsTitle').text('Statistik Tombol: Loading...');
-            $('#blockTotalClicks').text('0');
-            $('#blockCTR').text('0%');
-            $('#blockReferrersList').empty();
-            $('#blockNoReferrers').addClass('d-none');
+            document.getElementById('blockAnalyticsTitle').textContent = 'Statistik Tombol: Loading...';
+            document.getElementById('blockTotalClicks').textContent = '0';
+            document.getElementById('blockCTR').textContent = '0%';
+            
+            const refList = document.getElementById('blockReferrersList');
+            if (refList) refList.innerHTML = '';
+            
+            const noRef = document.getElementById('blockNoReferrers');
+            if (noRef) noRef.classList.add('d-none');
             
             if (blockChartInstance) {
                 blockChartInstance.destroy();
                 blockChartInstance = null;
             }
 
-            blockModal.show();
+            if (blockModal) {
+                blockModal.show();
+            }
 
-            $.ajax({
-                url: `/biolink/block/${blockId}/analytics`,
-                method: 'GET',
-                dataType: 'json',
-                success: function(response) {
+            fetch(`/biolink/block/${blockId}/analytics`)
+                .then(res => res.json())
+                .then(response => {
                     if (response.success) {
-                        $('#blockAnalyticsTitle').text(`Statistik Tombol: "${response.title}"`);
-                        $('#blockTotalClicks').text(response.clicks);
-                        $('#blockCTR').text(response.ctr);
+                        document.getElementById('blockAnalyticsTitle').textContent = `Statistik Tombol: "${response.title}"`;
+                        document.getElementById('blockTotalClicks').textContent = response.clicks;
+                        document.getElementById('blockCTR').textContent = response.ctr;
 
                         // Draw chart
                         const blockCtx = document.getElementById('blockClicksChart');
@@ -770,31 +781,31 @@
                         }
 
                         // Populate referrers list
-                        const refList = $('#blockReferrersList');
-                        if (response.referrers && response.referrers.length > 0) {
-                            response.referrers.forEach(ref => {
-                                const refItem = `
-                                    <div class="info-list-item d-block">
-                                        <div class="d-flex justify-content-between mb-1">
-                                            <span class="text-truncate me-2" style="color: var(--text-primary); font-size: 0.825rem;">${ref.referrer}</span>
-                                            <span class="fw-bold text-primary" style="font-size: 0.825rem;">${ref.count.toLocaleString()}</span>
+                        if (refList) {
+                            if (response.referrers && response.referrers.length > 0) {
+                                response.referrers.forEach(ref => {
+                                    const refItem = `
+                                        <div class="info-list-item d-block">
+                                            <div class="d-flex justify-content-between mb-1">
+                                                <span class="text-truncate me-2" style="color: var(--text-primary); font-size: 0.825rem;">${ref.referrer}</span>
+                                                <span class="fw-bold text-primary" style="font-size: 0.825rem;">${ref.count.toLocaleString()}</span>
+                                            </div>
+                                            <div class="progress-bar-custom mb-1" style="height: 5px; margin-top: 0;">
+                                                <div class="progress-bar-fill" style="width: ${ref.percent}%; background-color: #6366f1;"></div>
+                                            </div>
                                         </div>
-                                        <div class="progress-bar-custom mb-1" style="height: 5px; margin-top: 0;">
-                                            <div class="progress-bar-fill" style="width: ${ref.percent}%; background-color: #6366f1;"></div>
-                                        </div>
-                                    </div>
-                                `;
-                                refList.append(refItem);
-                            });
-                        } else {
-                            $('#blockNoReferrers').removeClass('d-none');
+                                    `;
+                                    refList.insertAdjacentHTML('beforeend', refItem);
+                                });
+                            } else if (noRef) {
+                                noRef.classList.remove('d-none');
+                            }
                         }
                     }
-                },
-                error: function() {
-                    $('#blockAnalyticsTitle').text('Gagal memuat statistik.');
-                }
-            });
+                })
+                .catch(err => {
+                    document.getElementById('blockAnalyticsTitle').textContent = 'Gagal memuat statistik.';
+                });
         });
     });
 </script>
