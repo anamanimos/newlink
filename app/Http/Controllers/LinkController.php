@@ -106,6 +106,14 @@ class LinkController extends Controller
         $user = Auth::user();
         $link = Link::where('user_id', $user->id)->findOrFail($id);
 
+        $currentRoute = $request->route()->getName();
+        if ($link->type === 'biolink' && $currentRoute !== 'biolinks.show') {
+            return redirect()->route('biolinks.show', array_merge(['id' => $id], $request->query()));
+        }
+        if ($link->type === 'link' && $currentRoute !== 'links.show') {
+            return redirect()->route('links.show', array_merge(['id' => $id], $request->query()));
+        }
+
         $startDate = $request->get('start_date') ? \Carbon\Carbon::parse($request->get('start_date'))->startOfDay() : now()->subDays(30)->startOfDay();
         $endDate = $request->get('end_date') ? \Carbon\Carbon::parse($request->get('end_date'))->endOfDay() : now()->endOfDay();
 

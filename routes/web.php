@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/link/{id}/toggle-status', [LinkController::class, 'toggleStatus'])->name('links.toggle');
     
     Route::get('/biolink', [DashboardController::class, 'index'])->defaults('type', 'biolink')->name('biolinks.index');
+    Route::get('/biolink/{id}', [LinkController::class, 'show'])->name('biolinks.show');
     
     // Biolink Builder Routes
     Route::get('/biolink/{id}/builder', [BiolinkController::class, 'builder'])->name('biolinks.builder');

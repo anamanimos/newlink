@@ -122,7 +122,7 @@
         <h4 class="fw-bold mb-1" style="color: var(--text-primary);">Analitik Tautan</h4>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0" style="font-size: 0.875rem;">
-                <li class="breadcrumb-item"><a href="{{ route('links.index') }}" class="text-decoration-none" style="color: var(--primary-color);">Shortened Links</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('biolinks.index') }}" class="text-decoration-none" style="color: var(--primary-color);">Biolinks</a></li>
                 <li class="breadcrumb-item active" aria-current="page" style="color: var(--text-secondary);">{{ $link->url }}</li>
             </ol>
         </nav>
@@ -130,7 +130,7 @@
     
     <div class="d-flex align-items-center gap-3">
         <!-- Date Filter Form -->
-        <form method="GET" action="{{ route('links.show', $link->id) }}" id="dateFilterForm" class="d-flex align-items-center gap-2">
+        <form method="GET" action="{{ route('biolinks.show', $link->id) }}" id="dateFilterForm" class="d-flex align-items-center gap-2">
             <div class="position-relative">
                 <input type="text" id="dateRange" class="form-control shadow-sm" placeholder="Pilih rentang tanggal" 
                     style="height: 42px; background: var(--glass-bg); border-color: var(--glass-border); color: var(--text-primary); padding-left: 38px; min-width: 260px; font-size: 0.875rem; border-radius: 8px;">

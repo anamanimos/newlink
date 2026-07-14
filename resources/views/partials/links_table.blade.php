@@ -158,7 +158,10 @@
 
                         <!-- Link Title & URL -->
                         <td class="px-2 py-2.5" style="border: none;">
-                            <a href="{{ route('links.show', $link->id) }}" class="fw-semibold text-decoration-none text-primary d-block mb-0.5" style="font-size: 0.925rem; letter-spacing: -0.2px;">
+                            @php
+                                $detailRoute = $link->type === 'biolink' ? route('biolinks.show', $link->id) : route('links.show', $link->id);
+                            @endphp
+                            <a href="{{ $detailRoute }}" class="fw-semibold text-decoration-none text-primary d-block mb-0.5" style="font-size: 0.925rem; letter-spacing: -0.2px;">
                                 {{ $link->url }}
                             </a>
                             <a href="{{ $fullShortenedUrl }}" target="_blank" class="text-muted text-decoration-none small text-truncate d-block" style="max-width: 280px; font-size: 0.75rem;">
@@ -229,6 +232,12 @@
                                          <span data-duo-icons="app_dots" style="width: 16px; height: 16px;"></span>
                                      </button>
                                      <ul class="dropdown-menu dropdown-menu-end glass-card border-0 shadow-lg p-1.5">
+                                         <li>
+                                             <a class="dropdown-item rounded-2 py-1.5 small" href="{{ $detailRoute }}">
+                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2 text-muted" style="width: 14px; height: 14px; vertical-align: middle;"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                                                 Lihat Analitik
+                                             </a>
+                                         </li>
                                          <li>
                                              @if($link->type == 'biolink')
                                                  <a class="dropdown-item rounded-2 py-1.5 small" href="{{ route('biolinks.builder', $link->id) }}">
