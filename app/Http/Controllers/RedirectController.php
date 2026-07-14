@@ -54,6 +54,7 @@ class RedirectController extends Controller
             'country_code' => $countryCode,
             'os' => $this->getOS($request->header('User-Agent')),
             'browser' => $this->getBrowser($request->header('User-Agent')),
+            'device_type' => $this->getDevice($request->header('User-Agent')),
         ]);
 
         if ($link->type === 'link') {
@@ -116,5 +117,26 @@ class RedirectController extends Controller
             }
         }
         return $browser;
+    }
+
+    private function getDevice($userAgent)
+    {
+        $tablet_browser = 0;
+        $mobile_browser = 0;
+
+        if (preg_match('/(tablet|ipad|playbook)|(android(?!.*(mobi|opera mini)))/i', strtolower($userAgent))) {
+            $tablet_browser++;
+        }
+        if (preg_match('/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|android|iemobile)/i', strtolower($userAgent))) {
+            $mobile_browser++;
+        }
+
+        if ($tablet_browser > 0) {
+            return 'tablet';
+        } else if ($mobile_browser > 0) {
+            return 'mobile';
+        } else {
+            return 'desktop';
+        }
     }
 }
