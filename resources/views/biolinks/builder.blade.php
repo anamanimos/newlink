@@ -163,11 +163,29 @@
                 <div class="modal-body py-2">
                     <div class="mb-3">
                         <label class="form-label small fw-semibold text-secondary">Judul Tautan <span class="text-danger">*</span></label>
-                        <input type="text" name="settings[title]" class="form-control" required placeholder="Cek Promo Terbaru!">
+                        <div class="input-group glass-input-group">
+                            <span class="input-group-text d-flex align-items-center justify-content-center" style="width: 46px; border: none; background: transparent;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary);">
+                                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" opacity="0.25" fill="currentColor" style="stroke: none;"></path>
+                                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                                    <line x1="7" y1="7" x2="7.01" y2="7" stroke-width="3"></line>
+                                </svg>
+                            </span>
+                            <input type="text" name="settings[title]" class="form-control border-0 ps-1 pe-0 bg-transparent" required placeholder="Cek Promo Terbaru!">
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-semibold text-secondary">URL Tujuan <span class="text-danger">*</span></label>
-                        <input type="url" name="location_url" class="form-control" required placeholder="https://example.com/promo">
+                        <div class="input-group glass-input-group">
+                            <span class="input-group-text d-flex align-items-center justify-content-center" style="width: 46px; border: none; background: transparent;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary);">
+                                    <path d="M9 17H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3" opacity="0.25" fill="currentColor" style="stroke: none;"></path>
+                                    <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
+                                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                                </svg>
+                            </span>
+                            <input type="url" name="location_url" class="form-control border-0 ps-1 pe-0 bg-transparent" required placeholder="https://example.com/promo">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer border-top-0 pt-1">
@@ -193,7 +211,17 @@
                 <div class="modal-body py-2">
                     <div class="mb-3">
                         <label class="form-label small fw-semibold text-secondary">Konten Teks <span class="text-danger">*</span></label>
-                        <textarea name="settings[content]" class="form-control" rows="4" required placeholder="Tulis sesuatu yang menarik..."></textarea>
+                        <div class="input-group glass-input-group align-items-start">
+                            <span class="input-group-text d-flex align-items-center justify-content-center" style="width: 46px; height: 46px; border: none; background: transparent;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary);">
+                                    <line x1="21" y1="10" x2="3" y2="10" opacity="0.3"></line>
+                                    <line x1="21" y1="18" x2="3" y2="18" opacity="0.3"></line>
+                                    <line x1="17" y1="6" x2="3" y2="6"></line>
+                                    <line x1="17" y1="14" x2="3" y2="14"></line>
+                                </svg>
+                            </span>
+                            <textarea name="settings[content]" class="form-control border-0 ps-1 pe-0 pt-2.5 bg-transparent" rows="4" required placeholder="Tulis sesuatu yang menarik..."></textarea>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer border-top-0 pt-1">
