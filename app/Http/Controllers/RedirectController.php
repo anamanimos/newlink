@@ -31,7 +31,15 @@ class RedirectController extends Controller
 
         // Increment clicks
         $link->increment('clicks');
-        // TODO: Later add advanced tracking to legacy DB if needed
+        
+        // Detailed tracking
+        \App\Models\TrackLink::create([
+            'link_id' => $link->id,
+            'user_id' => $link->user_id,
+            'ip' => $request->ip(),
+            'os' => $this->getOS($request->header('User-Agent')),
+            'browser' => $this->getBrowser($request->header('User-Agent')),
+        ]);
 
         if ($link->type === 'link') {
             return redirect()->away($link->location_url);
@@ -41,5 +49,57 @@ class RedirectController extends Controller
         }
 
         abort(404);
+    }
+
+    private function getOS($userAgent)
+    {
+        $osPlatform = "Unknown OS Platform";
+        $osArray = [
+            '/windows nt 10/i'      =>  'Windows 10',
+            '/windows nt 6.3/i'     =>  'Windows 8.1',
+            '/windows nt 6.2/i'     =>  'Windows 8',
+            '/windows nt 6.1/i'     =>  'Windows 7',
+            '/macintosh|mac os x/i' =>  'Mac OS X',
+            '/mac_powerpc/i'        =>  'Mac OS 9',
+            '/linux/i'              =>  'Linux',
+            '/ubuntu/i'             =>  'Ubuntu',
+            '/iphone/i'             =>  'iPhone',
+            '/ipod/i'               =>  'iPod',
+            '/ipad/i'               =>  'iPad',
+            '/android/i'            =>  'Android',
+            '/blackberry/i'         =>  'BlackBerry',
+            '/webos/i'              =>  'Mobile'
+        ];
+        foreach ($osArray as $regex => $value) {
+            if (preg_match($regex, $userAgent)) {
+                $osPlatform = $value;
+                break;
+            }
+        }
+        return $osPlatform;
+    }
+
+    private function getBrowser($userAgent)
+    {
+        $browser = "Unknown Browser";
+        $browserArray = [
+            '/msie/i'      => 'Internet Explorer',
+            '/firefox/i'   => 'Firefox',
+            '/safari/i'    => 'Safari',
+            '/chrome/i'    => 'Chrome',
+            '/edge/i'      => 'Edge',
+            '/opera/i'     => 'Opera',
+            '/netscape/i'  => 'Netscape',
+            '/maxthon/i'   => 'Maxthon',
+            '/konqueror/i' => 'Konqueror',
+            '/mobile/i'    => 'Handheld Browser'
+        ];
+        foreach ($browserArray as $regex => $value) {
+            if (preg_match($regex, $userAgent)) {
+                $browser = $value;
+                break;
+            }
+        }
+        return $browser;
     }
 }

@@ -66,11 +66,11 @@ class DashboardController extends Controller
 
             $clicksThisMonth = 0;
             try {
-                $clicksThisMonth = DB::connection('legacy')->table('track_links')
-                    ->join('links', 'track_links.link_id', '=', 'links.link_id')
-                    ->where('track_links.user_id', $user->id)
-                    ->where('links.type', 'link')
-                    ->where('track_links.datetime', '>=', $startOfMonth->toDateTimeString())
+                $clicksThisMonth = \App\Models\TrackLink::where('user_id', $user->id)
+                    ->whereHas('link', function($q) {
+                        $q->where('type', 'link');
+                    })
+                    ->where('datetime', '>=', $startOfMonth->toDateTimeString())
                     ->count();
             } catch (\Exception $e) {
                 // fallback
@@ -149,14 +149,14 @@ class DashboardController extends Controller
         $chartLabels = [];
         $chartData = [];
         try {
-            $clicksQuery = DB::connection('legacy')->table('track_links')
-                ->select(DB::raw('DATE(datetime) as date'), DB::raw('count(*) as count'))
-                ->where('track_links.user_id', $user->id)
+            $clicksQuery = \App\Models\TrackLink::select(DB::raw('DATE(datetime) as date'), DB::raw('count(*) as count'))
+                ->where('user_id', $user->id)
                 ->where('datetime', '>=', now()->subDays(30)->toDateTimeString());
                 
             if ($type) {
-                $clicksQuery->join('links', 'track_links.link_id', '=', 'links.link_id')
-                    ->where('links.type', $type);
+                $clicksQuery->whereHas('link', function($q) use ($type) {
+                    $q->where('type', $type);
+                });
             }
             
             $clicksLog = $clicksQuery->groupBy('date')
