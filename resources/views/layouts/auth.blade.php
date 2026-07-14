@@ -22,14 +22,7 @@
         .auth-card {
             width: 100%;
             max-width: 420px;
-            padding: 40px 32px;
-            background: var(--card-bg-blur);
-            border: 1px solid var(--card-border);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
-            border-radius: 16px;
-        }
-        [data-bs-theme="dark"] .auth-card {
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 40px 12px;
         }
     </style>
 </head>
