@@ -1100,7 +1100,7 @@
 
     /* Select2 glassmorphism styling overrides */
     .select2-container--default .select2-selection--single {
-        background-color: #f1f5f9 !important;
+        background-color: #f3f4f1 !important;
         border: 1px solid #e2e8f0 !important;
         height: 42px !important;
         border-radius: 8px !important;
