@@ -28,7 +28,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(99, 102, 241, 0.1);
+        background: rgba(164, 229, 189, 0.2);
         color: var(--primary-color);
     }
     .stat-value {
@@ -485,13 +485,13 @@
                     datasets: [{
                         label: 'Pageviews',
                         data: {!! json_encode($chartData) !!},
-                        borderColor: '#6366f1',
-                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        borderColor: '#5ec489',
+                        backgroundColor: 'rgba(164, 229, 189, 0.15)',
                         borderWidth: 2,
                         tension: 0.4,
                         fill: true,
                         pointBackgroundColor: '#ffffff',
-                        pointBorderColor: '#6366f1',
+                        pointBorderColor: '#5ec489',
                         pointBorderWidth: 2,
                         pointRadius: 4,
                         pointHoverRadius: 6

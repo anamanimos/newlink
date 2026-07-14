@@ -28,14 +28,14 @@
     
     if (!function_exists('renderCardColor')) {
         function renderCardColor($iconName) {
-            if ($iconName == 'hash') return 'rgba(13, 110, 253, 0.08); color: #0d6efd;';
-            if ($iconName == 'link') return 'rgba(99, 102, 241, 0.08); color: #6366f1;';
-            if ($iconName == 'qrcode') return 'rgba(25, 135, 84, 0.08); color: #198754;';
-            if ($iconName == 'card') return 'rgba(13, 202, 240, 0.08); color: #0dcaf0;';
-            if ($iconName == 'clicks') return 'rgba(13, 148, 136, 0.08); color: #0d9488;';
-            if ($iconName == 'calendar') return 'rgba(253, 126, 20, 0.08); color: #fd7e14;';
-            if ($iconName == 'chart') return 'rgba(111, 66, 193, 0.08); color: #6f42c1;';
-            return 'rgba(108, 117, 125, 0.08); color: #6c757d;';
+            if ($iconName == 'hash') return 'rgba(164, 229, 189, 0.2); color: #166534;';
+            if ($iconName == 'link') return 'rgba(164, 229, 189, 0.2); color: #166534;';
+            if ($iconName == 'qrcode') return 'rgba(164, 229, 189, 0.2); color: #166534;';
+            if ($iconName == 'card') return 'rgba(164, 229, 189, 0.2); color: #166534;';
+            if ($iconName == 'clicks') return 'rgba(164, 229, 189, 0.2); color: #166534;';
+            if ($iconName == 'calendar') return 'rgba(164, 229, 189, 0.2); color: #166534;';
+            if ($iconName == 'chart') return 'rgba(164, 229, 189, 0.2); color: #166534;';
+            return 'rgba(164, 229, 189, 0.2); color: #166534;';
         }
     }
 @endphp
@@ -101,7 +101,7 @@
     <div class="row g-3 mb-4">
         <!-- Card 1 -->
         <div class="col-6 col-md-3">
-            <div class="glass-card p-3 d-flex align-items-center w-100 border border-secondary border-opacity-10 rounded-3" style="background: var(--header-bg); height: 74px;">
+            <div class="glass-card p-3 d-flex align-items-center w-100 border border-secondary border-opacity-10 rounded-3" style="background: var(--card-bg-blur); height: 74px;">
                 <div class="p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="background: {!! renderCardColor($card1_icon) !!} width: 40px; height: 40px; flex-shrink: 0;">
                     {!! renderCardIcon($card1_icon) !!}
                 </div>
@@ -114,7 +114,7 @@
         
         <!-- Card 2 -->
         <div class="col-6 col-md-3">
-            <div class="glass-card p-3 d-flex align-items-center w-100 border border-secondary border-opacity-10 rounded-3" style="background: var(--header-bg); height: 74px;">
+            <div class="glass-card p-3 d-flex align-items-center w-100 border border-secondary border-opacity-10 rounded-3" style="background: var(--card-bg-blur); height: 74px;">
                 <div class="p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="background: {!! renderCardColor($card2_icon) !!} width: 40px; height: 40px; flex-shrink: 0;">
                     {!! renderCardIcon($card2_icon) !!}
                 </div>
@@ -127,7 +127,7 @@
 
         <!-- Card 3 -->
         <div class="col-6 col-md-3">
-            <div class="glass-card p-3 d-flex align-items-center w-100 border border-secondary border-opacity-10 rounded-3" style="background: var(--header-bg); height: 74px;">
+            <div class="glass-card p-3 d-flex align-items-center w-100 border border-secondary border-opacity-10 rounded-3" style="background: var(--card-bg-blur); height: 74px;">
                 <div class="p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="background: {!! renderCardColor($card3_icon) !!} width: 40px; height: 40px; flex-shrink: 0;">
                     {!! renderCardIcon($card3_icon) !!}
                 </div>
@@ -140,7 +140,7 @@
 
         <!-- Card 4 -->
         <div class="col-6 col-md-3">
-            <div class="glass-card p-3 d-flex align-items-center w-100 border border-secondary border-opacity-10 rounded-3" style="background: var(--header-bg); height: 74px;">
+            <div class="glass-card p-3 d-flex align-items-center w-100 border border-secondary border-opacity-10 rounded-3" style="background: var(--card-bg-blur); height: 74px;">
                 <div class="p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="background: {!! renderCardColor($card4_icon) !!} width: 40px; height: 40px; flex-shrink: 0;">
                     {!! renderCardIcon($card4_icon) !!}
                 </div>
@@ -153,7 +153,11 @@
     </div>
 
     <!-- Chart Area -->
-    <div class="glass-card p-3 mb-4 rounded-3 border border-secondary border-opacity-10" style="background: var(--header-bg);">
+    <div class="glass-card p-4 mb-4 rounded-3 border border-secondary border-opacity-10" style="background: var(--card-bg-blur);">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h6 class="fw-bold mb-0">Link Performance</h6>
+            <span class="badge rounded-pill" style="background: var(--primary-light); color: #166534; font-weight: 500; font-size: 0.75rem;">Last 30 Days</span>
+        </div>
         <div style="height: 220px; width: 100%;">
             <canvas id="clicksChart"></canvas>
         </div>
@@ -162,7 +166,7 @@
 
 
 <!-- Links List Section -->
-<div class="glass-card p-4 rounded-3 border border-secondary border-opacity-10 mb-5" style="background: var(--header-bg);">
+<div class="glass-card p-4 rounded-3 border border-secondary border-opacity-10 mb-5" style="background: var(--card-bg-blur);">
     <!-- Card Header: Pagination Limit & Filters -->
     <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom" style="border-color: var(--glass-border) !important;">
         <!-- Left Side: Pagination size selector -->
@@ -284,7 +288,7 @@
     </div>
 
     <!-- Bulk Action Panel -->
-    <div id="bulkActionsBar" class="d-none mb-3 p-2.5 rounded-3 border align-items-center justify-content-between" style="background: var(--primary-light); border-color: rgba(99, 102, 241, 0.15);">
+    <div id="bulkActionsBar" class="d-none mb-3 p-2.5 rounded-3 border align-items-center justify-content-between" style="background: var(--primary-light); border-color: rgba(164, 229, 189, 0.3);">
         <div class="d-flex align-items-center gap-2">
             <span class="text-secondary small fw-semibold"><span id="selectedCount" class="fw-bold">0</span> terpilih</span>
         </div>
@@ -595,8 +599,8 @@
         // Custom chart gradients
         const chartBg = ctx.getContext('2d');
         const gradient = chartBg.createLinearGradient(0, 0, 0, 220);
-        gradient.addColorStop(0, 'rgba(99, 102, 241, 0.22)');
-        gradient.addColorStop(1, 'rgba(99, 102, 241, 0.01)');
+        gradient.addColorStop(0, 'rgba(164, 229, 189, 0.35)');
+        gradient.addColorStop(1, 'rgba(164, 229, 189, 0.02)');
 
         new Chart(ctx, {
             type: 'line',
@@ -605,12 +609,12 @@
                 datasets: [{
                     label: 'Pageviews',
                     data: {!! json_encode($chartData) !!},
-                    borderColor: '#6366f1',
+                    borderColor: '#5ec489',
                     borderWidth: 2.2,
                     backgroundColor: gradient,
                     fill: true,
                     tension: 0.35,
-                    pointBackgroundColor: '#6366f1',
+                    pointBackgroundColor: '#5ec489',
                     pointBorderColor: '#ffffff',
                     pointBorderWidth: 1.5,
                     pointRadius: 3,
@@ -675,7 +679,7 @@
             const url = btn.attr('data-url');
             navigator.clipboard.writeText(url).then(() => {
                 const originalHTML = btn.html();
-                btn.html('<span style="color:#6366f1; font-size:0.675rem; font-weight:bold;">Copied!</span>');
+                btn.html('<span style="color:#166534; font-size:0.675rem; font-weight:bold;">Copied!</span>');
                 setTimeout(() => {
                     btn.html(originalHTML);
                 }, 1200);
