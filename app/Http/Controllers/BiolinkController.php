@@ -32,6 +32,12 @@ class BiolinkController extends Controller
         $settings['title'] = $request->title;
         $settings['description'] = $request->description;
 
+        if ($request->has('settings') && is_array($request->input('settings'))) {
+            foreach ($request->input('settings') as $key => $value) {
+                $settings[$key] = $value;
+            }
+        }
+
         if ($request->hasFile('avatar')) {
             $avatar = $request->file('avatar');
             $avatarName = 'avatar_' . $link->id . '_' . time() . '.' . $avatar->getClientOriginalExtension();

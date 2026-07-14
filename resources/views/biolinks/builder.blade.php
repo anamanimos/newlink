@@ -268,6 +268,73 @@
                             <textarea name="description" class="form-control border-0 ps-1 pe-0 pt-2.5 bg-transparent" rows="3" placeholder="Tulis bio singkat...">{{ $link->settings['description'] ?? '' }}</textarea>
                         </div>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Foto Profil</label>
+                        <input type="file" name="avatar" class="form-control" accept="image/*" style="border-radius: 8px !important;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Gambar Header Belakang</label>
+                        <input type="file" name="cover" class="form-control" accept="image/*" style="border-radius: 8px !important;">
+                    </div>
+
+                    <hr class="my-3 opacity-25">
+                    <h6 class="fw-bold mb-3 text-dark-custom" style="font-size: 0.9rem;">Kustomisasi Tampilan</h6>
+                    
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Tipe Background</label>
+                        <select name="settings[bg_type]" id="bgTypeSelector" class="form-select bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 text-secondary small" style="border-radius: 8px !important;">
+                            <option value="solid" {{ ($link->settings['bg_type'] ?? 'solid') == 'solid' ? 'selected' : '' }}>Warna Solid</option>
+                            <option value="gradient" {{ ($link->settings['bg_type'] ?? 'solid') == 'gradient' ? 'selected' : '' }}>Warna Gradasi (Gradient)</option>
+                        </select>
+                    </div>
+
+                    <!-- Solid Background Input -->
+                    <div class="mb-3" id="solidBgWrapper">
+                        <label class="form-label small fw-semibold text-secondary">Warna Background</label>
+                        <div class="input-group glass-input-group align-items-center">
+                            <span class="input-group-text d-flex align-items-center justify-content-center" style="width: 46px; border: none; background: transparent;">
+                                <div style="width: 20px; height: 20px; border-radius: 4px; background: #9ca3af; border: 1px solid rgba(0,0,0,0.1);"></div>
+                            </span>
+                            <input type="color" name="settings[bg_color]" class="form-control form-control-color border-0 ps-1 pe-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['bg_color'] ?? '#f3f4f1' }}">
+                        </div>
+                    </div>
+
+                    <!-- Gradient Background Inputs -->
+                    <div class="row g-2 mb-3 d-none" id="gradientBgWrapper">
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold text-secondary">Gradasi Mulai</label>
+                            <div class="input-group glass-input-group align-items-center">
+                                <input type="color" name="settings[bg_gradient_start]" class="form-control form-control-color border-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['bg_gradient_start'] ?? '#a4e5bd' }}">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold text-secondary">Gradasi Selesai</label>
+                            <div class="input-group glass-input-group align-items-center">
+                                <input type="color" name="settings[bg_gradient_end]" class="form-control form-control-color border-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['bg_gradient_end'] ?? '#7dd3a1' }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-4">
+                            <label class="form-label small fw-semibold text-secondary">Warna Tombol</label>
+                            <div class="input-group glass-input-group align-items-center">
+                                <input type="color" name="settings[btn_bg_color]" class="form-control form-control-color border-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['btn_bg_color'] ?? '#ffffff' }}">
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label small fw-semibold text-secondary">Teks Tombol</label>
+                            <div class="input-group glass-input-group align-items-center">
+                                <input type="color" name="settings[btn_text_color]" class="form-control form-control-color border-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['btn_text_color'] ?? '#111827' }}">
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label small fw-semibold text-secondary">Teks Profil</label>
+                            <div class="input-group glass-input-group align-items-center">
+                                <input type="color" name="settings[text_color]" class="form-control form-control-color border-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['text_color'] ?? '#111827' }}">
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer border-top-0 pt-1">
                     <button type="button" class="btn btn-light btn-sm rounded-3 px-3.5 py-2 fw-semibold" data-bs-dismiss="modal">Batal</button>
@@ -445,6 +512,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial SortableJS load
     initializeSortable();
+
+    // Toggle solid vs gradient background color picker in Edit Profile Modal
+    function toggleBgSettings() {
+        const bgType = $('#bgTypeSelector').val();
+        if (bgType === 'gradient') {
+            $('#solidBgWrapper').addClass('d-none');
+            $('#gradientBgWrapper').removeClass('d-none');
+        } else {
+            $('#solidBgWrapper').removeClass('d-none');
+            $('#gradientBgWrapper').addClass('d-none');
+        }
+    }
+
+    // Call on dropdown change
+    $('#bgTypeSelector').on('change', toggleBgSettings);
+    
+    // Also run on modal show to pre-populate correct state
+    $('#editProfileModal').on('shown.bs.modal', toggleBgSettings);
+    $('#editProfileModal').on('show.bs.modal', toggleBgSettings);
 
     // Refresh layout, reload iframe
     function refreshBuilderUI(successMessage) {

@@ -9,14 +9,30 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    @php
+        $bgType = $link->settings['bg_type'] ?? 'solid';
+        $bgColor = $link->settings['bg_color'] ?? '#f3f4f1';
+        $bgGradientStart = $link->settings['bg_gradient_start'] ?? '#a4e5bd';
+        $bgGradientEnd = $link->settings['bg_gradient_end'] ?? '#7dd3a1';
+        $btnBgColor = $link->settings['btn_bg_color'] ?? '#ffffff';
+        $btnTextColor = $link->settings['btn_text_color'] ?? '#111827';
+        $textColor = $link->settings['text_color'] ?? '#111827';
+
+        if ($bgType === 'gradient') {
+            $backgroundStyle = "linear-gradient(135deg, {$bgGradientStart} 0%, {$bgGradientEnd} 100%)";
+        } else {
+            $backgroundStyle = $bgColor;
+        }
+    @endphp
+    
     <style>
         body {
             margin: 0;
             padding: 0;
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f1;
+            background: {{ $backgroundStyle }};
             min-height: 100vh;
-            color: #111827;
+            color: {{ $textColor }};
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -52,7 +68,7 @@
             font-size: 1.35rem;
             font-weight: 750;
             margin: 0 0 6px 0;
-            color: #111827;
+            color: {{ $textColor }};
             display: flex;
             align-items: center;
             justify-content: center;
@@ -63,7 +79,8 @@
             font-weight: 500;
             margin: 0 0 28px 0;
             text-align: center;
-            color: #4b5563;
+            color: {{ $textColor }};
+            opacity: 0.85;
             max-width: 440px;
             line-height: 1.5;
         }
@@ -77,12 +94,12 @@
         .block-link {
             width: 100%;
             display: block;
-            background: #ffffff;
+            background: {{ $btnBgColor }};
             padding: 15px 20px;
             border-radius: 12px;
             text-align: center;
             text-decoration: none;
-            color: #111827;
+            color: {{ $btnTextColor }};
             font-weight: 600;
             font-size: 0.95rem;
             transition: all 0.25s ease;
@@ -93,26 +110,27 @@
         .block-link:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.08);
-            border-color: rgba(164, 229, 189, 0.4);
+            opacity: 0.92;
         }
         .block-text {
             width: 100%;
             text-align: center;
             margin: 8px 0;
             line-height: 1.6;
-            color: #374151;
+            color: {{ $textColor }};
             font-size: 0.95rem;
         }
         .watermark {
             margin-top: 40px;
             font-size: 0.8rem;
-            color: #9ca3af;
+            color: {{ $textColor }};
+            opacity: 0.6;
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.2s ease;
+            transition: opacity 0.2s ease;
         }
         .watermark:hover {
-            color: #4b5563;
+            opacity: 0.9;
         }
     </style>
 </head>
