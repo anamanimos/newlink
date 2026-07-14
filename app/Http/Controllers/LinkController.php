@@ -229,15 +229,20 @@ class LinkController extends Controller
             $chartData[] = $clicksByDate[$dateStr] ?? 0;
         }
         $biolinkBlocks = collect();
+        $whatsappLeads = collect();
         if ($link->type === 'biolink') {
             $biolinkBlocks = $link->biolinkBlocks()->where('type', 'link')->orderByDesc('clicks')->get();
+            $blockIds = $link->biolinkBlocks()->pluck('id');
+            $whatsappLeads = \App\Models\WhatsappLead::whereIn('biolink_block_id', $blockIds)
+                ->orderBy('created_at', 'desc')
+                ->paginate(25, ['*'], 'leads_page');
         }
 
         $viewName = $link->type === 'biolink' ? 'biolinks.show' : 'links.show';
 
         return view($viewName, compact(
             'link', 'totalClicks', 'uniqueClicks', 'chartDates', 'chartData', 
-            'topReferrers', 'topCountries', 'topOs', 'topBrowsers', 'startDate', 'endDate', 'rawClicks', 'biolinkBlocks'
+            'topReferrers', 'topCountries', 'topOs', 'topBrowsers', 'startDate', 'endDate', 'rawClicks', 'biolinkBlocks', 'whatsappLeads'
         ));
     }
 

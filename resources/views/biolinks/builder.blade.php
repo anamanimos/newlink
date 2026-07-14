@@ -185,7 +185,6 @@
                                                     <circle cx="15" cy="12" r="1.5"></circle>
                                                     <circle cx="15" cy="19" r="1.5"></circle>
                                                 </svg>
-                                            </div>
                                             <div>
                                                 <div class="d-flex align-items-center gap-2 mb-1">
                                                     @if($block->type == 'link')
@@ -194,14 +193,36 @@
                                                     @elseif($block->type == 'text')
                                                         <span class="badge rounded-pill px-2.5 py-1" style="background-color: rgba(107, 114, 128, 0.1) !important; color: #374151 !important; border: 1px solid rgba(107, 114, 128, 0.15); font-weight: 600; font-size: 0.725rem;">Text</span>
                                                         <span class="fw-bold text-dark-custom">{{ Str::limit(strip_tags($block->settings['content'] ?? ''), 30) }}</span>
+                                                    @elseif($block->type == 'whatsapp_rotator')
+                                                        <span class="badge rounded-pill px-2.5 py-1" style="background-color: rgba(37, 211, 102, 0.15) !important; color: #15803d !important; border: 1px solid rgba(37, 211, 102, 0.25); font-weight: 600; font-size: 0.725rem;">WhatsApp Rotator</span>
+                                                        <span class="fw-bold text-dark-custom">{{ $block->settings['title'] ?? 'WhatsApp Rotator' }}</span>
                                                     @endif
                                                 </div>
                                                 @if($block->type == 'link')
                                                     <a href="{{ $block->location_url }}" target="_blank" class="small text-muted text-decoration-none d-block ms-1" style="word-break: break-all; opacity: 0.85;">{{ $block->location_url }}</a>
+                                                @elseif($block->type == 'whatsapp_rotator')
+                                                    <div class="small text-muted ms-1 text-truncate" style="max-width: 250px; opacity: 0.85;">
+                                                        No: {{ $block->settings['numbers'] ?? '' }}
+                                                    </div>
                                                 @endif
                                             </div>
                                         </div>
                                         <div class="d-flex gap-2">
+                                            <!-- Edit Button -->
+                                            @if($block->type == 'whatsapp_rotator')
+                                                <button type="button" class="btn btn-sm btn-outline-primary p-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-radius: 8px;" data-bs-toggle="modal" data-bs-target="#editWhatsappRotatorBlockModal-{{ $block->id }}" title="Edit WhatsApp Rotator">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                                </button>
+                                            @elseif($block->type == 'link')
+                                                <button type="button" class="btn btn-sm btn-outline-primary p-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-radius: 8px;" data-bs-toggle="modal" data-bs-target="#editLinkBlockModal-{{ $block->id }}" title="Edit Tautan">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                                </button>
+                                            @elseif($block->type == 'text')
+                                                <button type="button" class="btn btn-sm btn-outline-primary p-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-radius: 8px;" data-bs-toggle="modal" data-bs-target="#editTextBlockModal-{{ $block->id }}" title="Edit Teks">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                                </button>
+                                            @endif
+
                                             <form action="{{ route('biolinks.blocks.destroy', [$link->id, $block->id]) }}" method="POST" onsubmit="return confirm('Hapus blok ini?')">
                                                 @csrf
                                                 @method('DELETE')
@@ -218,6 +239,120 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Modal Edit WhatsApp Rotator -->
+                                @if($block->type == 'whatsapp_rotator')
+                                    <div class="modal fade" id="editWhatsappRotatorBlockModal-{{ $block->id }}" tabindex="-1">
+                                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                                            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                                                <form action="{{ route('biolinks.blocks.update', [$link->id, $block->id]) }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <div class="modal-header border-bottom-0 pb-1">
+                                                        <h5 class="modal-title fw-bold">Edit WhatsApp Rotator</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body py-2" style="font-size: 0.9rem;">
+                                                        <div class="row">
+                                                             <div class="col-md-6">
+                                                                 <div class="mb-3">
+                                                                     <label class="form-label small fw-semibold text-secondary">Judul Form <span class="text-danger">*</span></label>
+                                                                     <input type="text" name="settings[title]" class="form-control" required placeholder="Contoh: DJSPORT APPAREL" value="{{ $block->settings['title'] ?? '' }}">
+                                                                 </div>
+                                                                 <div class="mb-3">
+                                                                     <label class="form-label small fw-semibold text-secondary">Subtitle / Deskripsi Form</label>
+                                                                     <textarea name="settings[description]" class="form-control" rows="2" placeholder="Contoh: - Apparel Resmi Club Liga 1 - ...">{{ $block->settings['description'] ?? '' }}</textarea>
+                                                                 </div>
+                                                                 <div class="mb-3">
+                                                                     <label class="form-label small fw-semibold text-secondary">Nomor WhatsApp Tujuan (Dirotasi) <span class="text-danger">*</span></label>
+                                                                     <textarea name="settings[numbers]" class="form-control" rows="3" required placeholder="Masukkan nomor WhatsApp, satu per baris atau dipisah koma (Contoh: 628123456789, 628987654321)">{{ $block->settings['numbers'] ?? '' }}</textarea>
+                                                                     <div class="form-text text-muted" style="font-size: 0.725rem;">Gunakan format kode negara tanpa simbol + (Contoh: 628xxxxxxxx)</div>
+                                                                 </div>
+                                                             </div>
+                                                             <div class="col-md-6">
+                                                                 <div class="mb-3">
+                                                                     <label class="form-label small fw-semibold text-secondary">Template Pesan WhatsApp <span class="text-danger">*</span></label>
+                                                                     <textarea name="settings[template]" class="form-control" rows="3" required placeholder="Contoh: Halo admin, nama saya [nama] dari [kota]. Saya ingin mengklaim promo.">{{ $block->settings['template'] ?? '' }}</textarea>
+                                                                     <div class="form-text text-muted" style="font-size: 0.725rem;">Placeholders siap pakai: <code>[nama]</code>, <code>[kota]</code>, <code>[nomor]</code>, <code>[pesan]</code></div>
+                                                                 </div>
+                                                                 <div class="mb-3">
+                                                                     <label class="form-label small fw-semibold text-secondary">Teks Tombol Form <span class="text-danger">*</span></label>
+                                                                     <input type="text" name="settings[button_text]" class="form-control" required placeholder="Contoh: Claim Promo sekarang" value="{{ $block->settings['button_text'] ?? 'Claim Promo sekarang' }}">
+                                                                 </div>
+                                                                 <div class="mb-3">
+                                                                     <label class="form-label small fw-semibold text-secondary">Pilihan Kota / Kabupaten (Pisah Koma)</label>
+                                                                     <textarea name="settings[cities]" class="form-control" rows="2" placeholder="Contoh: Jakarta, Bandung, Surabaya, Yogyakarta, Semarang, Medan">{{ $block->settings['cities'] ?? '' }}</textarea>
+                                                                 </div>
+                                                                 <div class="mb-3">
+                                                                     <label class="form-label small fw-semibold text-secondary">URL Gambar Banner (Opsional)</label>
+                                                                     <input type="url" name="settings[banner_url]" class="form-control" placeholder="Contoh: https://example.com/banner.jpg" value="{{ $block->settings['banner_url'] ?? '' }}">
+                                                                 </div>
+                                                             </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer border-top-0 pt-1">
+                                                        <button type="button" class="btn btn-light btn-sm rounded-3 px-3.5 py-2 fw-semibold" data-bs-dismiss="modal">Batal</button>
+                                                        <button type="submit" class="btn btn-primary btn-sm rounded-3 px-3.5 py-2 fw-semibold" style="background-color: var(--primary-color); border-color: var(--primary-color);">Simpan Perubahan</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @elseif($block->type == 'link')
+                                    <div class="modal fade" id="editLinkBlockModal-{{ $block->id }}" tabindex="-1">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                                                <form action="{{ route('biolinks.blocks.update', [$link->id, $block->id]) }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <div class="modal-header border-bottom-0 pb-1">
+                                                        <h5 class="modal-title fw-bold">Edit Tautan</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body py-2">
+                                                        <div class="mb-3">
+                                                            <label class="form-label small fw-semibold text-secondary">Judul Tautan <span class="text-danger">*</span></label>
+                                                            <input type="text" name="settings[title]" class="form-control" required placeholder="Cek Promo Terbaru!" value="{{ $block->settings['title'] ?? '' }}">
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label small fw-semibold text-secondary">URL Tujuan <span class="text-danger">*</span></label>
+                                                            <input type="url" name="location_url" class="form-control" required placeholder="https://example.com/promo" value="{{ $block->location_url ?? '' }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer border-top-0 pt-1">
+                                                        <button type="button" class="btn btn-light btn-sm rounded-3 px-3.5 py-2 fw-semibold" data-bs-dismiss="modal">Batal</button>
+                                                        <button type="submit" class="btn btn-primary btn-sm rounded-3 px-3.5 py-2 fw-semibold" style="background-color: var(--primary-color); border-color: var(--primary-color);">Simpan Perubahan</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @elseif($block->type == 'text')
+                                    <div class="modal fade" id="editTextBlockModal-{{ $block->id }}" tabindex="-1">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                                                <form action="{{ route('biolinks.blocks.update', [$link->id, $block->id]) }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <div class="modal-header border-bottom-0 pb-1">
+                                                        <h5 class="modal-title fw-bold">Edit Teks</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body py-2">
+                                                        <div class="mb-3">
+                                                            <label class="form-label small fw-semibold text-secondary">Konten Teks <span class="text-danger">*</span></label>
+                                                            <textarea name="settings[content]" class="form-control" rows="4" required placeholder="Tulis sesuatu... ">{{ $block->settings['content'] ?? '' }}</textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer border-top-0 pt-1">
+                                                        <button type="button" class="btn btn-light btn-sm rounded-3 px-3.5 py-2 fw-semibold" data-bs-dismiss="modal">Batal</button>
+                                                        <button type="submit" class="btn btn-primary btn-sm rounded-3 px-3.5 py-2 fw-semibold" style="background-color: var(--primary-color); border-color: var(--primary-color);">Simpan Perubahan</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                             @endforeach
                         </div>
                     @endif
@@ -240,6 +375,11 @@
                                 <line x1="21" y1="18" x2="3" y2="18" opacity="0.3"></line>
                                 <line x1="17" y1="6" x2="3" y2="6"></line>
                                 <line x1="17" y1="14" x2="3" y2="14"></line>
+                            </svg>
+                        </button>
+                        <button type="button" class="btn rounded-circle d-flex align-items-center justify-content-center shadow-lg border-0" style="width: 44px; height: 44px; background-color: #25d366;" data-bs-toggle="modal" data-bs-target="#addWhatsappRotatorBlockModal" title="Tambah WhatsApp Rotator">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
                             </svg>
                         </button>
                     </div>
@@ -599,6 +739,64 @@
     </div>
 </div>
 
+<!-- Modal Add WhatsApp Rotator -->
+<div class="modal fade" id="addWhatsappRotatorBlockModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+            <form action="{{ route('biolinks.blocks.store', $link->id) }}" method="POST">
+                @csrf
+                <input type="hidden" name="type" value="whatsapp_rotator">
+                <div class="modal-header border-bottom-0 pb-1">
+                    <h5 class="modal-title fw-bold">Tambah WhatsApp Rotator</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body py-2" style="font-size: 0.875rem;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold text-secondary">Judul Form <span class="text-danger">*</span></label>
+                                <input type="text" name="settings[title]" class="form-control" required placeholder="Contoh: DJSPORT APPAREL">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold text-secondary">Subtitle / Deskripsi Form</label>
+                                <textarea name="settings[description]" class="form-control" rows="2" placeholder="Contoh: - Apparel Resmi Club Liga 1 - ..."></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold text-secondary">Nomor WhatsApp Tujuan (Dirotasi) <span class="text-danger">*</span></label>
+                                <textarea name="settings[numbers]" class="form-control" rows="3" required placeholder="Masukkan nomor WhatsApp, satu per baris atau dipisah koma (Contoh: 628123456789, 628987654321)"></textarea>
+                                <div class="form-text text-muted" style="font-size: 0.725rem;">Gunakan format kode negara tanpa simbol + (Contoh: 628xxxxxxxx)</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold text-secondary">Template Pesan WhatsApp <span class="text-danger">*</span></label>
+                                <textarea name="settings[template]" class="form-control" rows="3" required placeholder="Contoh: Halo admin, nama saya [nama] dari [kota]. Saya ingin mengklaim promo.">Halo admin, nama saya [nama] dari [kota]. Nomor saya [nomor]. Pesan: [pesan]</textarea>
+                                <div class="form-text text-muted" style="font-size: 0.725rem;">Placeholders siap pakai: <code>[nama]</code>, <code>[kota]</code>, <code>[nomor]</code>, <code>[pesan]</code></div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold text-secondary">Teks Tombol Form <span class="text-danger">*</span></label>
+                                <input type="text" name="settings[button_text]" class="form-control" required placeholder="Contoh: Claim Promo sekarang" value="Claim Promo sekarang">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold text-secondary">Pilihan Kota / Kabupaten (Pisah Koma)</label>
+                                <textarea name="settings[cities]" class="form-control" rows="2" placeholder="Contoh: Jakarta, Bandung, Surabaya, Yogyakarta, Semarang, Medan"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold text-secondary">URL Gambar Banner (Opsional)</label>
+                                <input type="url" name="settings[banner_url]" class="form-control" placeholder="Contoh: https://example.com/banner.jpg">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 pt-1">
+                    <button type="button" class="btn btn-light btn-sm rounded-3 px-3.5 py-2 fw-semibold" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-sm rounded-3 px-3.5 py-2 fw-semibold" style="background-color: var(--primary-color); border-color: var(--primary-color);">Tambah</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Modal Image Cropper -->
 <div class="modal fade" id="cropperModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
@@ -794,8 +992,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Intercept form submissions via AJAX (Add Link, Add Text, Profile Form, Styling Form)
-    $('#addLinkBlockModal form, #addTextBlockModal form, #profileTabForm, #stylingTabForm').on('submit', function(e) {
+    // Intercept form submissions via AJAX (Add Block, Edit Block, Profile Form, Styling Form)
+    $('#addLinkBlockModal form, #addTextBlockModal form, #addWhatsappRotatorBlockModal form, [id^=editLinkBlockModal] form, [id^=editTextBlockModal] form, [id^=editWhatsappRotatorBlockModal] form, #profileTabForm, #stylingTabForm').on('submit', function(e) {
         e.preventDefault();
         const form = $(this);
         const modalEl = form.closest('.modal')[0];

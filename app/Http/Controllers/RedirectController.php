@@ -130,6 +130,102 @@ class RedirectController extends Controller
         return redirect()->away($block->location_url ?? url('/'));
     }
 
+    public function whatsappSubmit(Request $request, $id)
+    {
+        $block = \App\Models\BiolinkBlock::findOrFail($id);
+        
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'city' => 'required|string|max:100',
+            'phone' => 'required|string|max:30',
+            'message' => 'nullable|string'
+        ]);
+
+        $numbersSetting = $block->settings['numbers'] ?? '';
+        $rawNumbers = preg_split('/[\n,]+/', $numbersSetting);
+        $numbers = array_filter(array_map(function($num) {
+            $cleaned = preg_replace('/\D/', '', $num);
+            return trim($cleaned);
+        }, $rawNumbers));
+
+        if (empty($numbers)) {
+            return response()->json(['success' => false, 'message' => 'Nomor WhatsApp tujuan belum dikonfigurasi.'], 422);
+        }
+
+        // Round-robin selection based on lead counts
+        $counts = [];
+        foreach ($numbers as $num) {
+            $counts[$num] = \App\Models\WhatsappLead::where('biolink_block_id', $block->id)
+                ->where('whatsapp_number_used', $num)
+                ->count();
+        }
+
+        asort($counts);
+        $targetPhone = key($counts);
+
+        // Save detailed track log as a block click as well
+        $userAgent = $request->header('User-Agent');
+        $countryCode = null;
+        $cityName = null;
+        $ip = $request->ip();
+        if ($ip !== '127.0.0.1' && $ip !== '::1') {
+            try {
+                $geo = json_decode(file_get_contents("http://ip-api.com/json/{$ip}?fields=countryCode,city"));
+                if ($geo) {
+                    if (isset($geo->countryCode)) {
+                        $countryCode = $geo->countryCode;
+                    }
+                    if (isset($geo->city)) {
+                        $cityName = $geo->city;
+                    }
+                }
+            } catch (\Exception $e) {
+                // Ignore geo failures
+            }
+        }
+
+        // Log block click count and entry
+        $block->increment('clicks');
+        \App\Models\TrackLink::create([
+            'link_id' => $block->link_id,
+            'biolink_block_id' => $block->id,
+            'user_id' => $block->user_id,
+            'ip' => $ip,
+            'country_code' => $countryCode,
+            'city_name' => $cityName,
+            'os' => $this->getOS($userAgent),
+            'browser' => $this->getBrowser($userAgent),
+            'device_type' => $this->getDevice($userAgent),
+            'referrer_host' => $this->getReferrer($request),
+        ]);
+
+        // Save lead response
+        $lead = \App\Models\WhatsappLead::create([
+            'biolink_block_id' => $block->id,
+            'name' => $request->name,
+            'city' => $request->city,
+            'phone' => $request->phone,
+            'message' => $request->message ?? '',
+            'whatsapp_number_used' => $targetPhone,
+            'ip' => $ip
+        ]);
+
+        // Compile pre-filled message
+        $template = $block->settings['template'] ?? '';
+        $msg = str_replace(
+            ['[nama]', '[name]', '[kota]', '[city]', '[nomor]', '[phone]', '[pesan]', '[message]'],
+            [$lead->name, $lead->name, $lead->city, $lead->city, $lead->phone, $lead->phone, $lead->message, $lead->message],
+            $template
+        );
+
+        $waUrl = 'https://api.whatsapp.com/send?phone=' . urlencode($targetPhone) . '&text=' . urlencode($msg);
+
+        return response()->json([
+            'success' => true,
+            'redirect_url' => $waUrl
+        ]);
+    }
+
     private function getOS($userAgent)
     {
         $osPlatform = "Unknown OS Platform";

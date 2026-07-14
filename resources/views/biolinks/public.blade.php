@@ -132,6 +132,168 @@
         .watermark:hover {
             opacity: 0.9;
         }
+
+        /* WhatsApp Rotator Form styling */
+        .rotator-card {
+            width: 100%;
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            padding: 24px;
+            box-sizing: border-box;
+            color: #1f2937;
+            text-align: left;
+            margin-bottom: 8px;
+        }
+        .rotator-banner {
+            width: calc(100% + 48px);
+            margin: -24px -24px 20px -24px;
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
+        }
+        .rotator-title {
+            font-size: 1.15rem;
+            font-weight: 750;
+            margin-bottom: 6px;
+            color: #111827;
+            text-align: center;
+        }
+        .rotator-desc {
+            font-size: 0.825rem;
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .rotator-field {
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .rotator-label {
+            display: block;
+            font-size: 0.775rem;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 6px;
+        }
+        .rotator-input-wrapper {
+            display: flex;
+            align-items: center;
+            background: #f3f4f6;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .rotator-input-wrapper:focus-within {
+            border-color: #2ac3a6;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(42, 195, 166, 0.12);
+        }
+        .rotator-input-addon {
+            padding: 12px 14px;
+            font-weight: 600;
+            color: #6b7280;
+            font-size: 0.9rem;
+            border-right: 1px solid rgba(0, 0, 0, 0.06);
+            background: rgba(0, 0, 0, 0.02);
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+        .rotator-input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            color: #111827;
+            outline: none;
+            box-sizing: border-box;
+            border-radius: 10px;
+        }
+        .rotator-select {
+            width: 100%;
+            border: 1px solid transparent;
+            background: #f3f4f6;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            color: #111827;
+            outline: none;
+            box-sizing: border-box;
+            border-radius: 10px;
+            appearance: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .rotator-select:focus {
+            border-color: #2ac3a6;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(42, 195, 166, 0.12);
+        }
+        .rotator-select-wrapper {
+            position: relative;
+        }
+        .rotator-select-wrapper::after {
+            content: "";
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 5px solid transparent;
+            border-top-color: #6b7280;
+            pointer-events: none;
+        }
+        .rotator-textarea {
+            width: 100%;
+            border: 1px solid transparent;
+            background: #f3f4f6;
+            padding: 12px 16px;
+            font-size: 0.9rem;
+            color: #111827;
+            outline: none;
+            box-sizing: border-box;
+            border-radius: 10px;
+            resize: vertical;
+            min-height: 80px;
+            transition: all 0.2s ease;
+        }
+        .rotator-textarea:focus {
+            background: #ffffff;
+            border-color: #2ac3a6;
+            box-shadow: 0 0 0 3px rgba(42, 195, 166, 0.12);
+        }
+        .rotator-btn {
+            width: 100%;
+            background: #2ac3a6;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 20px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(42, 195, 166, 0.2);
+            text-align: center;
+        }
+        .rotator-btn:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(42, 195, 166, 0.3);
+        }
+        .rotator-btn:active {
+            transform: translateY(0);
+        }
+        .rotator-btn:disabled {
+            background: #cbd5e1;
+            box-shadow: none;
+            cursor: not-allowed;
+            color: #94a3b8;
+        }
     </style>
 </head>
 <body>
@@ -168,6 +330,65 @@
                     <div class="block-text">
                         {{ $block->settings['content'] ?? '' }}
                     </div>
+                @elseif($block->type == 'whatsapp_rotator')
+                    <div class="rotator-card">
+                        @if(!empty($block->settings['banner_url']))
+                            <div class="rotator-banner" style="background-image: url('{{ $block->settings['banner_url'] }}');"></div>
+                        @endif
+                        
+                        <h4 class="rotator-title">{{ $block->settings['title'] ?? 'WhatsApp Rotator' }}</h4>
+                        @if(!empty($block->settings['description']))
+                            <p class="rotator-desc">{{ $block->settings['description'] }}</p>
+                        @endif
+
+                        <form class="whatsapp-rotator-form" data-action="{{ route('biolinks.whatsapp.submit', $block->id) }}" method="POST">
+                            @csrf
+                            <!-- Nama Field -->
+                            <div class="rotator-field">
+                                <label class="rotator-label">Nama</label>
+                                <div class="rotator-input-wrapper">
+                                    <input type="text" name="name" class="rotator-input" required placeholder="Nama Anda">
+                                </div>
+                            </div>
+
+                            <!-- Kota/Kabupaten Field -->
+                            <div class="rotator-field">
+                                <label class="rotator-label">Kota/Kabupaten</label>
+                                <div class="rotator-select-wrapper">
+                                    <select name="city" class="rotator-select" required>
+                                        <option value="" disabled selected>Pilih Kota/Kabupaten</option>
+                                        @php
+                                            $citiesStr = $block->settings['cities'] ?? 'Jakarta,Bandung,Surabaya,Semarang,Yogyakarta,Medan,Makassar,Palembang,Denpasar,Banjarmasin';
+                                            $cities = array_filter(array_map('trim', explode(',', $citiesStr)));
+                                        @endphp
+                                        @foreach($cities as $city)
+                                            <option value="{{ $city }}">{{ $city }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Nomor Handphone Field -->
+                            <div class="rotator-field">
+                                <label class="rotator-label">Nomor WhatsApp Anda</label>
+                                <div class="rotator-input-wrapper">
+                                    <span class="rotator-input-addon">62</span>
+                                    <input type="tel" name="phone" class="rotator-input" required placeholder="Nomor WhatsApp (Contoh: 8123456789)">
+                                </div>
+                            </div>
+
+                            <!-- Pesan Field -->
+                            <div class="rotator-field">
+                                <label class="rotator-label">Tulis Pesan</label>
+                                <textarea name="message" class="rotator-textarea" placeholder="Silakan tulis pesan..."></textarea>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="rotator-btn">
+                                {{ $block->settings['button_text'] ?? 'Hubungi Sekarang' }}
+                            </button>
+                        </form>
+                    </div>
                 @endif
             @endforeach
 
@@ -175,5 +396,46 @@
         </div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const forms = document.querySelectorAll('.whatsapp-rotator-form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const btn = form.querySelector('button[type="submit"]');
+                    const origText = btn.textContent;
+                    btn.disabled = true;
+                    btn.textContent = 'Memproses...';
+
+                    const formData = new FormData(form);
+                    const actionUrl = form.getAttribute('data-action');
+
+                    fetch(actionUrl, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success && data.redirect_url) {
+                            window.location.href = data.redirect_url;
+                        } else {
+                            alert(data.message || 'Terjadi kesalahan. Silakan coba lagi.');
+                            btn.disabled = false;
+                            btn.textContent = origText;
+                        }
+                    })
+                    .catch(err => {
+                        alert('Gagal menghubungkan ke server. Silakan coba lagi.');
+                        btn.disabled = false;
+                        btn.textContent = origText;
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 </html>

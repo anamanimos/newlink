@@ -68,7 +68,7 @@ class BiolinkController extends Controller
         $link = Link::where('user_id', Auth::id())->where('type', 'biolink')->findOrFail($id);
 
         $request->validate([
-            'type' => 'required|string|in:text,link,socials',
+            'type' => 'required|string|in:text,link,socials,whatsapp_rotator',
             'location_url' => 'nullable|url|max:512',
             'settings' => 'nullable|array'
         ]);
@@ -202,5 +202,62 @@ class BiolinkController extends Controller
             'chartData' => $chartData,
             'referrers' => $referrersData
         ]);
+    }
+
+    public function exportLeads($id)
+    {
+        $link = Link::where('user_id', Auth::id())->where('type', 'biolink')->findOrFail($id);
+        $blockIds = $link->biolinkBlocks()->pluck('id');
+        
+        $leads = \App\Models\WhatsappLead::whereIn('biolink_block_id', $blockIds)
+            ->with('block')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $filename = 'whatsapp_leads_' . $link->url . '_' . date('Y-m-d_H-i-s') . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0'
+        ];
+
+        $callback = function() use ($leads) {
+            $file = fopen('php://output', 'w');
+            
+            // Add UTF-8 BOM for proper excel encoding
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            
+            // Column Headers
+            fputcsv($file, [
+                'Waktu', 
+                'Judul Rotator', 
+                'Nama Pengisi', 
+                'Kota/Kabupaten', 
+                'Nomor WhatsApp Visitor', 
+                'Pesan', 
+                'WhatsApp Admin (Rotasi)', 
+                'IP Address'
+            ]);
+
+            foreach ($leads as $lead) {
+                fputcsv($file, [
+                    $lead->created_at->format('Y-m-d H:i:s'),
+                    $lead->block->settings['title'] ?? 'WhatsApp Rotator',
+                    $lead->name,
+                    $lead->city,
+                    $lead->phone,
+                    $lead->message,
+                    $lead->whatsapp_number_used,
+                    $lead->ip
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

@@ -207,6 +207,13 @@
                 <span data-duo-icons="dashboard" style="width: 18px; height: 18px;"></span> Data Klik
             </div>
         </button>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link {{ request('tab') == 'leads' ? 'active' : '' }}" id="leads-tab" data-bs-toggle="tab" data-bs-target="#leads" type="button" role="tab" aria-controls="leads" aria-selected="{{ request('tab') == 'leads' ? 'true' : 'false' }}" onclick="document.getElementById('active_tab').value='leads'">
+            <div class="d-flex align-items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg> 
+                WhatsApp Leads
+            </div>
+        </button>
     </li>
 </ul>
 
@@ -584,6 +591,79 @@
             @if($rawClicks->hasPages())
                 <div class="p-3 border-top d-flex justify-content-end" style="border-color: var(--glass-border) !important;">
                     {{ $rawClicks->links('pagination::bootstrap-5') }}
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <!-- Tab 3: WhatsApp Leads -->
+    <div class="tab-pane fade {{ request('tab') == 'leads' ? 'show active' : '' }}" id="leads" role="tabpanel" aria-labelledby="leads-tab">
+        <div class="glass-card mb-4 border border-secondary border-opacity-10 rounded-3" style="background: var(--card-bg-blur);">
+            <div class="p-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2" style="border-color: var(--glass-border) !important;">
+                <h6 class="fw-bold mb-0 text-dark-custom">Data Pengisian Form WhatsApp Rotator</h6>
+                <a href="{{ route('biolinks.leads.export', $link->id) }}" class="btn btn-sm btn-outline-success d-flex align-items-center gap-1.5 fw-semibold px-3 py-1.5 rounded-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Unduh CSV
+                </a>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table align-middle mb-0 text-dark-custom" style="font-size: 0.85rem;">
+                    <thead>
+                        <tr class="text-secondary small fw-bold" style="border-bottom: 2px solid var(--glass-border);">
+                            <th class="ps-3 py-3">Waktu</th>
+                            <th class="py-3">Nama</th>
+                            <th class="py-3">Kota/Kabupaten</th>
+                            <th class="py-3">Nomor Visitor</th>
+                            <th class="py-3">Pesan</th>
+                            <th class="py-3">Admin Terpilih (Rotasi)</th>
+                            <th class="py-3">IP Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($whatsappLeads as $lead)
+                            <tr style="border-bottom: 1px solid var(--glass-border);">
+                                <td class="ps-3 py-3 text-muted">
+                                    {{ $lead->created_at->format('d M Y H:i') }}
+                                </td>
+                                <td class="py-3 fw-semibold">
+                                    {{ $lead->name }}
+                                </td>
+                                <td class="py-3">
+                                    {{ $lead->city }}
+                                </td>
+                                <td class="py-3 text-secondary">
+                                    62{{ $lead->phone }}
+                                </td>
+                                <td class="py-3 text-muted" style="max-width: 250px; word-break: break-word;">
+                                    {{ $lead->message ?: '-' }}
+                                </td>
+                                <td class="py-3">
+                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2.5 py-1 fw-semibold">
+                                        {{ $lead->whatsapp_number_used }}
+                                    </span>
+                                </td>
+                                <td class="py-3 text-muted small">
+                                    {{ $lead->ip ?: '-' }}
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center py-5">
+                                    <div class="text-muted mb-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                                    </div>
+                                    <div class="text-muted">Belum ada data pengisian form WhatsApp Rotator.</div>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            
+            @if($whatsappLeads instanceof \Illuminate\Pagination\AbstractPaginator && $whatsappLeads->hasPages())
+                <div class="p-3 border-top d-flex justify-content-end" style="border-color: var(--glass-border) !important;">
+                    {{ $whatsappLeads->appends(request()->except('leads_page'))->links('pagination::bootstrap-5') }}
                 </div>
             @endif
         </div>

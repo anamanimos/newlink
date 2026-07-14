@@ -46,6 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/biolink/{id}/blocks/{blockId}', [BiolinkController::class, 'destroyBlock'])->name('biolinks.blocks.destroy');
     Route::post('/biolink/{id}/blocks/reorder', [BiolinkController::class, 'reorderBlocks'])->name('biolinks.blocks.reorder');
     Route::get('/biolink/block/{id}/analytics', [BiolinkController::class, 'blockAnalytics'])->name('biolinks.blocks.analytics');
+    Route::get('/biolink/{id}/export-leads', [BiolinkController::class, 'exportLeads'])->name('biolinks.leads.export');
 
     Route::get('/qrcode', [DashboardController::class, 'index'])->defaults('type', 'qrcode')->name('qrcodes.index');
     
@@ -152,6 +153,7 @@ Route::get('/api/restore-sql', function (Request $request) {
 
 // Public Biolink Block Redirect and Click Tracking Route
 Route::get('/biolink/block/{id}/redirect', [RedirectController::class, 'redirectBlock'])->name('biolinks.blocks.redirect');
+Route::post('/biolink/block/{id}/whatsapp-submit', [RedirectController::class, 'whatsappSubmit'])->name('biolinks.whatsapp.submit');
 
 // Wildcard Route for Redirects (MUST BE LAST)
 Route::get('/{slug}', [RedirectController::class, 'resolve'])->name('redirect.resolve');
