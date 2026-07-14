@@ -51,9 +51,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
     Route::put('/projects/{id}', [ProjectController::class, 'update'])->name('projects.update');
     Route::delete('/projects/{id}', [ProjectController::class, 'destroy'])->name('projects.destroy');
-    Route::get('/domains', function () { 
-        return view('modules.domains', ['domains' => \App\Models\Domain::where('user_id', auth()->id())->latest()->get()]); 
-    })->name('domains.index');
+    Route::get('/domains', [\App\Http\Controllers\DomainController::class, 'index'])->name('domains.index');
+    Route::post('/domains', [\App\Http\Controllers\DomainController::class, 'store'])->name('domains.store');
+    Route::put('/domains/{id}', [\App\Http\Controllers\DomainController::class, 'update'])->name('domains.update');
+    Route::delete('/domains/{id}', [\App\Http\Controllers\DomainController::class, 'destroy'])->name('domains.destroy');
+
     Route::get('/pixels', function () { 
         return view('modules.pixels', ['pixels' => \App\Models\Pixel::where('user_id', auth()->id())->latest()->get()]); 
     })->name('pixels.index');
@@ -64,6 +66,9 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/users', function () { return view('admin.modules.users', ['users' => \App\Models\User::latest()->get()]); })->name('admin.users');
+    Route::get('/domains', [\App\Http\Controllers\Admin\DomainController::class, 'index'])->name('admin.domains');
+    Route::put('/domains/{id}', [\App\Http\Controllers\Admin\DomainController::class, 'update'])->name('admin.domains.update');
+    Route::delete('/domains/{id}', [\App\Http\Controllers\Admin\DomainController::class, 'destroy'])->name('admin.domains.destroy');
     Route::get('/settings/{tab?}', [AdminController::class, 'settings'])->name('admin.settings');
     Route::get('/plans', function () { return view('admin.modules.plans'); })->name('admin.plans');
 });
