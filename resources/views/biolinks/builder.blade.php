@@ -90,7 +90,13 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-outline-danger p-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border-radius: 8px;">
-                                            <span data-duo-icons="trash" style="width: 14px; height: 14px;"></span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" opacity="0.25" fill="currentColor" style="stroke: none;"></path>
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                                            </svg>
                                         </button>
                                     </form>
                                 </div>
@@ -114,28 +120,29 @@
 </div>
 
 <!-- Modal Edit Profile -->
-<div class="modal fade glass-modal" id="editProfileModal" tabindex="-1">
+<div class="modal fade" id="editProfileModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-4">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
             <form action="{{ route('biolinks.settings.update', $link->id) }}" method="POST">
                 @csrf
                 @method('PUT')
-                <div class="modal-header border-bottom-0">
+                <div class="modal-header border-bottom-0 pb-1">
                     <h5 class="modal-title fw-bold">Edit Profil Biolink</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body py-2">
                     <div class="mb-3">
-                        <label class="form-label">Nama / Judul</label>
+                        <label class="form-label small fw-semibold text-secondary">Nama / Judul</label>
                         <input type="text" name="title" class="form-control" placeholder="Nama Anda" value="{{ $link->settings['title'] ?? '' }}">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Deskripsi Singkat</label>
+                        <label class="form-label small fw-semibold text-secondary">Deskripsi Singkat</label>
                         <textarea name="description" class="form-control" rows="3" placeholder="Tulis bio singkat...">{{ $link->settings['description'] ?? '' }}</textarea>
                     </div>
                 </div>
-                <div class="modal-footer border-top-0">
-                    <button type="submit" class="btn btn-primary">Simpan Profil</button>
+                <div class="modal-footer border-top-0 pt-1">
+                    <button type="button" class="btn btn-light btn-sm rounded-3 px-3.5 py-2 fw-semibold" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-sm rounded-3 px-3.5 py-2 fw-semibold" style="background-color: var(--primary-color); border-color: var(--primary-color);">Simpan Profil</button>
                 </div>
             </form>
         </div>
@@ -143,28 +150,29 @@
 </div>
 
 <!-- Modal Add Link -->
-<div class="modal fade glass-modal" id="addLinkBlockModal" tabindex="-1">
+<div class="modal fade" id="addLinkBlockModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-4">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
             <form action="{{ route('biolinks.blocks.store', $link->id) }}" method="POST">
                 @csrf
                 <input type="hidden" name="type" value="link">
-                <div class="modal-header border-bottom-0">
+                <div class="modal-header border-bottom-0 pb-1">
                     <h5 class="modal-title fw-bold">Tambah Tautan</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body py-2">
                     <div class="mb-3">
-                        <label class="form-label">Judul Tautan</label>
+                        <label class="form-label small fw-semibold text-secondary">Judul Tautan <span class="text-danger">*</span></label>
                         <input type="text" name="settings[title]" class="form-control" required placeholder="Cek Promo Terbaru!">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">URL Tujuan</label>
+                        <label class="form-label small fw-semibold text-secondary">URL Tujuan <span class="text-danger">*</span></label>
                         <input type="url" name="location_url" class="form-control" required placeholder="https://example.com/promo">
                     </div>
                 </div>
-                <div class="modal-footer border-top-0">
-                    <button type="submit" class="btn btn-primary">Tambah</button>
+                <div class="modal-footer border-top-0 pt-1">
+                    <button type="button" class="btn btn-light btn-sm rounded-3 px-3.5 py-2 fw-semibold" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-sm rounded-3 px-3.5 py-2 fw-semibold" style="background-color: var(--primary-color); border-color: var(--primary-color);">Tambah</button>
                 </div>
             </form>
         </div>
@@ -172,24 +180,25 @@
 </div>
 
 <!-- Modal Add Text -->
-<div class="modal fade glass-modal" id="addTextBlockModal" tabindex="-1">
+<div class="modal fade" id="addTextBlockModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-4">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
             <form action="{{ route('biolinks.blocks.store', $link->id) }}" method="POST">
                 @csrf
                 <input type="hidden" name="type" value="text">
-                <div class="modal-header border-bottom-0">
+                <div class="modal-header border-bottom-0 pb-1">
                     <h5 class="modal-title fw-bold">Tambah Teks</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body py-2">
                     <div class="mb-3">
-                        <label class="form-label">Konten Teks</label>
+                        <label class="form-label small fw-semibold text-secondary">Konten Teks <span class="text-danger">*</span></label>
                         <textarea name="settings[content]" class="form-control" rows="4" required placeholder="Tulis sesuatu yang menarik..."></textarea>
                     </div>
                 </div>
-                <div class="modal-footer border-top-0">
-                    <button type="submit" class="btn btn-primary">Tambah</button>
+                <div class="modal-footer border-top-0 pt-1">
+                    <button type="button" class="btn btn-light btn-sm rounded-3 px-3.5 py-2 fw-semibold" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-sm rounded-3 px-3.5 py-2 fw-semibold" style="background-color: var(--primary-color); border-color: var(--primary-color);">Tambah</button>
                 </div>
             </form>
         </div>
