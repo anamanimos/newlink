@@ -827,3 +827,17 @@ body {
     background-color: #1a1d27 !important;
     color: var(--text-primary) !important;
 }
+
+/* Stats Card Icon Box container styling */
+.stats-icon-box {
+    background-color: rgba(56, 232, 173, 0.16) !important; /* Soft mint green background tint */
+    color: #166534 !important; /* Dark green icon color in light mode */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+[data-bs-theme="dark"] .stats-icon-box {
+    background-color: rgba(125, 211, 161, 0.12) !important; /* Dark mode soft mint tint */
+    color: #a4e5bd !important; /* High contrast bright mint green icon color in dark mode */
+}

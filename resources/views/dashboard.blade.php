@@ -14,7 +14,14 @@
             } elseif ($iconName == 'link') {
                 return '<span data-duo-icons="link" style="width: 18px; height: 18px;"></span>';
             } elseif ($iconName == 'qrcode') {
-                return '<span data-duo-icons="qr-code" style="width: 18px; height: 18px;"></span>';
+                return '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" opacity="0.25" fill="currentColor" style="stroke: none;"></rect>
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <rect x="7" y="7" width="3" height="3" fill="currentColor"></rect>
+                    <rect x="14" y="7" width="3" height="3" fill="currentColor"></rect>
+                    <rect x="7" y="14" width="3" height="3" fill="currentColor"></rect>
+                    <rect x="14" y="14" width="3" height="3" fill="currentColor"></rect>
+                </svg>';
             } elseif ($iconName == 'card') {
                 return '<span data-duo-icons="credit-card" style="width: 18px; height: 18px;"></span>';
             } elseif ($iconName == 'clicks') {
@@ -25,19 +32,6 @@
                 return '<span data-duo-icons="chart-pie" style="width: 18px; height: 18px;"></span>';
             }
             return '';
-        }
-    }
-    
-    if (!function_exists('renderCardColor')) {
-        function renderCardColor($iconName) {
-            if ($iconName == 'hash') return 'rgba(164, 229, 189, 0.2); color: #166534;';
-            if ($iconName == 'link') return 'rgba(164, 229, 189, 0.2); color: #166534;';
-            if ($iconName == 'qrcode') return 'rgba(164, 229, 189, 0.2); color: #166534;';
-            if ($iconName == 'card') return 'rgba(164, 229, 189, 0.2); color: #166534;';
-            if ($iconName == 'clicks') return 'rgba(164, 229, 189, 0.2); color: #166534;';
-            if ($iconName == 'calendar') return 'rgba(164, 229, 189, 0.2); color: #166534;';
-            if ($iconName == 'chart') return 'rgba(164, 229, 189, 0.2); color: #166534;';
-            return 'rgba(164, 229, 189, 0.2); color: #166534;';
         }
     }
 @endphp
@@ -93,7 +87,7 @@
         <!-- Card 1 -->
         <div class="col-6 col-md-3">
             <div class="glass-card p-3 d-flex align-items-center w-100 border border-secondary border-opacity-10 rounded-3" style="background: var(--card-bg-blur); height: 74px;">
-                <div class="p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="background: {!! renderCardColor($card1_icon) !!} width: 40px; height: 40px; flex-shrink: 0;">
+                <div class="stats-icon-box p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
                     {!! renderCardIcon($card1_icon) !!}
                 </div>
                 <div class="min-w-0">
@@ -106,7 +100,7 @@
         <!-- Card 2 -->
         <div class="col-6 col-md-3">
             <div class="glass-card p-3 d-flex align-items-center w-100 border border-secondary border-opacity-10 rounded-3" style="background: var(--card-bg-blur); height: 74px;">
-                <div class="p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="background: {!! renderCardColor($card2_icon) !!} width: 40px; height: 40px; flex-shrink: 0;">
+                <div class="stats-icon-box p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
                     {!! renderCardIcon($card2_icon) !!}
                 </div>
                 <div class="min-w-0">
@@ -119,7 +113,7 @@
         <!-- Card 3 -->
         <div class="col-6 col-md-3">
             <div class="glass-card p-3 d-flex align-items-center w-100 border border-secondary border-opacity-10 rounded-3" style="background: var(--card-bg-blur); height: 74px;">
-                <div class="p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="background: {!! renderCardColor($card3_icon) !!} width: 40px; height: 40px; flex-shrink: 0;">
+                <div class="stats-icon-box p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
                     {!! renderCardIcon($card3_icon) !!}
                 </div>
                 <div class="min-w-0">
@@ -132,7 +126,7 @@
         <!-- Card 4 -->
         <div class="col-6 col-md-3">
             <div class="glass-card p-3 d-flex align-items-center w-100 border border-secondary border-opacity-10 rounded-3" style="background: var(--card-bg-blur); height: 74px;">
-                <div class="p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="background: {!! renderCardColor($card4_icon) !!} width: 40px; height: 40px; flex-shrink: 0;">
+                <div class="stats-icon-box p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
                     {!! renderCardIcon($card4_icon) !!}
                 </div>
                 <div class="min-w-0">
