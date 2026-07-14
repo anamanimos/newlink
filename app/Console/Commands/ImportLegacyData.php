@@ -10,6 +10,7 @@ use App\Models\Domain;
 use App\Models\Pixel;
 use App\Models\Link;
 use App\Models\BiolinkBlock;
+use App\Models\TrackLink;
 
 class ImportLegacyData extends Command
 {
@@ -66,7 +67,10 @@ class ImportLegacyData extends Command
         // 8. Import Biolink Blocks
         $this->importBiolinkBlocks($legacyDb);
 
-        // 9. Re-enable foreign key checks
+        // 9. Import Track Links (Clicks)
+        $this->importTrackLinks($legacyDb);
+
+        // 10. Re-enable foreign key checks
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $this->info('Data import process completed successfully!');
@@ -282,5 +286,39 @@ class ImportLegacyData extends Command
         $bar->finish();
         $this->newLine();
         $this->info('Biolink blocks imported: ' . count($blocks));
+    }
+
+    private function importTrackLinks($legacyDb)
+    {
+        $this->info('Importing track links (click analytics)...');
+        TrackLink::truncate();
+
+        // Using chunk to avoid memory exhaustion since this table might be huge
+        $total = $legacyDb->table('track_links')->count();
+        $bar = $this->output->createProgressBar($total);
+        $bar->start();
+
+        $legacyDb->table('track_links')->orderBy('id')->chunk(1000, function ($clicks) use ($bar) {
+            $insertData = [];
+            foreach ($clicks as $click) {
+                $insertData[] = [
+                    'id' => $click->id,
+                    'link_id' => $click->link_id,
+                    'user_id' => $click->user_id,
+                    'ip' => $click->ip,
+                    'country_code' => $click->country_code,
+                    'os' => $click->os,
+                    'browser' => $click->browser,
+                    'device_type' => $click->device_type,
+                    'datetime' => $click->datetime ?: now(),
+                ];
+            }
+            TrackLink::insert($insertData);
+            $bar->advance(count($clicks));
+        });
+
+        $bar->finish();
+        $this->newLine();
+        $this->info("Track links imported: {$total}");
     }
 }
