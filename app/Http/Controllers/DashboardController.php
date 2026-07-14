@@ -139,7 +139,9 @@ class DashboardController extends Controller
         $links = $linksQuery->paginate($perPage)->withQueryString();
 
         $projects = Project::where('user_id', $user->id)->get();
-        $domains = Domain::where('user_id', $user->id)->get();
+        $domains = Domain::where('user_id', $user->id)->orWhere(function($q) {
+            $q->where('type', 1)->where('is_enabled', 1);
+        })->get();
 
         if ($request->ajax()) {
             return view('partials.links_table', compact('links', 'type', 'projects', 'domains'))->render();
@@ -183,7 +185,9 @@ class DashboardController extends Controller
 
         // Fetch projects and domains for dropdowns in modals
         $projects = Project::where('user_id', $user->id)->get();
-        $domains = Domain::where('user_id', $user->id)->get();
+        $domains = Domain::where('user_id', $user->id)->orWhere(function($q) {
+            $q->where('type', 1)->where('is_enabled', 1);
+        })->get();
 
         return view('dashboard', compact(
             'biolinksCount',
