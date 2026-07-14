@@ -23,13 +23,30 @@ class BiolinkController extends Controller
         
         $request->validate([
             'title' => 'nullable|string|max:255',
-            'description' => 'nullable|string|max:500'
+            'description' => 'nullable|string|max:500',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:4096'
         ]);
 
-        $settings = array_merge($link->settings ?? [], [
-            'title' => $request->title,
-            'description' => $request->description
-        ]);
+        $settings = $link->settings ?? [];
+        $settings['title'] = $request->title;
+        $settings['description'] = $request->description;
+
+        if ($request->hasFile('avatar')) {
+            $avatar = $request->file('avatar');
+            $avatarName = 'avatar_' . $link->id . '_' . time() . '.' . $avatar->getClientOriginalExtension();
+            // Ensure uploads directory exists
+            $avatar->move(public_path('uploads/biolinks'), $avatarName);
+            $settings['avatar_url'] = '/uploads/biolinks/' . $avatarName;
+        }
+
+        if ($request->hasFile('cover')) {
+            $cover = $request->file('cover');
+            $coverName = 'cover_' . $link->id . '_' . time() . '.' . $cover->getClientOriginalExtension();
+            // Ensure uploads directory exists
+            $cover->move(public_path('uploads/biolinks'), $coverName);
+            $settings['cover_url'] = '/uploads/biolinks/' . $coverName;
+        }
 
         $link->update(['settings' => $settings]);
 

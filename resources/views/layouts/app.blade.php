@@ -90,6 +90,13 @@
                     <a href="{{ route('admin.domains') }}" class="sidebar-link {{ request()->routeIs('admin.domains') ? 'active' : '' }}">
                         <span data-duo-icons="world" class="me-3" style="width:20px;height:20px;"></span>Domains
                     </a>
+                    <a href="{{ route('admin.links') }}" class="sidebar-link {{ request()->routeIs('admin.links') ? 'active' : '' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="me-3" style="color: var(--text-secondary); flex-shrink: 0;">
+                            <path d="M9 17H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3" opacity="0.25" fill="currentColor" style="stroke: none;"></path>
+                            <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
+                            <line x1="8" y1="12" x2="16" y2="12"></line>
+                        </svg>Links
+                    </a>
                     <a href="{{ route('admin.settings') }}" class="sidebar-link {{ request()->is('admin/settings*') ? 'active' : '' }}">
                         <span data-duo-icons="settings" class="me-3" style="width:20px;height:20px;"></span>Settings
                     </a>

@@ -91,4 +91,43 @@ class AdminController extends Controller
         
         return view('admin.modules.settings', compact('tab'));
     }
+
+    /**
+     * Show the links administration page.
+     */
+    public function links(Request $request)
+    {
+        $query = Link::with('user');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('url', 'like', "%{$search}%")
+                  ->orWhere('location_url', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        $links = $query->latest()->paginate(25);
+
+        return view('admin.modules.links', compact('links'));
+    }
+
+    /**
+     * Toggle the verified status of a link (Admin only).
+     */
+    public function toggleVerify(Request $request, $id)
+    {
+        $link = Link::findOrFail($id);
+        $link->update(['is_verified' => !$link->is_verified]);
+
+        return response()->json([
+            'success' => true,
+            'is_verified' => (bool)$link->is_verified,
+            'message' => $link->is_verified ? 'Link berhasil diverifikasi!' : 'Verifikasi link berhasil dicabut!'
+        ]);
+    }
 }

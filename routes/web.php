@@ -73,6 +73,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::delete('/domains/{id}', [\App\Http\Controllers\Admin\DomainController::class, 'destroy'])->name('admin.domains.destroy');
     Route::get('/settings/{tab?}', [AdminController::class, 'settings'])->name('admin.settings');
     Route::get('/plans', function () { return view('admin.modules.plans'); })->name('admin.plans');
+    Route::get('/links', [AdminController::class, 'links'])->name('admin.links');
+    Route::post('/links/{id}/toggle-verify', [AdminController::class, 'toggleVerify'])->name('admin.links.toggle-verify');
 });
 
 // Root redirects to login or dashboard

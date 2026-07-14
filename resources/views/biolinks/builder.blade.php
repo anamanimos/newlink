@@ -123,7 +123,7 @@
 <div class="modal fade" id="editProfileModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
-            <form action="{{ route('biolinks.settings.update', $link->id) }}" method="POST">
+            <form action="{{ route('biolinks.settings.update', $link->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="modal-header border-bottom-0 pb-1">
@@ -153,6 +153,14 @@
                             </span>
                             <textarea name="description" class="form-control border-0 ps-1 pe-0 pt-2.5 bg-transparent" rows="3" placeholder="Tulis bio singkat...">{{ $link->settings['description'] ?? '' }}</textarea>
                         </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Foto Profil</label>
+                        <input type="file" name="avatar" class="form-control" accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Gambar Header Belakang</label>
+                        <input type="file" name="cover" class="form-control" accept="image/*">
                     </div>
                 </div>
                 <div class="modal-footer border-top-0 pt-1">
@@ -299,17 +307,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
         submitBtn.prop('disabled', true).text('Loading...');
 
+        // Use FormData to support file uploads
+        const formData = new FormData(form[0]);
+
         $.ajax({
             url: form.attr('action'),
             method: form.attr('method') || 'POST',
-            data: form.serialize(),
+            data: formData,
+            processData: false,
+            contentType: false,
             dataType: 'json',
             success: function(response) {
                 // Hide modal
                 modal.hide();
-                // Reset form fields (except for edit profile since it holds current data)
+                // Reset file fields and standard inputs (except for edit profile since it holds current data)
                 if (modalEl.id !== 'editProfileModal') {
                     form[0].reset();
+                } else {
+                    // Clear file input values on success
+                    form.find('input[type="file"]').val('');
                 }
                 
                 // Refresh UI and show toast
