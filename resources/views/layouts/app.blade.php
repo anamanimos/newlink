@@ -43,6 +43,19 @@
                                 <span data-duo-icons="settings" style="width: 16px; height: 16px;" class="me-2"></span>Settings
                             </a>
                         </li>
+                        @if(Auth::check() && Auth::user()->type === 1)
+                            <li>
+                                @if(request()->is('admin*'))
+                                    <a class="dropdown-item rounded-3 sidebar-link py-2" href="{{ route('dashboard') }}">
+                                        <span data-duo-icons="world" style="width: 16px; height: 16px;" class="me-2"></span>Go to User Panel
+                                    </a>
+                                @else
+                                    <a class="dropdown-item rounded-3 sidebar-link py-2" href="{{ route('admin.dashboard') }}">
+                                        <span data-duo-icons="dashboard" style="width: 16px; height: 16px;" class="me-2"></span>Go to Admin Panel
+                                    </a>
+                                @endif
+                            </li>
+                        @endif
                         <li><hr class="dropdown-divider border-secondary opacity-25"></li>
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
@@ -65,7 +78,7 @@
     <div class="dashboard-container">
         <!-- Sidebar -->
         <aside class="dashboard-sidebar">
-            <nav class="flex-column" style="padding-bottom: 80px;">
+            <nav class="flex-column">
                 @if(request()->is('admin*'))
                     <!-- Admin Navigation -->
                     <a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
@@ -82,11 +95,6 @@
                     </a>
                     <a href="{{ route('admin.plans') }}" class="sidebar-link {{ request()->routeIs('admin.plans') ? 'active' : '' }}">
                         <span data-duo-icons="discount" class="me-3" style="width:20px;height:20px;"></span>Plans
-                    </a>
-                    
-                    <hr class="mx-3 my-2 border-secondary opacity-25">
-                    <a href="{{ route('dashboard') }}" class="sidebar-link text-info">
-                        <span data-duo-icons="world" class="me-3" style="width:20px;height:20px; color: #0dcaf0;"></span>Go to User Panel
                     </a>
                 @else
                     <!-- User Navigation -->
@@ -114,28 +122,8 @@
                     <a href="{{ route('pixels.index') }}" class="sidebar-link {{ request()->routeIs('pixels.*') ? 'active' : '' }}">
                         <span data-duo-icons="target" class="me-3" style="width:20px;height:20px;"></span>Data
                     </a>
-
-                    @if(Auth::check() && Auth::user()->type === 1)
-                        <hr class="mx-3 my-2 border-secondary opacity-25">
-                        <a href="{{ route('admin.dashboard') }}" class="sidebar-link text-primary">
-                            <span data-duo-icons="settings" class="me-3" style="width:20px;height:20px;"></span>Go to Admin Panel
-                        </a>
-                    @endif
                 @endif
             </nav>
-
-            <!-- Sidebar Footer Profile -->
-            <div class="position-absolute bottom-0 start-0 end-0 p-3 border-top" style="border-top-color: var(--glass-border) !important; background: rgba(0,0,0,0.02);">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="p-2 rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; color: var(--primary-color);">
-                        <span data-duo-icons="user" style="width: 18px; height: 18px;"></span>
-                    </div>
-                    <div class="min-w-0">
-                        <h6 class="fw-bold mb-0 text-truncate small" style="font-size: 0.8rem;">{{ Auth::user()->name ?? 'Guest' }}</h6>
-                        <span class="text-muted d-block text-truncate" style="font-size: 0.675rem;">{{ Auth::user()->email ?? '' }}</span>
-                    </div>
-                </div>
-            </div>
         </aside>
 
         <!-- Main Content -->
