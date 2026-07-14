@@ -129,7 +129,7 @@
                         }
                         
                         if ($domainHost) {
-                            $fullShortenedUrl = 'http://' . $domainHost . '/' . $link->url;
+                            $fullShortenedUrl = $domObj->scheme . $domainHost . '/' . $link->url;
                         } else {
                             $fullShortenedUrl = url($link->url);
                         }

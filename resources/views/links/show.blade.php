@@ -162,7 +162,7 @@
                 </div>
                 <div>
                     @php
-                        $fullUrl = $link->domain_id ? ($link->domain->url ?? url('/')) . '/' . $link->url : url('/') . '/' . $link->url;
+                        $fullUrl = $link->domain_id && $link->domain ? $link->domain->scheme . $link->domain->host . '/' . $link->url : url('/') . '/' . $link->url;
                     @endphp
                     <h5 class="fw-bold mb-0 d-flex align-items-center gap-2" style="color: var(--text-primary);">
                         <a href="{{ $fullUrl }}" target="_blank" class="text-decoration-none text-primary">{{ $fullUrl }}</a>

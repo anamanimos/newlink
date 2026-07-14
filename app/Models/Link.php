@@ -24,6 +24,11 @@ class Link extends Model
         return $this->belongsTo(Project::class);
     }
 
+    public function domain()
+    {
+        return $this->belongsTo(Domain::class);
+    }
+
     public function biolinkBlocks()
     {
         return $this->hasMany(BiolinkBlock::class)->orderBy('order');
