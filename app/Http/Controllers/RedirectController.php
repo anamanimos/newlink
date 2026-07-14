@@ -32,11 +32,26 @@ class RedirectController extends Controller
         // Increment clicks
         $link->increment('clicks');
         
+        // Fetch country from IP
+        $countryCode = null;
+        $ip = $request->ip();
+        if ($ip !== '127.0.0.1' && $ip !== '::1') {
+            try {
+                $geo = json_decode(file_get_contents("http://ip-api.com/json/{$ip}?fields=countryCode"));
+                if ($geo && isset($geo->countryCode)) {
+                    $countryCode = $geo->countryCode;
+                }
+            } catch (\Exception $e) {
+                // Silently ignore geo-location failures
+            }
+        }
+
         // Detailed tracking
         \App\Models\TrackLink::create([
             'link_id' => $link->id,
             'user_id' => $link->user_id,
-            'ip' => $request->ip(),
+            'ip' => $ip,
+            'country_code' => $countryCode,
             'os' => $this->getOS($request->header('User-Agent')),
             'browser' => $this->getBrowser($request->header('User-Agent')),
         ]);
