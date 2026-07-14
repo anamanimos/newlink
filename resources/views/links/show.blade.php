@@ -165,7 +165,7 @@
                         $fullUrl = $link->domain_id && $link->domain ? $link->domain->scheme . $link->domain->host . '/' . $link->url : url('/') . '/' . $link->url;
                     @endphp
                     <h5 class="fw-bold mb-0 d-flex align-items-center gap-2" style="color: var(--text-primary);">
-                        <a href="{{ $fullUrl }}" target="_blank" class="text-decoration-none text-primary">{{ $fullUrl }}</a>
+                        <a href="{{ $fullUrl }}" target="_blank" class="text-decoration-none text-primary">{{ preg_replace('#^https?://#', '', $fullUrl) }}</a>
                     </h5>
                     <div class="text-muted small mt-1 d-flex align-items-center gap-2 text-truncate" style="max-width: 500px;">
                         <a href="{{ $link->location_url }}" target="_blank" class="text-muted text-decoration-none">{{ $link->location_url }}</a>
