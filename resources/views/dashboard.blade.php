@@ -10,17 +10,17 @@
             if ($iconName == 'hash') {
                 return '<span class="fw-bold fs-5">#</span>';
             } elseif ($iconName == 'link') {
-                return '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg>';
+                return '<span data-duo-icons="link" style="width: 18px; height: 18px;"></span>';
             } elseif ($iconName == 'qrcode') {
-                return '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><rect x="7" y="7" width="3" height="3"></rect><rect x="14" y="7" width="3" height="3"></rect><rect x="7" y="14" width="3" height="3"></rect><rect x="14" y="14" width="3" height="3"></rect></svg>';
+                return '<span data-duo-icons="qr-code" style="width: 18px; height: 18px;"></span>';
             } elseif ($iconName == 'card') {
-                return '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>';
+                return '<span data-duo-icons="credit-card" style="width: 18px; height: 18px;"></span>';
             } elseif ($iconName == 'clicks') {
-                return '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>';
+                return '<span data-duo-icons="compass" style="width: 18px; height: 18px;"></span>';
             } elseif ($iconName == 'calendar') {
-                return '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>';
+                return '<span data-duo-icons="calendar" style="width: 18px; height: 18px;"></span>';
             } elseif ($iconName == 'chart') {
-                return '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path></svg>';
+                return '<span data-duo-icons="chart-pie" style="width: 18px; height: 18px;"></span>';
             }
             return '';
         }
@@ -43,10 +43,7 @@
 <!-- Page Header (Title & Actions) -->
 <div class="d-flex align-items-center justify-content-between mb-4 mt-2">
     <h4 class="fw-bold mb-0 d-flex align-items-center text-dark-custom" style="font-size: 1.5rem; letter-spacing: -0.5px;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="text-muted" style="margin-right: 12px;">
-            <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
-            <line x1="8" y1="12" x2="16" y2="12"></line>
-        </svg>
+        <span data-duo-icons="dashboard" style="width: 22px; height: 22px; margin-right: 12px;" class="text-muted"></span>
         @if($type == 'link')
             Shortened Links
         @elseif($type == 'biolink')
@@ -73,20 +70,12 @@
         </button>
         @if($type == 'biolink')
             <button class="btn btn-primary d-flex align-items-center gap-2 py-2 px-3.5 fw-semibold rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#createBiolinkModal" style="background-color: var(--primary-color); border-color: var(--primary-color);">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="8" x2="12" y2="16"></line>
-                    <line x1="8" y1="12" x2="16" y2="12"></line>
-                </svg>
+                <span data-duo-icons="add-circle" style="width: 16px; height: 16px;"></span>
                 Create Biolink
             </button>
         @else
             <button class="btn btn-primary d-flex align-items-center gap-2 py-2 px-3.5 fw-semibold rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#createLinkModal" style="background-color: var(--primary-color); border-color: var(--primary-color);">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="8" x2="12" y2="16"></line>
-                    <line x1="8" y1="12" x2="16" y2="12"></line>
-                </svg>
+                <span data-duo-icons="add-circle" style="width: 16px; height: 16px;"></span>
                 Create Link
             </button>
         @endif

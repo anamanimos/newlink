@@ -142,19 +142,12 @@
                         <!-- Icon/Avatar -->
                         <td class="ps-3 pe-2 py-2.5" style="width: 56px; border: none;">
                             @if($link->type == 'biolink')
-                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: rgba(13, 148, 136, 0.08); color: #0d9488;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="10"></circle>
-                                        <line x1="2" y1="12" x2="22" y2="12"></line>
-                                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                                    </svg>
+                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: rgba(164, 229, 189, 0.2); color: #166534;">
+                                    <span data-duo-icons="app" style="width: 16px; height: 16px;"></span>
                                 </div>
                             @else
-                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: rgba(13, 110, 253, 0.08); color: #0d6efd;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
-                                        <line x1="8" y1="12" x2="16" y2="12"></line>
-                                    </svg>
+                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: rgba(164, 229, 189, 0.2); color: #166534;">
+                                    <span data-duo-icons="link" style="width: 16px; height: 16px;"></span>
                                 </div>
                             @endif
                         </td>
@@ -218,10 +211,7 @@
                             <div class="d-inline-flex align-items-center gap-2.5">
                                 <!-- Copy -->
                                 <button class="btn p-1.5 text-muted border-0 bg-transparent rounded-circle hover-bg-light btn-copy-link" data-url="{{ $fullShortenedUrl }}" title="Salin Link">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                    </svg>
+                                    <span data-duo-icons="copy" style="width: 16px; height: 16px;"></span>
                                 </button>
 
                                  <!-- Toggle -->
@@ -232,11 +222,7 @@
                                  <!-- Dropdown menu -->
                                  <div class="dropdown">
                                      <button class="btn p-1 text-muted border-0 bg-transparent rounded-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                             <circle cx="12" cy="12" r="1"></circle>
-                                             <circle cx="12" cy="5" r="1"></circle>
-                                             <circle cx="12" cy="19" r="1"></circle>
-                                         </svg>
+                                         <span data-duo-icons="app_dots" style="width: 16px; height: 16px;"></span>
                                      </button>
                                      <ul class="dropdown-menu dropdown-menu-end glass-card border-0 shadow-lg p-1.5">
                                          <li>
