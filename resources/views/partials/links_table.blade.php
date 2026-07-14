@@ -147,7 +147,11 @@
                                 </div>
                             @else
                                 <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: rgba(164, 229, 189, 0.2); color: #166534;">
-                                    <span data-duo-icons="link" style="width: 16px; height: 16px;"></span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M9 17H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3" opacity="0.25" fill="currentColor" style="stroke: none;"></path>
+                                        <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
+                                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                                    </svg>
                                 </div>
                             @endif
                         </td>

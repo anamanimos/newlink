@@ -12,7 +12,11 @@
             } elseif ($iconName == 'app') {
                 return '<span data-duo-icons="app" style="width: 18px; height: 18px;"></span>';
             } elseif ($iconName == 'link') {
-                return '<span data-duo-icons="link" style="width: 18px; height: 18px;"></span>';
+                return '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 17H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3" opacity="0.25" fill="currentColor" style="stroke: none;"></path>
+                    <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
+                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>';
             } elseif ($iconName == 'qrcode') {
                 return '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2" opacity="0.25" fill="currentColor" style="stroke: none;"></rect>
