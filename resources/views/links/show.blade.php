@@ -295,22 +295,26 @@
                     <table class="table table-hover align-middle mb-0 text-dark-custom" style="font-size: 0.9rem;">
                         <thead>
                             <tr class="text-secondary small fw-bold" style="border-bottom: 2px solid var(--glass-border);">
-                                <th class="pb-3" style="width: 40%;">Judul Tombol</th>
-                                <th class="pb-3" style="width: 35%;">URL Tujuan</th>
-                                <th class="pb-3 text-center" style="width: 10%;">Jumlah Klik</th>
-                                <th class="pb-3 text-end" style="width: 15%;">Persentase</th>
+                                <th class="pb-3" style="width: 32%;">Judul Tombol</th>
+                                <th class="pb-3" style="width: 28%;">URL Tujuan</th>
+                                <th class="pb-3 text-center" style="width: 10%;">Klik</th>
+                                <th class="pb-3 text-center" style="width: 10%;">CTR</th>
+                                <th class="pb-3" style="width: 12%;">Kontribusi</th>
+                                <th class="pb-3 text-end" style="width: 8%;">Detail</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($biolinkBlocks as $block)
                                 @php
                                     $blockPercent = $totalClicks > 0 ? ($block->clicks / $totalClicks) * 100 : 0;
+                                    // CTR calculation: Button Clicks / Total Page Clicks (unique views fallback)
+                                    $blockCTR = $totalClicks > 0 ? ($block->clicks / $totalClicks) * 100 : 0;
                                 @endphp
                                 <tr style="border-bottom: 1px solid var(--glass-border);">
                                     <td class="py-3 fw-semibold text-dark-custom">
                                         {{ $block->settings['title'] ?? 'Tautan Tanpa Judul' }}
                                     </td>
-                                    <td class="py-3 text-muted text-truncate" style="max-width: 250px;">
+                                    <td class="py-3 text-muted text-truncate" style="max-width: 220px;">
                                         <a href="{{ $block->location_url }}" target="_blank" rel="noopener" class="text-secondary text-decoration-none hover-primary">
                                             {{ $block->location_url }}
                                         </a>
@@ -318,15 +322,27 @@
                                     <td class="py-3 text-center fw-bold text-primary">
                                         {{ number_format($block->clicks) }}
                                     </td>
+                                    <td class="py-3 text-center fw-semibold text-secondary">
+                                        {{ number_format($blockCTR, 1) }}%
+                                    </td>
                                     <td class="py-3">
-                                        <div class="d-flex align-items-center justify-content-end gap-2">
-                                            <div class="progress-bar-custom mb-1" style="width: 80px; height: 6px; margin-top: 0;">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="progress-bar-custom mb-1" style="width: 60px; height: 6px; margin-top: 0;">
                                                 <div class="progress-bar-fill" style="width: {{ $blockPercent }}%; background-color: var(--primary-color);"></div>
                                             </div>
-                                            <span class="small fw-semibold text-muted" style="min-width: 36px; text-align: right;">
+                                            <span class="small fw-semibold text-muted" style="font-size: 0.75rem;">
                                                 {{ number_format($blockPercent, 0) }}%
                                             </span>
                                         </div>
+                                    </td>
+                                    <td class="py-3 text-end">
+                                        <button class="btn btn-sm btn-outline-primary p-2 d-inline-flex align-items-center justify-content-center btn-block-analytics" data-id="{{ $block->id }}" style="width: 32px; height: 32px; border-radius: 8px;" title="Lihat Detail Analitik Tombol">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                                <line x1="18" y1="20" x2="18" y2="10" opacity="0.3"></line>
+                                                <line x1="12" y1="20" x2="12" y2="4"></line>
+                                                <line x1="6" y1="20" x2="6" y2="14" opacity="0.3"></line>
+                                            </svg>
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -335,6 +351,70 @@
                 </div>
             </div>
         @endif
+
+        <!-- Modal Block Analytics Details -->
+        <div class="modal fade" id="blockAnalyticsModal" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                    <div class="modal-header border-bottom-0 pb-1">
+                        <h5 class="modal-title fw-bold text-dark-custom" id="blockAnalyticsTitle">Detail Statistik Tombol</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body py-2">
+                        <!-- Top Stats Summary -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-6">
+                                <div class="detail-card stat-card p-3 d-flex align-items-center gap-3">
+                                    <div class="stat-icon" style="background: rgba(56, 232, 173, 0.15); color: var(--primary-color);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14 9 11"/></svg>
+                                    </div>
+                                    <div>
+                                        <div class="stat-label" style="font-size: 0.75rem;">Total Klik Tombol</div>
+                                        <div class="stat-value" id="blockTotalClicks" style="font-size: 1.35rem; font-weight: 700;">0</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="detail-card stat-card p-3 d-flex align-items-center gap-3">
+                                    <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>
+                                    </div>
+                                    <div>
+                                        <div class="stat-label" style="font-size: 0.75rem;">CTR (Click-Through Rate)</div>
+                                        <div class="stat-value" id="blockCTR" style="font-size: 1.35rem; font-weight: 700;">0%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Trend Line Chart -->
+                        <div class="detail-card p-4 mb-4">
+                            <h6 class="fw-bold mb-3 text-dark-custom">Tren Klik Tombol (30 Hari Terakhir)</h6>
+                            <div style="height: 200px; position: relative;">
+                                <canvas id="blockClicksChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Referrers Breakdown -->
+                        <div class="detail-card p-4">
+                            <h6 class="fw-bold mb-3 text-dark-custom d-flex align-items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                                <span>Sumber Klik Tombol (Top Referrers)</span>
+                            </h6>
+                            <div class="info-list" id="blockReferrersList">
+                                <!-- Dynamic Referrer Items go here -->
+                            </div>
+                            <div id="blockNoReferrers" class="text-center text-muted py-4 d-none" style="font-size: 0.875rem;">
+                                Belum ada data sumber referal untuk tombol ini.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0 pt-1">
+                        <button type="button" class="btn btn-light btn-sm rounded-3 px-3.5 py-2 fw-semibold" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Breakdown Section -->
         <div class="row g-4">
@@ -603,7 +683,118 @@
                     },
                 }
             });
-        }
+        // ──────────────────────────────────────────────────────────────────────────
+        // Biolink Button Level Analytics Modal Controller
+        // ──────────────────────────────────────────────────────────────────────────
+        let blockChartInstance = null;
+        const blockModal = new bootstrap.Modal(document.getElementById('blockAnalyticsModal'));
+
+        $(document).on('click', '.btn-block-analytics', function() {
+            const blockId = $(this).data('id');
+            
+            // Set Loading state
+            $('#blockAnalyticsTitle').text('Statistik Tombol: Loading...');
+            $('#blockTotalClicks').text('0');
+            $('#blockCTR').text('0%');
+            $('#blockReferrersList').empty();
+            $('#blockNoReferrers').addClass('d-none');
+            
+            if (blockChartInstance) {
+                blockChartInstance.destroy();
+                blockChartInstance = null;
+            }
+
+            blockModal.show();
+
+            $.ajax({
+                url: `/biolink/block/${blockId}/analytics`,
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        $('#blockAnalyticsTitle').text(`Statistik Tombol: "${response.title}"`);
+                        $('#blockTotalClicks').text(response.clicks);
+                        $('#blockCTR').text(response.ctr);
+
+                        // Draw chart
+                        const blockCtx = document.getElementById('blockClicksChart');
+                        if (blockCtx) {
+                            blockChartInstance = new Chart(blockCtx, {
+                                type: 'line',
+                                data: {
+                                    labels: response.chartDates,
+                                    datasets: [{
+                                        label: 'Klik Tombol',
+                                        data: response.chartData,
+                                        borderColor: '#6366f1',
+                                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                                        borderWidth: 2.2,
+                                        tension: 0.35,
+                                        fill: true,
+                                        pointBackgroundColor: '#ffffff',
+                                        pointBorderColor: '#6366f1',
+                                        pointBorderWidth: 2,
+                                        pointRadius: 3,
+                                        pointHoverRadius: 5
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: {
+                                        legend: { display: false },
+                                        tooltip: {
+                                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                                            titleColor: '#fff',
+                                            bodyColor: '#fff',
+                                            padding: 10,
+                                            cornerRadius: 8,
+                                            displayColors: false
+                                        }
+                                    },
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            grid: { color: 'rgba(148, 163, 184, 0.08)', drawBorder: false },
+                                            ticks: { precision: 0, color: '#64748b', font: { size: 10 } }
+                                        },
+                                        x: {
+                                            grid: { display: false, drawBorder: false },
+                                            ticks: { color: '#64748b', font: { size: 10 }, maxTicksLimit: 7 }
+                                        }
+                                    },
+                                    interaction: { intersect: false, mode: 'index' }
+                                }
+                            });
+                        }
+
+                        // Populate referrers list
+                        const refList = $('#blockReferrersList');
+                        if (response.referrers && response.referrers.length > 0) {
+                            response.referrers.forEach(ref => {
+                                const refItem = `
+                                    <div class="info-list-item d-block">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span class="text-truncate me-2" style="color: var(--text-primary); font-size: 0.825rem;">${ref.referrer}</span>
+                                            <span class="fw-bold text-primary" style="font-size: 0.825rem;">${ref.count.toLocaleString()}</span>
+                                        </div>
+                                        <div class="progress-bar-custom mb-1" style="height: 5px; margin-top: 0;">
+                                            <div class="progress-bar-fill" style="width: ${ref.percent}%; background-color: #6366f1;"></div>
+                                        </div>
+                                    </div>
+                                `;
+                                refList.append(refItem);
+                            });
+                        } else {
+                            $('#blockNoReferrers').removeClass('d-none');
+                        }
+                    }
+                },
+                error: function() {
+                    $('#blockAnalyticsTitle').text('Gagal memuat statistik.');
+                }
+            });
+        });
     });
 </script>
 @endsection

@@ -125,6 +125,7 @@ class LinkController extends Controller
             // Daily Clicks for Chart
             $dailyClicks = \App\Models\TrackLink::select(\Illuminate\Support\Facades\DB::raw('DATE(datetime) as date'), \Illuminate\Support\Facades\DB::raw('count(*) as count'))
                 ->where('link_id', $link->link_id ?? $link->id)
+                ->whereNull('biolink_block_id')
                 ->whereBetween('datetime', [$startDate->toDateTimeString(), $endDate->toDateTimeString()])
                 ->groupBy('date')
                 ->orderBy('date', 'ASC')
@@ -137,6 +138,7 @@ class LinkController extends Controller
             // Top Referrers
             $topReferrers = \App\Models\TrackLink::select('referrer_host', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
                 ->where('link_id', $link->link_id ?? $link->id)
+                ->whereNull('biolink_block_id')
                 ->whereBetween('datetime', [$startDate->toDateTimeString(), $endDate->toDateTimeString()])
                 ->groupBy('referrer_host')
                 ->orderByDesc('count')
@@ -146,6 +148,7 @@ class LinkController extends Controller
             // Top Countries
             $topCountries = \App\Models\TrackLink::select('country_code', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
                 ->where('link_id', $link->link_id ?? $link->id)
+                ->whereNull('biolink_block_id')
                 ->whereBetween('datetime', [$startDate->toDateTimeString(), $endDate->toDateTimeString()])
                 ->groupBy('country_code')
                 ->orderByDesc('count')
@@ -155,6 +158,7 @@ class LinkController extends Controller
             // Top OS & Browser
             $topOs = \App\Models\TrackLink::select('os', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
                 ->where('link_id', $link->link_id ?? $link->id)
+                ->whereNull('biolink_block_id')
                 ->whereBetween('datetime', [$startDate->toDateTimeString(), $endDate->toDateTimeString()])
                 ->groupBy('os')
                 ->orderByDesc('count')
@@ -163,6 +167,7 @@ class LinkController extends Controller
                 
             $topBrowsers = \App\Models\TrackLink::select('browser', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
                 ->where('link_id', $link->link_id ?? $link->id)
+                ->whereNull('biolink_block_id')
                 ->whereBetween('datetime', [$startDate->toDateTimeString(), $endDate->toDateTimeString()])
                 ->groupBy('browser')
                 ->orderByDesc('count')
@@ -171,6 +176,7 @@ class LinkController extends Controller
 
             // Unique Clicks (based on distinct IP)
             $uniqueClicks = \App\Models\TrackLink::where('link_id', $link->link_id ?? $link->id)
+                ->whereNull('biolink_block_id')
                 ->whereNotNull('ip')
                 ->distinct('ip')
                 ->whereBetween('datetime', [$startDate->toDateTimeString(), $endDate->toDateTimeString()])
@@ -178,6 +184,7 @@ class LinkController extends Controller
                 
             // Raw Paginated Clicks
             $rawClicks = \App\Models\TrackLink::where('link_id', $link->link_id ?? $link->id)
+                ->whereNull('biolink_block_id')
                 ->whereBetween('datetime', [$startDate->toDateTimeString(), $endDate->toDateTimeString()])
                 ->orderBy('datetime', 'DESC')
                 ->paginate(25)

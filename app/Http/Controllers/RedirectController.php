@@ -91,6 +91,40 @@ class RedirectController extends Controller
 
         if (!$isBot) {
             $block->increment('clicks');
+
+            // Fetch country and city from IP
+            $countryCode = null;
+            $cityName = null;
+            $ip = $request->ip();
+            if ($ip !== '127.0.0.1' && $ip !== '::1') {
+                try {
+                    $geo = json_decode(file_get_contents("http://ip-api.com/json/{$ip}?fields=countryCode,city"));
+                    if ($geo) {
+                        if (isset($geo->countryCode)) {
+                            $countryCode = $geo->countryCode;
+                        }
+                        if (isset($geo->city)) {
+                            $cityName = $geo->city;
+                        }
+                    }
+                } catch (\Exception $e) {
+                    // Silently ignore geo-location failures
+                }
+            }
+
+            // Save detailed block click track log
+            \App\Models\TrackLink::create([
+                'link_id' => $block->link_id,
+                'biolink_block_id' => $block->id,
+                'user_id' => $block->user_id,
+                'ip' => $ip,
+                'country_code' => $countryCode,
+                'city_name' => $cityName,
+                'os' => $this->getOS($userAgent),
+                'browser' => $this->getBrowser($userAgent),
+                'device_type' => $this->getDevice($userAgent),
+                'referrer_host' => $this->getReferrer($request),
+            ]);
         }
 
         return redirect()->away($block->location_url ?? url('/'));

@@ -141,4 +141,66 @@ class BiolinkController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    public function blockAnalytics(Request $request, $id)
+    {
+        $block = \App\Models\BiolinkBlock::where('user_id', Auth::id())->findOrFail($id);
+        $link = Link::findOrFail($block->link_id);
+
+        $startDate = now()->subDays(30)->startOfDay();
+        $endDate = now()->endOfDay();
+
+        // 1. Daily clicks (last 30 days)
+        $dailyClicks = \App\Models\TrackLink::select(\Illuminate\Support\Facades\DB::raw('DATE(datetime) as date'), \Illuminate\Support\Facades\DB::raw('count(*) as count'))
+            ->where('biolink_block_id', $block->id)
+            ->whereBetween('datetime', [$startDate->toDateTimeString(), $endDate->toDateTimeString()])
+            ->groupBy('date')
+            ->orderBy('date', 'ASC')
+            ->get();
+
+        $clicksByDate = [];
+        foreach ($dailyClicks as $day) {
+            $clicksByDate[$day->date] = $day->count;
+        }
+
+        $chartDates = [];
+        $chartData = [];
+        $period = \Carbon\CarbonPeriod::create($startDate, $endDate);
+        foreach ($period as $date) {
+            $dateStr = $date->format('Y-m-d');
+            $chartDates[] = $date->format('d M');
+            $chartData[] = $clicksByDate[$dateStr] ?? 0;
+        }
+
+        // 2. Top Referrers
+        $topReferrers = \App\Models\TrackLink::select('referrer_host', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
+            ->where('biolink_block_id', $block->id)
+            ->whereBetween('datetime', [$startDate->toDateTimeString(), $endDate->toDateTimeString()])
+            ->groupBy('referrer_host')
+            ->orderByDesc('count')
+            ->limit(5)
+            ->get();
+
+        $referrersData = [];
+        foreach ($topReferrers as $ref) {
+            $referrersData[] = [
+                'referrer' => empty($ref->referrer_host) ? 'Direct / Unknown' : $ref->referrer_host,
+                'count' => $ref->count,
+                'percent' => $block->clicks > 0 ? round(($ref->count / $block->clicks) * 100, 1) : 0
+            ];
+        }
+
+        // Calculate CTR
+        $ctr = $link->clicks > 0 ? round(($block->clicks / $link->clicks) * 100, 1) : 0;
+
+        return response()->json([
+            'success' => true,
+            'title' => $block->settings['title'] ?? 'Tombol',
+            'clicks' => number_format($block->clicks),
+            'ctr' => $ctr . '%',
+            'chartDates' => $chartDates,
+            'chartData' => $chartData,
+            'referrers' => $referrersData
+        ]);
+    }
 }
