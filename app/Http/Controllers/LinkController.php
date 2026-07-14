@@ -225,7 +225,9 @@ class LinkController extends Controller
             $biolinkBlocks = $link->biolinkBlocks()->where('type', 'link')->orderByDesc('clicks')->get();
         }
 
-        return view('links.show', compact(
+        $viewName = $link->type === 'biolink' ? 'biolinks.show' : 'links.show';
+
+        return view($viewName, compact(
             'link', 'totalClicks', 'uniqueClicks', 'chartDates', 'chartData', 
             'topReferrers', 'topCountries', 'topOs', 'topBrowsers', 'startDate', 'endDate', 'rawClicks', 'biolinkBlocks'
         ));
