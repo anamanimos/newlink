@@ -30,6 +30,20 @@
         background-color: rgba(255, 255, 255, 0.05);
     }
 
+    /* Preset theme card highlights */
+    .preset-card {
+        transition: all 0.2s ease-in-out;
+    }
+    .preset-card:hover {
+        transform: translateY(-2.5px);
+        border-color: var(--primary-color) !important;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1) !important;
+    }
+    .preset-card.selected {
+        border-color: var(--primary-color) !important;
+        background-color: var(--primary-light) !important;
+    }
+
     /* Drag & Drop overlays */
     #coverDropzone:hover .dropzone-overlay,
     #avatarDropzone:hover .dropzone-overlay {
@@ -298,6 +312,106 @@
                         <!-- Keep Title and Description values inside hidden sync fields -->
                         <input type="hidden" name="title" value="{{ $link->settings['title'] ?? '' }}">
                         <input type="hidden" name="description" value="{{ $link->settings['description'] ?? '' }}">
+
+                        <!-- Presets Section -->
+                        <div class="mb-4">
+                            <label class="form-label small fw-semibold text-secondary mb-2">Preset Kombinasi Tampilan Siap Pakai</label>
+                            <div class="d-flex flex-wrap gap-2.5">
+                                <!-- Preset 1: Mint Tea (Default green tosca) -->
+                                <div class="preset-card p-2 rounded-3 border text-center position-relative shadow-sm"
+                                     data-bg-type="gradient"
+                                     data-bg-start="#a4e5bd"
+                                     data-bg-end="#7dd3a1"
+                                     data-btn-bg="#ffffff"
+                                     data-btn-text="#111827"
+                                     data-text="#111827"
+                                     style="width: calc(33.3% - 8px); min-width: 90px; cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
+                                    <div class="d-flex justify-content-center mb-1.5">
+                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, #a4e5bd 0%, #7dd3a1 100%); border: 1px solid rgba(0,0,0,0.1); margin-right: -6px; z-index: 2;"></div>
+                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: #ffffff; border: 1px solid rgba(0,0,0,0.1); z-index: 1;"></div>
+                                    </div>
+                                    <span style="font-size: 0.65rem;" class="fw-bold d-block text-dark-custom text-truncate">Mint Tea</span>
+                                </div>
+
+                                <!-- Preset 2: Midnight Aurora -->
+                                <div class="preset-card p-2 rounded-3 border text-center position-relative shadow-sm"
+                                     data-bg-type="gradient"
+                                     data-bg-start="#0f172a"
+                                     data-bg-end="#1e1b4b"
+                                     data-btn-bg="#1e293b"
+                                     data-btn-text="#f8fafc"
+                                     data-text="#f8fafc"
+                                     style="width: calc(33.3% - 8px); min-width: 90px; cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
+                                    <div class="d-flex justify-content-center mb-1.5">
+                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); border: 1px solid rgba(255,255,255,0.1); margin-right: -6px; z-index: 2;"></div>
+                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: #1e293b; border: 1px solid rgba(255,255,255,0.1); z-index: 1;"></div>
+                                    </div>
+                                    <span style="font-size: 0.65rem;" class="fw-bold d-block text-dark-custom text-truncate">Midnight</span>
+                                </div>
+
+                                <!-- Preset 3: Sunset Peach -->
+                                <div class="preset-card p-2 rounded-3 border text-center position-relative shadow-sm"
+                                     data-bg-type="gradient"
+                                     data-bg-start="#ff7e5f"
+                                     data-bg-end="#feb47b"
+                                     data-btn-bg="#ffffff"
+                                     data-btn-text="#ff7e5f"
+                                     data-text="#ffffff"
+                                     style="width: calc(33.3% - 8px); min-width: 90px; cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
+                                    <div class="d-flex justify-content-center mb-1.5">
+                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%); border: 1px solid rgba(0,0,0,0.1); margin-right: -6px; z-index: 2;"></div>
+                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: #ffffff; border: 1px solid rgba(0,0,0,0.1); z-index: 1;"></div>
+                                    </div>
+                                    <span style="font-size: 0.65rem;" class="fw-bold d-block text-dark-custom text-truncate">Sunset</span>
+                                </div>
+
+                                <!-- Preset 4: Ocean Breeze -->
+                                <div class="preset-card p-2 rounded-3 border text-center position-relative shadow-sm"
+                                     data-bg-type="gradient"
+                                     data-bg-start="#2b5876"
+                                     data-bg-end="#4e4376"
+                                     data-btn-bg="#ffffff"
+                                     data-btn-text="#2b5876"
+                                     data-text="#ffffff"
+                                     style="width: calc(33.3% - 8px); min-width: 90px; cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
+                                    <div class="d-flex justify-content-center mb-1.5">
+                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%); border: 1px solid rgba(0,0,0,0.1); margin-right: -6px; z-index: 2;"></div>
+                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: #ffffff; border: 1px solid rgba(0,0,0,0.1); z-index: 1;"></div>
+                                    </div>
+                                    <span style="font-size: 0.65rem;" class="fw-bold d-block text-dark-custom text-truncate">Ocean</span>
+                                </div>
+
+                                <!-- Preset 5: Minimalist Light -->
+                                <div class="preset-card p-2 rounded-3 border text-center position-relative shadow-sm"
+                                     data-bg-type="solid"
+                                     data-bg-color="#f3f4f6"
+                                     data-btn-bg="#ffffff"
+                                     data-btn-text="#1f2937"
+                                     data-text="#1f2937"
+                                     style="width: calc(33.3% - 8px); min-width: 90px; cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
+                                    <div class="d-flex justify-content-center mb-1.5">
+                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: #f3f4f6; border: 1px solid rgba(0,0,0,0.1); margin-right: -6px; z-index: 2;"></div>
+                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: #ffffff; border: 1px solid rgba(0,0,0,0.1); z-index: 1;"></div>
+                                    </div>
+                                    <span style="font-size: 0.65rem;" class="fw-bold d-block text-dark-custom text-truncate">Minimalist</span>
+                                </div>
+
+                                <!-- Preset 6: Obsidian Black -->
+                                <div class="preset-card p-2 rounded-3 border text-center position-relative shadow-sm"
+                                     data-bg-type="solid"
+                                     data-bg-color="#121212"
+                                     data-btn-bg="#1e1e1e"
+                                     data-btn-text="#e0e0e0"
+                                     data-text="#e0e0e0"
+                                     style="width: calc(33.3% - 8px); min-width: 90px; cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
+                                    <div class="d-flex justify-content-center mb-1.5">
+                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: #121212; border: 1px solid rgba(255,255,255,0.1); margin-right: -6px; z-index: 2;"></div>
+                                        <div style="width: 20px; height: 20px; border-radius: 50%; background: #1e1e1e; border: 1px solid rgba(255,255,255,0.1); z-index: 1;"></div>
+                                    </div>
+                                    <span style="font-size: 0.65rem;" class="fw-bold d-block text-dark-custom text-truncate">Obsidian</span>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="mb-3">
                             <label class="form-label small fw-semibold text-secondary">Tipe Background</label>
@@ -573,6 +687,29 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Run initially to match loaded settings
     toggleBgSettings();
+
+    // Preset theme card click listener
+    $('.preset-card').on('click', function() {
+        $('.preset-card').removeClass('selected');
+        $(this).addClass('selected');
+        
+        const bgType = $(this).attr('data-bg-type');
+        const bgStart = $(this).attr('data-bg-start');
+        const bgEnd = $(this).attr('data-bg-end');
+        const bgColor = $(this).attr('data-bg-color') || bgStart;
+        const btnBg = $(this).attr('data-btn-bg');
+        const btnText = $(this).attr('data-btn-text');
+        const text = $(this).attr('data-text');
+
+        // Update input values
+        $('#bgTypeSelectorTab').val(bgType).trigger('change');
+        $('input[name="settings[bg_color]"]').val(bgColor);
+        $('input[name="settings[bg_gradient_start]"]').val(bgStart);
+        $('input[name="settings[bg_gradient_end]"]').val(bgEnd);
+        $('input[name="settings[btn_bg_color]"]').val(btnBg);
+        $('input[name="settings[btn_text_color]"]').val(btnText);
+        $('input[name="settings[text_color]"]').val(text);
+    });
 
     // Sync title & description inputs between Profile and Styling forms in real-time
     $('input[name="title"]').on('input', function() {
