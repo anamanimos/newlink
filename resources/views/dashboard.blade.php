@@ -211,7 +211,10 @@
             <div class="dropdown">
                 <button class="btn btn-outline-secondary p-0 d-flex align-items-center justify-content-center rounded-3 border-opacity-15 dropdown-toggle no-caret" type="button" id="filterDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false" style="width: 38px; height: 38px;" title="Filter data" data-bs-toggle="tooltip">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="23 4 1 4 10 12.46 10 19 14 21 14 12.46 23 4"></polyline>
+                        <!-- Funnel cup area (Secondary layer) -->
+                        <polygon points="22 4 12 12.5 2 4" opacity="0.3" fill="currentColor" style="stroke: none;"></polygon>
+                        <!-- Funnel outline (Primary layer) -->
+                        <polyline points="22 4 2 4 10 12.46 10 19 14 21 14 12.46 22 4"></polyline>
                     </svg>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end p-3 shadow-lg border rounded-3" aria-labelledby="filterDropdownBtn" onclick="event.stopPropagation()" style="width: 280px; background: var(--header-bg); border-color: var(--glass-border);">

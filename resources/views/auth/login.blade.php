@@ -25,18 +25,20 @@
         <label for="password" class="form-label small fw-semibold text-secondary">Password</label>
         <div class="input-group glass-input-group">
             <span class="input-group-text d-flex align-items-center justify-content-center" style="width: 46px;">
-                <!-- Custom Padlock SVG -->
+                <!-- Custom Padlock SVG (Duotone) -->
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary);">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" opacity="0.25" fill="currentColor" style="stroke: none;"></rect>
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                 </svg>
             </span>
             <input type="password" class="form-control ps-2 pe-0" id="password" name="password" required placeholder="••••••••">
             <button class="btn text-secondary d-flex align-items-center justify-content-center" type="button" id="toggle-password" style="width: 46px; padding: 0;">
-                <!-- Custom Eye SVG -->
+                <!-- Custom Eye SVG (Duotone) -->
                 <svg id="toggle-password-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary); transition: all 0.2s ease;">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" opacity="0.25" fill="currentColor" style="stroke: none;"></path>
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
+                    <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
                 </svg>
             </button>
         </div>
