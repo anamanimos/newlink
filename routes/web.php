@@ -9,6 +9,8 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\BiolinkController;
 use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\Admin\AdminController;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Http\Request;
 
 // Guest Routes
 Route::middleware('guest')->group(function () {
@@ -69,6 +71,37 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 // Root redirects to login or dashboard
 Route::get('/', function () {
     return auth()->check() ? redirect()->route('dashboard') : redirect()->route('login');
+});
+
+// Production Legacy Import Endpoint
+Route::get('/api/import-legacy', function (Request $request) {
+    // Basic protection using a secret key
+    $secret = env('IMPORT_SECRET', 'rahasia-newlink-123');
+    
+    if ($request->get('secret') !== $secret) {
+        return response()->json(['error' => 'Unauthorized. Invalid secret key.'], 403);
+    }
+
+    // Prevent timeout for large databases
+    set_time_limit(0);
+
+    try {
+        // Run the artisan command
+        Artisan::call('app:import-legacy-data');
+        $output = Artisan::output();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Legacy data imported successfully.',
+            'log' => explode("\n", trim($output))
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'An error occurred during import.',
+            'error' => $e->getMessage()
+        ], 500);
+    }
 });
 
 // Wildcard Route for Redirects (MUST BE LAST)
