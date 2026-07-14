@@ -17,6 +17,25 @@ class BiolinkController extends Controller
         return view('biolinks.builder', compact('link', 'blocks'));
     }
 
+    public function updateSettings(Request $request, $id)
+    {
+        $link = Link::where('user_id', Auth::id())->where('type', 'biolink')->findOrFail($id);
+        
+        $request->validate([
+            'title' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:500'
+        ]);
+
+        $settings = array_merge($link->settings ?? [], [
+            'title' => $request->title,
+            'description' => $request->description
+        ]);
+
+        $link->update(['settings' => $settings]);
+
+        return back()->with('success', 'Pengaturan profil biolink berhasil diperbarui!');
+    }
+
     public function storeBlock(Request $request, $id)
     {
         $link = Link::where('user_id', Auth::id())->where('type', 'biolink')->findOrFail($id);

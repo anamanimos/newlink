@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
     
     // Biolink Builder Routes
     Route::get('/biolink/{id}/builder', [BiolinkController::class, 'builder'])->name('biolinks.builder');
+    Route::put('/biolink/{id}/settings', [BiolinkController::class, 'updateSettings'])->name('biolinks.settings.update');
     Route::post('/biolink/{id}/blocks', [BiolinkController::class, 'storeBlock'])->name('biolinks.blocks.store');
     Route::put('/biolink/{id}/blocks/{blockId}', [BiolinkController::class, 'updateBlock'])->name('biolinks.blocks.update');
     Route::delete('/biolink/{id}/blocks/{blockId}', [BiolinkController::class, 'destroyBlock'])->name('biolinks.blocks.destroy');
