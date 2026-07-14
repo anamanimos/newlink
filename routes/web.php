@@ -104,5 +104,36 @@ Route::get('/api/import-legacy', function (Request $request) {
     }
 });
 
+// Production SQL Import Endpoint (Bypasses phpMyAdmin limitations)
+Route::get('/api/restore-sql', function (Request $request) {
+    $secret = env('IMPORT_SECRET', 'rahasia-newlink-123');
+    
+    if ($request->get('secret') !== $secret) {
+        return response()->json(['error' => 'Unauthorized. Invalid secret key.'], 403);
+    }
+
+    set_time_limit(0);
+
+    try {
+        $sqlPath = base_path('newlink_production_ready.sql');
+        if (!file_exists($sqlPath)) {
+            return response()->json(['error' => 'SQL file not found on server. Did you pull it?'], 404);
+        }
+
+        \Illuminate\Support\Facades\DB::unprepared(file_get_contents($sqlPath));
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Database successfully restored from SQL dump.'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'An error occurred during SQL execution.',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+});
+
 // Wildcard Route for Redirects (MUST BE LAST)
 Route::get('/{slug}', [RedirectController::class, 'resolve'])->name('redirect.resolve');
