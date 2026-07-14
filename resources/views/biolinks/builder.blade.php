@@ -32,16 +32,36 @@
 
     /* Preset theme card highlights */
     .preset-card {
-        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        background: var(--card-bg-blur);
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        padding: 8px 16px;
+        border-radius: 50px !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        user-select: none;
     }
     .preset-card:hover {
-        transform: translateY(-2.5px);
+        transform: translateY(-2px);
         border-color: var(--primary-color) !important;
-        box-shadow: 0 6px 12px rgba(0,0,0,0.1) !important;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        background-color: rgba(0, 0, 0, 0.01);
     }
     .preset-card.selected {
         border-color: var(--primary-color) !important;
         background-color: var(--primary-light) !important;
+        box-shadow: inset 0 0 0 1px var(--primary-color);
+    }
+    [data-bs-theme="dark"] .preset-card {
+        border-color: rgba(255, 255, 255, 0.08);
+    }
+    [data-bs-theme="dark"] .preset-card:hover {
+        background-color: rgba(255, 255, 255, 0.02);
+    }
+    [data-bs-theme="dark"] .preset-card.selected {
+        background-color: rgba(56, 232, 173, 0.15) !important;
     }
 
     /* Drag & Drop overlays */
@@ -324,8 +344,7 @@
                                      data-bg-end="#7dd3a1"
                                      data-btn-bg="#ffffff"
                                      data-btn-text="#111827"
-                                     data-text="#111827"
-                                     style="cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
+                                     data-text="#111827">
                                     <div style="width: 14px; height: 14px; border-radius: 50%; background: linear-gradient(135deg, #a4e5bd 0%, #7dd3a1 100%); border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0;"></div>
                                     <span style="font-size: 0.75rem;" class="fw-semibold text-dark-custom">Mint Tea</span>
                                 </div>
@@ -337,8 +356,7 @@
                                      data-bg-end="#1e1b4b"
                                      data-btn-bg="#1e293b"
                                      data-btn-text="#f8fafc"
-                                     data-text="#f8fafc"
-                                     style="cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
+                                     data-text="#f8fafc">
                                     <div style="width: 14px; height: 14px; border-radius: 50%; background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); border: 1px solid rgba(255,255,255,0.15); flex-shrink: 0;"></div>
                                     <span style="font-size: 0.75rem;" class="fw-semibold text-dark-custom">Midnight</span>
                                 </div>
@@ -350,8 +368,7 @@
                                      data-bg-end="#feb47b"
                                      data-btn-bg="#ffffff"
                                      data-btn-text="#ff7e5f"
-                                     data-text="#ffffff"
-                                     style="cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
+                                     data-text="#ffffff">
                                     <div style="width: 14px; height: 14px; border-radius: 50%; background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%); border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0;"></div>
                                     <span style="font-size: 0.75rem;" class="fw-semibold text-dark-custom">Sunset</span>
                                 </div>
@@ -363,8 +380,7 @@
                                      data-bg-end="#4e4376"
                                      data-btn-bg="#ffffff"
                                      data-btn-text="#2b5876"
-                                     data-text="#ffffff"
-                                     style="cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
+                                     data-text="#ffffff">
                                     <div style="width: 14px; height: 14px; border-radius: 50%; background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%); border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0;"></div>
                                     <span style="font-size: 0.75rem;" class="fw-semibold text-dark-custom">Ocean</span>
                                 </div>
@@ -375,8 +391,7 @@
                                      data-bg-color="#f3f4f6"
                                      data-btn-bg="#ffffff"
                                      data-btn-text="#1f2937"
-                                     data-text="#1f2937"
-                                     style="cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
+                                     data-text="#1f2937">
                                     <div style="width: 14px; height: 14px; border-radius: 50%; background: #f3f4f6; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0;"></div>
                                     <span style="font-size: 0.75rem;" class="fw-semibold text-dark-custom">Minimalist</span>
                                 </div>
@@ -387,8 +402,7 @@
                                      data-bg-color="#121212"
                                      data-btn-bg="#1e1e1e"
                                      data-btn-text="#e0e0e0"
-                                     data-text="#e0e0e0"
-                                     style="cursor: pointer; border: 1px solid rgba(0,0,0,0.08); transition: all 0.2s ease; background: var(--card-bg-blur);">
+                                     data-text="#e0e0e0">
                                     <div style="width: 14px; height: 14px; border-radius: 50%; background: #121212; border: 1px solid rgba(255,255,255,0.15); flex-shrink: 0;"></div>
                                     <span style="font-size: 0.75rem;" class="fw-semibold text-dark-custom">Obsidian</span>
                                 </div>
