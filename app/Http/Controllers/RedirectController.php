@@ -99,12 +99,15 @@ class RedirectController extends Controller
     {
         $browser = "Unknown Browser";
         $browserArray = [
-            '/msie/i'      => 'Internet Explorer',
-            '/firefox/i'   => 'Firefox',
-            '/safari/i'    => 'Safari',
-            '/chrome/i'    => 'Chrome',
+            '/edg/i'       => 'Edge',
             '/edge/i'      => 'Edge',
+            '/opr/i'       => 'Opera',
             '/opera/i'     => 'Opera',
+            '/chrome/i'    => 'Chrome',
+            '/safari/i'    => 'Safari',
+            '/firefox/i'   => 'Firefox',
+            '/msie/i'      => 'Internet Explorer',
+            '/trident/i'   => 'Internet Explorer',
             '/netscape/i'  => 'Netscape',
             '/maxthon/i'   => 'Maxthon',
             '/konqueror/i' => 'Konqueror',
