@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('track_links', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('link_id')->index();
+            $table->unsignedBigInteger('link_id')->nullable()->index();
             $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->string('ip', 64)->nullable();
             $table->string('country_code', 10)->nullable();

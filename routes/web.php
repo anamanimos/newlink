@@ -127,10 +127,14 @@ Route::get('/api/restore-sql', function (Request $request) {
             'message' => 'Database successfully restored from SQL dump.'
         ]);
     } catch (\Exception $e) {
+        $errorMessage = $e->getMessage();
+        if (!mb_check_encoding($errorMessage, 'UTF-8')) {
+            $errorMessage = mb_convert_encoding($errorMessage, 'UTF-8', 'UTF-8');
+        }
         return response()->json([
             'success' => false,
             'message' => 'An error occurred during SQL execution.',
-            'error' => $e->getMessage()
+            'error' => $errorMessage
         ], 500);
     }
 });

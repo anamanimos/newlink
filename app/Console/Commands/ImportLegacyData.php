@@ -305,10 +305,10 @@ class ImportLegacyData extends Command
                     'id' => $click->id,
                     'link_id' => $click->link_id,
                     'user_id' => $click->user_id,
-                    'ip' => $click->ip,
+                    'ip' => null,
                     'country_code' => $click->country_code,
-                    'os' => $click->os,
-                    'browser' => $click->browser,
+                    'os' => $click->os_name,
+                    'browser' => $click->browser_name,
                     'device_type' => $click->device_type,
                     'datetime' => $click->datetime ?: now(),
                 ];
