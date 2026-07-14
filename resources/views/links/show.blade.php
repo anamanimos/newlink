@@ -407,11 +407,10 @@
                                 </td>
                                 <td>
                                     <div class="fw-medium">{{ empty($click->country_code) ? 'Unknown' : strtoupper($click->country_code) }}</div>
-                                    <div class="text-muted small">{{ empty($click->city_name) ? '-' : $click->city_name }}</div>
                                 </td>
                                 <td>
-                                    <div class="fw-medium">{{ empty($click->os_name) ? 'Unknown OS' : $click->os_name }}</div>
-                                    <div class="text-muted small">{{ empty($click->browser_name) ? 'Unknown Browser' : $click->browser_name }}</div>
+                                    <div class="fw-medium">{{ empty($click->os) ? 'Unknown OS' : $click->os }}</div>
+                                    <div class="text-muted small">{{ empty($click->browser) ? 'Unknown Browser' : $click->browser }}</div>
                                 </td>
                                 <td>
                                     <div class="badge bg-secondary bg-opacity-10 text-secondary border-0 px-2 py-1">
@@ -419,16 +418,12 @@
                                     </div>
                                 </td>
                                 <td style="max-width: 200px;">
-                                    <div class="text-truncate" title="{{ $click->referrer_host }}">
-                                        {{ empty($click->referrer_host) ? 'Direct / Direct' : $click->referrer_host }}
+                                    <div class="text-truncate" title="Direct">
+                                        Direct / Direct
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    @if($click->is_unique)
-                                        <span data-duo-icons="check-circle" style="width: 18px; height: 18px; color: #10b981;"></span>
-                                    @else
-                                        <span data-duo-icons="alert-octagon" style="width: 18px; height: 18px; color: #ef4444;"></span>
-                                    @endif
+                                    <span data-duo-icons="check-circle" style="width: 18px; height: 18px; color: #10b981;"></span>
                                 </td>
                             </tr>
                         @empty
