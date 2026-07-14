@@ -62,7 +62,7 @@ class RedirectController extends Controller
             'os' => $this->getOS($request->header('User-Agent')),
             'browser' => $this->getBrowser($request->header('User-Agent')),
             'device_type' => $this->getDevice($request->header('User-Agent')),
-            'referrer_host' => $request->headers->get('referer'),
+            'referrer_host' => $this->getReferrer($request),
         ]);
 
         if ($link->type === 'link') {
@@ -149,5 +149,39 @@ class RedirectController extends Controller
         } else {
             return 'desktop';
         }
+    }
+
+    private function getReferrer(Request $request)
+    {
+        $referer = $request->headers->get('referer');
+        $userAgent = $request->header('User-Agent');
+        
+        // 1. Try to get it from the HTTP Referer header
+        if (!empty($referer)) {
+            $host = parse_url($referer, PHP_URL_HOST);
+            if ($host) {
+                // Simplify common hosts
+                if (str_contains($host, 'instagram.com')) return 'Instagram';
+                if (str_contains($host, 'facebook.com')) return 'Facebook';
+                if (str_contains($host, 'twitter.com') || str_contains($host, 't.co')) return 'Twitter (X)';
+                if (str_contains($host, 'tiktok.com')) return 'TikTok';
+                if (str_contains($host, 'youtube.com') || str_contains($host, 'youtu.be')) return 'YouTube';
+                
+                return str_replace('www.', '', $host);
+            }
+        }
+        
+        // 2. Fallback: Detect social network in-app browsers from User-Agent
+        if (!empty($userAgent)) {
+            if (stripos($userAgent, 'Instagram') !== false) return 'Instagram';
+            if (stripos($userAgent, 'FBAN') !== false || stripos($userAgent, 'FBAV') !== false) return 'Facebook';
+            if (stripos($userAgent, 'TikTok') !== false || stripos($userAgent, 'Bytedance') !== false) return 'TikTok';
+            if (stripos($userAgent, 'Twitter') !== false) return 'Twitter (X)';
+            if (stripos($userAgent, 'Snapchat') !== false) return 'Snapchat';
+            if (stripos($userAgent, 'WhatsApp') !== false) return 'WhatsApp';
+            if (stripos($userAgent, 'Line') !== false) return 'LINE';
+        }
+
+        return null;
     }
 }
