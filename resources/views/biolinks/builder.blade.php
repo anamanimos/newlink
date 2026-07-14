@@ -21,6 +21,15 @@
         }
     }
 
+    /* Theme-specific mobile tab colors */
+    #builderMobileTabs .nav-link.active {
+        background-color: var(--primary-color) !important;
+        color: var(--active-text) !important;
+    }
+    #builderMobileTabs .nav-link {
+        color: var(--text-secondary) !important;
+    }
+
     /* Drag & Drop overlays */
     #coverDropzone:hover .dropzone-overlay,
     #avatarDropzone:hover .dropzone-overlay {
@@ -113,11 +122,11 @@
         </div>
 
         <!-- Builder buttons -->
-        <div class="d-flex gap-2 mb-4">
-            <button class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3.5 py-2.5 fw-semibold shadow-sm" style="border-radius: 12px !important;" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+        <div class="d-flex flex-column flex-sm-row gap-2 mb-4">
+            <button class="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2 px-3.5 py-2.5 fw-semibold shadow-sm w-100 w-sm-auto" style="border-radius: 12px !important;" data-bs-toggle="modal" data-bs-target="#editProfileModal">
                 <span data-duo-icons="user" style="width: 16px; height: 16px;"></span> Edit Bio
             </button>
-            <button class="btn btn-primary d-flex align-items-center gap-2 px-3.5 py-2.5 fw-semibold shadow-sm" style="border-radius: 12px !important;" data-bs-toggle="modal" data-bs-target="#addLinkBlockModal">
+            <button class="btn btn-primary d-flex align-items-center justify-content-center gap-2 px-3.5 py-2.5 fw-semibold shadow-sm w-100 w-sm-auto" style="border-radius: 12px !important;" data-bs-toggle="modal" data-bs-target="#addLinkBlockModal">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M9 17H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3" opacity="0.25" fill="currentColor" style="stroke: none;"></path>
                     <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
@@ -125,7 +134,7 @@
                 </svg>
                 Tambah Tautan
             </button>
-            <button class="btn btn-primary d-flex align-items-center gap-2 px-3.5 py-2.5 fw-semibold shadow-sm" style="border-radius: 12px !important;" data-bs-toggle="modal" data-bs-target="#addTextBlockModal">
+            <button class="btn btn-primary d-flex align-items-center justify-content-center gap-2 px-3.5 py-2.5 fw-semibold shadow-sm w-100 w-sm-auto" style="border-radius: 12px !important;" data-bs-toggle="modal" data-bs-target="#addTextBlockModal">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="21" y1="10" x2="3" y2="10" opacity="0.3"></line>
                     <line x1="21" y1="18" x2="3" y2="18" opacity="0.3"></line>
