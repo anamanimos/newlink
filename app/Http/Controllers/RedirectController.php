@@ -29,41 +29,48 @@ class RedirectController extends Controller
                     ->where('is_enabled', 1)
                     ->firstOrFail();
 
-        // Increment clicks
-        $link->increment('clicks');
-        
-        // Fetch country and city from IP
-        $countryCode = null;
-        $cityName = null;
-        $ip = $request->ip();
-        if ($ip !== '127.0.0.1' && $ip !== '::1') {
-            try {
-                $geo = json_decode(file_get_contents("http://ip-api.com/json/{$ip}?fields=countryCode,city"));
-                if ($geo) {
-                    if (isset($geo->countryCode)) {
-                        $countryCode = $geo->countryCode;
-                    }
-                    if (isset($geo->city)) {
-                        $cityName = $geo->city;
-                    }
-                }
-            } catch (\Exception $e) {
-                // Silently ignore geo-location failures
-            }
-        }
+        $userAgent = $request->header('User-Agent');
 
-        // Detailed tracking
-        \App\Models\TrackLink::create([
-            'link_id' => $link->id,
-            'user_id' => $link->user_id,
-            'ip' => $ip,
-            'country_code' => $countryCode,
-            'city_name' => $cityName,
-            'os' => $this->getOS($request->header('User-Agent')),
-            'browser' => $this->getBrowser($request->header('User-Agent')),
-            'device_type' => $this->getDevice($request->header('User-Agent')),
-            'referrer_host' => $this->getReferrer($request),
-        ]);
+        // Check if it's a known bot/crawler
+        $isBot = preg_match('/bot|crawl|slurp|spider|mediapartners|facebookexternalhit|whatsapp|telegrambot|twitterbot|linkedinbot/i', $userAgent);
+
+        if (!$isBot) {
+            // Increment clicks only for real users
+            $link->increment('clicks');
+            
+            // Fetch country and city from IP
+            $countryCode = null;
+            $cityName = null;
+            $ip = $request->ip();
+            if ($ip !== '127.0.0.1' && $ip !== '::1') {
+                try {
+                    $geo = json_decode(file_get_contents("http://ip-api.com/json/{$ip}?fields=countryCode,city"));
+                    if ($geo) {
+                        if (isset($geo->countryCode)) {
+                            $countryCode = $geo->countryCode;
+                        }
+                        if (isset($geo->city)) {
+                            $cityName = $geo->city;
+                        }
+                    }
+                } catch (\Exception $e) {
+                    // Silently ignore geo-location failures
+                }
+            }
+
+            // Detailed tracking
+            \App\Models\TrackLink::create([
+                'link_id' => $link->id,
+                'user_id' => $link->user_id,
+                'ip' => $ip,
+                'country_code' => $countryCode,
+                'city_name' => $cityName,
+                'os' => $this->getOS($userAgent),
+                'browser' => $this->getBrowser($userAgent),
+                'device_type' => $this->getDevice($userAgent),
+                'referrer_host' => $this->getReferrer($request),
+            ]);
+        }
 
         if ($link->type === 'link') {
             return redirect()->away($link->location_url);
