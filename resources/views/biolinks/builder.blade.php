@@ -405,48 +405,65 @@
 
                         <!-- Solid Background Color Input -->
                         <div class="mb-3" id="solidBgWrapperTab">
-                            <label class="form-label small fw-semibold text-secondary">Warna Background</label>
-                            <div class="input-group glass-input-group align-items-center">
-                                <span class="input-group-text d-flex align-items-center justify-content-center" style="width: 46px; border: none; background: transparent;">
-                                    <div style="width: 20px; height: 20px; border-radius: 4px; background: #9ca3af; border: 1px solid rgba(0,0,0,0.1);"></div>
-                                </span>
-                                <input type="color" name="settings[bg_color]" class="form-control form-control-color border-0 ps-1 pe-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['bg_color'] ?? '#f3f4f1' }}">
+                            <label class="form-label small fw-semibold text-secondary mb-1.5">Warna Background</label>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="position-relative" style="width: 38px; height: 38px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(0,0,0,0.12); flex-shrink: 0; cursor: pointer;">
+                                    <input type="color" name="settings[bg_color]" class="color-picker-input" value="{{ $link->settings['bg_color'] ?? '#f3f4f1' }}" style="position: absolute; top: -10px; left: -10px; width: 58px; height: 58px; border: none; padding: 0; cursor: pointer;">
+                                </div>
+                                <input type="text" class="form-control text-uppercase fw-semibold color-hex-text" value="{{ $link->settings['bg_color'] ?? '#f3f4f1' }}" style="width: 100px; height: 38px; border-radius: 8px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(0,0,0,0.12); background: transparent; text-align: center;">
                             </div>
                         </div>
 
                         <!-- Gradient Background Color Inputs -->
-                        <div class="row g-2 mb-3 d-none" id="gradientBgWrapperTab">
-                            <div class="col-6">
-                                <label class="form-label small fw-semibold text-secondary">Gradasi Mulai</label>
-                                <div class="input-group glass-input-group align-items-center">
-                                    <input type="color" name="settings[bg_gradient_start]" class="form-control form-control-color border-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['bg_gradient_start'] ?? '#a4e5bd' }}">
+                        <div class="mb-3 d-none" id="gradientBgWrapperTab">
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <label class="form-label small fw-semibold text-secondary mb-1.5">Gradasi Mulai</label>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="position-relative" style="width: 38px; height: 38px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(0,0,0,0.12); flex-shrink: 0; cursor: pointer;">
+                                            <input type="color" name="settings[bg_gradient_start]" class="color-picker-input" value="{{ $link->settings['bg_gradient_start'] ?? '#a4e5bd' }}" style="position: absolute; top: -10px; left: -10px; width: 58px; height: 58px; border: none; padding: 0; cursor: pointer;">
+                                        </div>
+                                        <input type="text" class="form-control text-uppercase fw-semibold color-hex-text" value="{{ $link->settings['bg_gradient_start'] ?? '#a4e5bd' }}" style="width: 100%; height: 38px; border-radius: 8px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(0,0,0,0.12); background: transparent; text-align: center;">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label small fw-semibold text-secondary">Gradasi Selesai</label>
-                                <div class="input-group glass-input-group align-items-center">
-                                    <input type="color" name="settings[bg_gradient_end]" class="form-control form-control-color border-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['bg_gradient_end'] ?? '#7dd3a1' }}">
+                                <div class="col-6">
+                                    <label class="form-label small fw-semibold text-secondary mb-1.5">Gradasi Selesai</label>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="position-relative" style="width: 38px; height: 38px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(0,0,0,0.12); flex-shrink: 0; cursor: pointer;">
+                                            <input type="color" name="settings[bg_gradient_end]" class="color-picker-input" value="{{ $link->settings['bg_gradient_end'] ?? '#7dd3a1' }}" style="position: absolute; top: -10px; left: -10px; width: 58px; height: 58px; border: none; padding: 0; cursor: pointer;">
+                                        </div>
+                                        <input type="text" class="form-control text-uppercase fw-semibold color-hex-text" value="{{ $link->settings['bg_gradient_end'] ?? '#7dd3a1' }}" style="width: 100%; height: 38px; border-radius: 8px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(0,0,0,0.12); background: transparent; text-align: center;">
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="row g-2 mb-3">
                             <div class="col-4">
-                                <label class="form-label small fw-semibold text-secondary">Warna Tombol</label>
-                                <div class="input-group glass-input-group align-items-center">
-                                    <input type="color" name="settings[btn_bg_color]" class="form-control form-control-color border-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['btn_bg_color'] ?? '#ffffff' }}">
+                                <label class="form-label small fw-semibold text-secondary mb-1.5">Warna Tombol</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="position-relative" style="width: 38px; height: 38px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(0,0,0,0.12); flex-shrink: 0; cursor: pointer;">
+                                        <input type="color" name="settings[btn_bg_color]" class="color-picker-input" value="{{ $link->settings['btn_bg_color'] ?? '#ffffff' }}" style="position: absolute; top: -10px; left: -10px; width: 58px; height: 58px; border: none; padding: 0; cursor: pointer;">
+                                    </div>
+                                    <input type="text" class="form-control text-uppercase fw-semibold color-hex-text" value="{{ $link->settings['btn_bg_color'] ?? '#ffffff' }}" style="width: 100%; height: 38px; border-radius: 8px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(0,0,0,0.12); background: transparent; text-align: center;">
                                 </div>
                             </div>
                             <div class="col-4">
-                                <label class="form-label small fw-semibold text-secondary">Teks Tombol</label>
-                                <div class="input-group glass-input-group align-items-center">
-                                    <input type="color" name="settings[btn_text_color]" class="form-control form-control-color border-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['btn_text_color'] ?? '#111827' }}">
+                                <label class="form-label small fw-semibold text-secondary mb-1.5">Teks Tombol</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="position-relative" style="width: 38px; height: 38px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(0,0,0,0.12); flex-shrink: 0; cursor: pointer;">
+                                        <input type="color" name="settings[btn_text_color]" class="color-picker-input" value="{{ $link->settings['btn_text_color'] ?? '#111827' }}" style="position: absolute; top: -10px; left: -10px; width: 58px; height: 58px; border: none; padding: 0; cursor: pointer;">
+                                    </div>
+                                    <input type="text" class="form-control text-uppercase fw-semibold color-hex-text" value="{{ $link->settings['btn_text_color'] ?? '#111827' }}" style="width: 100%; height: 38px; border-radius: 8px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(0,0,0,0.12); background: transparent; text-align: center;">
                                 </div>
                             </div>
                             <div class="col-4">
-                                <label class="form-label small fw-semibold text-secondary">Teks Profil</label>
-                                <div class="input-group glass-input-group align-items-center">
-                                    <input type="color" name="settings[text_color]" class="form-control form-control-color border-0 bg-transparent" style="height: 38px; cursor: pointer;" value="{{ $link->settings['text_color'] ?? '#111827' }}">
+                                <label class="form-label small fw-semibold text-secondary mb-1.5">Teks Profil</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="position-relative" style="width: 38px; height: 38px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(0,0,0,0.12); flex-shrink: 0; cursor: pointer;">
+                                        <input type="color" name="settings[text_color]" class="color-picker-input" value="{{ $link->settings['text_color'] ?? '#111827' }}" style="position: absolute; top: -10px; left: -10px; width: 58px; height: 58px; border: none; padding: 0; cursor: pointer;">
+                                    </div>
+                                    <input type="text" class="form-control text-uppercase fw-semibold color-hex-text" value="{{ $link->settings['text_color'] ?? '#111827' }}" style="width: 100%; height: 38px; border-radius: 8px; font-family: monospace; font-size: 0.85rem; border: 1px solid rgba(0,0,0,0.12); background: transparent; text-align: center;">
                                 </div>
                             </div>
                         </div>
@@ -683,14 +700,30 @@ document.addEventListener('DOMContentLoaded', function() {
         const btnText = $(this).attr('data-btn-text');
         const text = $(this).attr('data-text');
 
-        // Update input values
+        // Update input values and trigger input event for live visual sync
         $('#bgTypeSelectorTab').val(bgType).trigger('change');
-        $('input[name="settings[bg_color]"]').val(bgColor);
-        $('input[name="settings[bg_gradient_start]"]').val(bgStart);
-        $('input[name="settings[bg_gradient_end]"]').val(bgEnd);
-        $('input[name="settings[btn_bg_color]"]').val(btnBg);
-        $('input[name="settings[btn_text_color]"]').val(btnText);
-        $('input[name="settings[text_color]"]').val(text);
+        $('input[name="settings[bg_color]"]').val(bgColor).trigger('input');
+        $('input[name="settings[bg_gradient_start]"]').val(bgStart).trigger('input');
+        $('input[name="settings[bg_gradient_end]"]').val(bgEnd).trigger('input');
+        $('input[name="settings[btn_bg_color]"]').val(btnBg).trigger('input');
+        $('input[name="settings[btn_text_color]"]').val(btnText).trigger('input');
+        $('input[name="settings[text_color]"]').val(text).trigger('input');
+    });
+
+    // Sync custom color pickers and text inputs in real-time
+    $(document).on('input', '.color-picker-input', function() {
+        const hex = $(this).val().toUpperCase();
+        $(this).closest('.d-flex').find('.color-hex-text').val(hex);
+    });
+
+    $(document).on('input', '.color-hex-text', function() {
+        let val = $(this).val().trim();
+        if (val && !val.startsWith('#')) {
+            val = '#' + val;
+        }
+        if (/^#[0-9A-F]{6}$/i.test(val)) {
+            $(this).closest('.d-flex').find('.color-picker-input').val(val);
+        }
     });
 
     // Sync title & description inputs between Profile and Styling forms in real-time
