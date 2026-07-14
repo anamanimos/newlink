@@ -119,8 +119,7 @@ class LinkController extends Controller
 
         try {
             // Daily Clicks for Chart
-            $dailyClicks = \Illuminate\Support\Facades\DB::connection('legacy')->table('track_links')
-                ->select(\Illuminate\Support\Facades\DB::raw('DATE(datetime) as date'), \Illuminate\Support\Facades\DB::raw('count(*) as count'))
+            $dailyClicks = \App\Models\TrackLink::select(\Illuminate\Support\Facades\DB::raw('DATE(datetime) as date'), \Illuminate\Support\Facades\DB::raw('count(*) as count'))
                 ->where('link_id', $link->link_id ?? $link->id)
                 ->whereBetween('datetime', [$startDate->toDateTimeString(), $endDate->toDateTimeString()])
                 ->groupBy('date')
@@ -132,8 +131,7 @@ class LinkController extends Controller
             }
 
             // Top Referrers
-            $topReferrers = \Illuminate\Support\Facades\DB::connection('legacy')->table('track_links')
-                ->select('referrer_host', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
+            $topReferrers = \App\Models\TrackLink::select('referrer_host', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
                 ->where('link_id', $link->link_id ?? $link->id)
                 ->whereBetween('datetime', [$startDate->toDateTimeString(), $endDate->toDateTimeString()])
                 ->groupBy('referrer_host')
@@ -142,8 +140,7 @@ class LinkController extends Controller
                 ->get();
 
             // Top Countries
-            $topCountries = \Illuminate\Support\Facades\DB::connection('legacy')->table('track_links')
-                ->select('country_code', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
+            $topCountries = \App\Models\TrackLink::select('country_code', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
                 ->where('link_id', $link->link_id ?? $link->id)
                 ->whereBetween('datetime', [$startDate->toDateTimeString(), $endDate->toDateTimeString()])
                 ->groupBy('country_code')
@@ -152,34 +149,30 @@ class LinkController extends Controller
                 ->get();
 
             // Top OS & Browser
-            $topOs = \Illuminate\Support\Facades\DB::connection('legacy')->table('track_links')
-                ->select('os_name', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
+            $topOs = \App\Models\TrackLink::select('os', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
                 ->where('link_id', $link->link_id ?? $link->id)
                 ->whereBetween('datetime', [$startDate->toDateTimeString(), $endDate->toDateTimeString()])
-                ->groupBy('os_name')
+                ->groupBy('os')
                 ->orderByDesc('count')
                 ->limit(5)
                 ->get();
                 
-            $topBrowsers = \Illuminate\Support\Facades\DB::connection('legacy')->table('track_links')
-                ->select('browser_name', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
+            $topBrowsers = \App\Models\TrackLink::select('browser', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
                 ->where('link_id', $link->link_id ?? $link->id)
                 ->whereBetween('datetime', [$startDate->toDateTimeString(), $endDate->toDateTimeString()])
-                ->groupBy('browser_name')
+                ->groupBy('browser')
                 ->orderByDesc('count')
                 ->limit(5)
                 ->get();
 
             // Unique Clicks
-            $uniqueClicks = \Illuminate\Support\Facades\DB::connection('legacy')->table('track_links')
-                ->where('link_id', $link->link_id ?? $link->id)
+            $uniqueClicks = \App\Models\TrackLink::where('link_id', $link->link_id ?? $link->id)
                 ->where('is_unique', 1)
                 ->whereBetween('datetime', [$startDate->toDateTimeString(), $endDate->toDateTimeString()])
                 ->count();
                 
             // Raw Paginated Clicks
-            $rawClicks = \Illuminate\Support\Facades\DB::connection('legacy')->table('track_links')
-                ->where('link_id', $link->link_id ?? $link->id)
+            $rawClicks = \App\Models\TrackLink::where('link_id', $link->link_id ?? $link->id)
                 ->whereBetween('datetime', [$startDate->toDateTimeString(), $endDate->toDateTimeString()])
                 ->orderBy('datetime', 'DESC')
                 ->paginate(25)
