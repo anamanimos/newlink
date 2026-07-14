@@ -74,6 +74,9 @@
                     <a href="{{ route('admin.users') }}" class="sidebar-link {{ request()->routeIs('admin.users') ? 'active' : '' }}">
                         <span data-duo-icons="user" class="me-3" style="width:20px;height:20px;"></span>Users
                     </a>
+                    <a href="{{ route('admin.domains') }}" class="sidebar-link {{ request()->routeIs('admin.domains') ? 'active' : '' }}">
+                        <span data-duo-icons="world" class="me-3" style="width:20px;height:20px;"></span>Domains
+                    </a>
                     <a href="{{ route('admin.settings') }}" class="sidebar-link {{ request()->is('admin/settings*') ? 'active' : '' }}">
                         <span data-duo-icons="settings" class="me-3" style="width:20px;height:20px;"></span>Settings
                     </a>
