@@ -9,6 +9,8 @@
         function renderCardIcon($iconName) {
             if ($iconName == 'hash') {
                 return '<span class="fw-bold fs-5">#</span>';
+            } elseif ($iconName == 'app') {
+                return '<span data-duo-icons="app" style="width: 18px; height: 18px;"></span>';
             } elseif ($iconName == 'link') {
                 return '<span data-duo-icons="link" style="width: 18px; height: 18px;"></span>';
             } elseif ($iconName == 'qrcode') {

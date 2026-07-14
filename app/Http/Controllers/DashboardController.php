@@ -34,7 +34,7 @@ class DashboardController extends Controller
         // Default stats card settings (Dashboard Overview)
         $card1_val = $biolinksCount;
         $card1_lbl = 'Total biolinks';
-        $card1_icon = 'hash';
+        $card1_icon = 'app';
 
         $card2_val = $shortlinksCount;
         $card2_lbl = 'Total shortened links';
@@ -69,6 +69,35 @@ class DashboardController extends Controller
                 $clicksThisMonth = \App\Models\TrackLink::where('user_id', $user->id)
                     ->whereHas('link', function($q) {
                         $q->where('type', 'link');
+                    })
+                    ->where('datetime', '>=', $startOfMonth->toDateTimeString())
+                    ->count();
+            } catch (\Exception $e) {
+                // fallback
+            }
+            $card4_val = $clicksThisMonth;
+            $card4_lbl = 'Clicks This Month';
+            $card4_icon = 'chart';
+        } elseif ($type == 'biolink') {
+            $card1_val = $biolinksCount;
+            $card1_lbl = 'Total Biolinks';
+            $card1_icon = 'app';
+
+            $totalClicks = Link::where('user_id', $user->id)->where('type', 'biolink')->sum('clicks');
+            $card2_val = $totalClicks;
+            $card2_lbl = 'Total Clicks';
+            $card2_icon = 'clicks';
+
+            $linksThisMonth = Link::where('user_id', $user->id)->where('type', 'biolink')->where('created_at', '>=', $startOfMonth)->count();
+            $card3_val = $linksThisMonth;
+            $card3_lbl = 'Created This Month';
+            $card3_icon = 'calendar';
+
+            $clicksThisMonth = 0;
+            try {
+                $clicksThisMonth = \App\Models\TrackLink::where('user_id', $user->id)
+                    ->whereHas('link', function($q) {
+                        $q->where('type', 'biolink');
                     })
                     ->where('datetime', '>=', $startOfMonth->toDateTimeString())
                     ->count();
