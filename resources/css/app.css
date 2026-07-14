@@ -716,8 +716,8 @@ body {
 .modal-content .form-select,
 .modal-content .glass-input-group,
 .modal-content .input-group {
-    background-color: #f8fafc !important; /* Solid soft gray background */
-    border: 1px solid #cbd5e1 !important; /* Solid gray border */
+    background-color: #f1f5f9 !important; /* Solid soft gray background, matching select2 */
+    border: 1px solid #e2e8f0 !important; /* Solid gray border, matching select2 */
     color: #334155 !important;
     font-weight: 500 !important;
     border-radius: 8px !important;
@@ -751,8 +751,8 @@ body {
 
 /* Select2 overrides inside modals */
 .modal-content .select2-container--default .select2-selection--single {
-    background-color: #f8fafc !important;
-    border: 1px solid #cbd5e1 !important;
+    background-color: #f1f5f9 !important;
+    border: 1px solid #e2e8f0 !important;
     border-radius: 8px !important;
     height: 42px !important;
     transition: all 0.2s ease !important;
