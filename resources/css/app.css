@@ -458,3 +458,8 @@ body {
 .text-dark-custom {
     color: var(--text-primary) !important;
 }
+
+/* Dropdown Menus */
+.dropdown-menu, .dropdown-menu.glass-card {
+    border-radius: 8px !important;
+}
