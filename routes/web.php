@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/biolink/{id}/blocks', [BiolinkController::class, 'storeBlock'])->name('biolinks.blocks.store');
     Route::put('/biolink/{id}/blocks/{blockId}', [BiolinkController::class, 'updateBlock'])->name('biolinks.blocks.update');
     Route::delete('/biolink/{id}/blocks/{blockId}', [BiolinkController::class, 'destroyBlock'])->name('biolinks.blocks.destroy');
+    Route::patch('/biolink/{id}/blocks/{blockId}/toggle', [BiolinkController::class, 'toggleBlock'])->name('biolinks.blocks.toggle');
     Route::post('/biolink/{id}/blocks/reorder', [BiolinkController::class, 'reorderBlocks'])->name('biolinks.blocks.reorder');
     Route::get('/biolink/block/{id}/analytics', [BiolinkController::class, 'blockAnalytics'])->name('biolinks.blocks.analytics');
     Route::get('/biolink/{id}/export-leads', [BiolinkController::class, 'exportLeads'])->name('biolinks.leads.export');

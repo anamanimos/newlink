@@ -28,8 +28,17 @@ class WaRotatorController extends Controller
      */
     public function store(Request $request)
     {
+        $domainId = $request->domain_id && $request->domain_id > 0 ? $request->domain_id : 0;
+
         $request->validate([
-            'url' => 'required|alpha_dash|max:64|unique:links,url',
+            'url' => [
+                'required',
+                'alpha_dash',
+                'max:64',
+                \Illuminate\Validation\Rule::unique('links', 'url')->where(function ($query) use ($domainId) {
+                    return $query->where('domain_id', $domainId);
+                })
+            ],
             'title' => 'required|string|max:100',
             'numbers' => 'required|string',
             'template' => 'required|string',
@@ -92,8 +101,20 @@ class WaRotatorController extends Controller
     {
         $link = Link::where('user_id', Auth::id())->where('type', 'warotator')->findOrFail($id);
 
+        $domainId = $request->has('domain_id') 
+            ? ($request->domain_id && $request->domain_id > 0 ? $request->domain_id : 0)
+            : ($link->domain_id ?? 0);
+
         $request->validate([
-            'url' => 'required|alpha_dash|max:64|unique:links,url,' . $link->id,
+            'url' => [
+                'sometimes',
+                'required',
+                'alpha_dash',
+                'max:64',
+                \Illuminate\Validation\Rule::unique('links', 'url')->where(function ($query) use ($domainId) {
+                    return $query->where('domain_id', $domainId);
+                })->ignore($link->id)
+            ],
             'project_id' => 'nullable|integer',
             'domain_id' => 'nullable|integer',
             'settings' => 'nullable|array'
@@ -118,12 +139,21 @@ class WaRotatorController extends Controller
             $settings['banner_url'] = url('uploads/covers/' . $name);
         }
 
-        $link->update([
-            'url' => $request->url,
-            'project_id' => $request->project_id ?? null,
-            'domain_id' => $request->domain_id && $request->domain_id > 0 ? $request->domain_id : 0,
+        $updateData = [
             'settings' => $settings
-        ]);
+        ];
+
+        if ($request->has('url')) {
+            $updateData['url'] = $request->url;
+        }
+        if ($request->has('project_id')) {
+            $updateData['project_id'] = $request->project_id ?? null;
+        }
+        if ($request->has('domain_id')) {
+            $updateData['domain_id'] = $request->domain_id && $request->domain_id > 0 ? $request->domain_id : 0;
+        }
+
+        $link->update($updateData);
 
         if ($request->wantsJson()) {
             return response()->json([

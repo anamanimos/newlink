@@ -29,13 +29,14 @@ class LinkController extends Controller
         
         // Generate random string if custom alias path is empty
         $alias = $request->url;
+        $domainId = $request->domain_id ?? 0;
         if (empty($alias)) {
             do {
                 $alias = Str::random(6);
-            } while (Link::where('url', $alias)->exists());
+            } while (Link::where('url', $alias)->where('domain_id', $domainId)->exists());
         } else {
             // Check if alias is already taken
-            if (Link::where('url', $alias)->exists()) {
+            if (Link::where('url', $alias)->where('domain_id', $domainId)->exists()) {
                 return back()->withErrors(['url' => 'Alias URL ini sudah digunakan. Silakan gunakan alias lain.'])->withInput();
             }
         }
@@ -65,15 +66,23 @@ class LinkController extends Controller
     {
         $link = Link::where('user_id', Auth::id())->findOrFail($id);
 
-        $request->validate([
-            'location_url' => 'required|url|max:2048',
+        $rules = [
             'url' => 'required|string|alpha_dash|max:256',
             'project_id' => 'nullable|integer',
             'domain_id' => 'nullable|integer',
-        ]);
+        ];
+
+        if ($link->type === 'link') {
+            $rules['location_url'] = 'required|url|max:2048';
+        } else {
+            $rules['location_url'] = 'nullable|url|max:2048';
+        }
+
+        $request->validate($rules);
 
         // Check if alias is taken by another link
-        if (Link::where('url', $request->url)->where('id', '!=', $id)->exists()) {
+        $domainId = $request->domain_id ?? 0;
+        if (Link::where('url', $request->url)->where('domain_id', $domainId)->where('id', '!=', $id)->exists()) {
             return back()->withErrors(['url' => 'Alias URL ini sudah digunakan oleh link lain.'])->withInput();
         }
 
@@ -81,7 +90,7 @@ class LinkController extends Controller
             'project_id' => $request->project_id,
             'domain_id' => $request->domain_id ?? 0,
             'url' => $request->url,
-            'location_url' => $request->location_url,
+            'location_url' => $link->type === 'link' ? $request->location_url : $link->location_url,
         ]);
 
         return back()->with('success', 'Tautan pendek berhasil diperbarui!');

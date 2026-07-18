@@ -694,8 +694,9 @@
             e.preventDefault();
             const btn = $(this);
             const id = btn.attr('data-id');
+            const type = btn.attr('data-type') || 'link';
             const url = btn.attr('data-url');
-            const location = btn.attr('data-location');
+            const location = btn.attr('data-location') || '';
             const project = btn.attr('data-project');
             const domain = btn.attr('data-domain');
             
@@ -706,6 +707,17 @@
             document.getElementById('edit_location_url').value = location;
             document.getElementById('edit_url').value = url;
             
+            // Show/hide and require Target URL depending on link type
+            if (type !== 'link') {
+                $('#edit_location_url').closest('.mb-3').hide();
+                $('#edit_location_url').removeAttr('required');
+                $('#editLinkModalLabel').text(type === 'biolink' ? 'Perbarui Pengaturan Biolink' : 'Perbarui Pengaturan Rotator');
+            } else {
+                $('#edit_location_url').closest('.mb-3').show();
+                $('#edit_location_url').attr('required', 'required');
+                $('#editLinkModalLabel').text('Perbarui Tautan Pendek');
+            }
+
             // Populate Select2 controls using jQuery triggers
             $('#edit_project_id').val(project || "").trigger('change');
             $('#edit_domain_id').val(domain || "0").trigger('change');

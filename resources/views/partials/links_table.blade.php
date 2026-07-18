@@ -255,26 +255,54 @@
                                              </a>
                                          </li>
                                          <li>
-                                             @if($link->type == 'biolink')
-                                                 <a class="dropdown-item rounded-2 py-1.5 small" href="{{ route('biolinks.builder', $link->id) }}">
-                                                     Edit Biolink
-                                                 </a>
-                                             @elseif($link->type == 'warotator')
-                                                 <a class="dropdown-item rounded-2 py-1.5 small" href="{{ route('warotators.builder', $link->id) }}">
-                                                     Edit WA Rotator
-                                                 </a>
-                                             @else
-                                                 <a class="dropdown-item rounded-2 py-1.5 small btn-edit-link" href="#"
-                                                    data-id="{{ $link->id }}"
-                                                    data-url="{{ $link->url }}"
-                                                    data-location="{{ $link->location_url }}"
-                                                    data-project="{{ $link->project_id }}"
-                                                    data-domain="{{ $link->domain_id }}"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#editLinkModal">
-                                                     Edit Link
-                                                 </a>
-                                             @endif
+                                            @if($link->type == 'biolink')
+                                                <a class="dropdown-item rounded-2 py-1.5 small" href="{{ route('biolinks.builder', $link->id) }}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2 text-muted" style="width: 14px; height: 14px; vertical-align: middle;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+                                                    Edit Biolink
+                                                </a>
+                                                <a class="dropdown-item rounded-2 py-1.5 small btn-edit-link" href="#"
+                                                   data-id="{{ $link->id }}"
+                                                   data-type="{{ $link->type }}"
+                                                   data-url="{{ $link->url }}"
+                                                   data-location="{{ $link->location_url }}"
+                                                   data-project="{{ $link->project_id }}"
+                                                   data-domain="{{ $link->domain_id }}"
+                                                   data-bs-toggle="modal"
+                                                   data-bs-target="#editLinkModal">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2 text-muted" style="width: 14px; height: 14px; vertical-align: middle;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                                                    Edit Pengaturan
+                                                </a>
+                                            @elseif($link->type == 'warotator')
+                                                <a class="dropdown-item rounded-2 py-1.5 small" href="{{ route('warotators.builder', $link->id) }}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2 text-muted" style="width: 14px; height: 14px; vertical-align: middle;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+                                                    Edit WA Rotator
+                                                </a>
+                                                <a class="dropdown-item rounded-2 py-1.5 small btn-edit-link" href="#"
+                                                   data-id="{{ $link->id }}"
+                                                   data-type="{{ $link->type }}"
+                                                   data-url="{{ $link->url }}"
+                                                   data-location="{{ $link->location_url }}"
+                                                   data-project="{{ $link->project_id }}"
+                                                   data-domain="{{ $link->domain_id }}"
+                                                   data-bs-toggle="modal"
+                                                   data-bs-target="#editLinkModal">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2 text-muted" style="width: 14px; height: 14px; vertical-align: middle;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                                                    Edit Pengaturan
+                                                </a>
+                                            @else
+                                                <a class="dropdown-item rounded-2 py-1.5 small btn-edit-link" href="#"
+                                                   data-id="{{ $link->id }}"
+                                                   data-type="{{ $link->type }}"
+                                                   data-url="{{ $link->url }}"
+                                                   data-location="{{ $link->location_url }}"
+                                                   data-project="{{ $link->project_id }}"
+                                                   data-domain="{{ $link->domain_id }}"
+                                                   data-bs-toggle="modal"
+                                                   data-bs-target="#editLinkModal">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2 text-muted" style="width: 14px; height: 14px; vertical-align: middle;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                                                    Edit Link
+                                                </a>
+                                            @endif
                                          </li>
                                          <li>
                                              <a class="dropdown-item rounded-2 py-1.5 small text-danger btn-delete-link" href="#" data-id="{{ $link->id }}">

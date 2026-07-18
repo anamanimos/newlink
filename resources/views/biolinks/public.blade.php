@@ -20,6 +20,8 @@
 
         if ($bgType === 'gradient') {
             $backgroundStyle = "linear-gradient(135deg, {$bgGradientStart} 0%, {$bgGradientEnd} 100%)";
+        } elseif ($bgType === 'abstract_blobs') {
+            $backgroundStyle = $link->settings['bg_blob_base'] ?? '#f8fafc';
         } else {
             $backgroundStyle = $bgColor;
         }
@@ -36,6 +38,73 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: relative;
+        }
+
+        /* Abstract Blobs Background styling */
+        .blob-bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.45;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        .blob-1 {
+            top: -10%;
+            left: -10%;
+            width: 45vw;
+            height: 45vw;
+            background: {{ $link->settings['bg_blob_1'] ?? '#3b82f6' }};
+        }
+        .blob-2 {
+            top: 35%;
+            right: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: {{ $link->settings['bg_blob_2'] ?? '#ec4899' }};
+        }
+        .blob-3 {
+            bottom: -15%;
+            right: 15%;
+            width: 40vw;
+            height: 40vw;
+            background: {{ $link->settings['bg_blob_3'] ?? '#8b5cf6' }};
+        }
+
+        @media (max-width: 767px) {
+            .blob {
+                filter: blur(80px);
+                opacity: 0.65;
+            }
+            .blob-1 {
+                width: 70vw;
+                height: 70vw;
+                top: -10%;
+                left: -20%;
+            }
+            .blob-2 {
+                width: 80vw;
+                height: 80vw;
+                top: 25%;
+                right: -25%;
+            }
+            .blob-3 {
+                width: 75vw;
+                height: 75vw;
+                bottom: -15%;
+                right: -10%;
+            }
         }
         .cover-photo-full {
             width: 100%;
@@ -93,11 +162,13 @@
         }
         .block-link {
             width: 100%;
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             background: {{ $btnBgColor }};
             padding: 15px 20px;
             border-radius: 12px;
-            text-align: center;
             text-decoration: none;
             color: {{ $btnTextColor }};
             font-weight: 600;
@@ -135,14 +206,23 @@
     </style>
 </head>
 <body>
+    <div class="blob-bg-container" style="display: {{ ($link->settings['bg_type'] ?? 'solid') === 'abstract_blobs' ? 'block' : 'none' }};">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
 
     <!-- Cover Photo Header (Full Width edge-to-edge) -->
-    <div class="cover-photo-full"></div>
+    @if(($link->settings['show_cover'] ?? '1') == '1')
+        <div class="cover-photo-full"></div>
+    @endif
 
     <!-- Biolink Profile and Blocks Content -->
-    <div class="biolink-content">
+    <div class="biolink-content" style="{{ ($link->settings['show_cover'] ?? '1') == '0' ? 'margin-top: 40px;' : '' }}">
         <!-- Profile Avatar -->
-        <img src="{{ $link->settings['avatar_url'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($link->settings['title'] ?? 'BL') . '&background=a4e5bd&color=111827&size=128' }}" alt="Profile" class="profile-image">
+        @if(($link->settings['show_avatar'] ?? '1') == '1')
+            <img src="{{ $link->settings['avatar_url'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($link->settings['title'] ?? 'BL') . '&background=a4e5bd&color=111827&size=128' }}" alt="Profile" class="profile-image">
+        @endif
         
         <!-- Profile Title & Verified Badge -->
         <h1 class="profile-title">
@@ -161,8 +241,11 @@
         <div class="blocks-section">
             @foreach($blocks as $block)
                 @if($block->type == 'link')
-                    <a href="{{ route('biolinks.blocks.redirect', $block->id) }}" class="block-link" target="_blank" rel="noopener">
-                        {{ $block->settings['title'] ?? 'Link' }}
+                    <a href="{{ route('biolinks.blocks.redirect', $block->id) }}" class="block-link d-flex align-items-center justify-content-center gap-2" target="_blank" rel="noopener">
+                        @if(!empty($block->settings['icon']))
+                            <span data-duo-icons="{{ $block->settings['icon'] }}" style="width: 20px; height: 20px; flex-shrink: 0; color: inherit;"></span>
+                        @endif
+                        <span>{{ $block->settings['title'] ?? 'Link' }}</span>
                     </a>
                 @elseif($block->type == 'text')
                     <div class="block-text">
@@ -174,5 +257,15 @@
             <a href="{{ url('/') }}" class="watermark">Powered by Newlink</a>
         </div>
     </div>
+
+    <!-- Duo Icons JS -->
+    <script src="{{ asset('js/duo-icons.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.DuoIcons) {
+                DuoIcons.createIcons({ icons: DuoIcons.icons });
+            }
+        });
+    </script>
 </body>
 </html>

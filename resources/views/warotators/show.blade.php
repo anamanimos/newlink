@@ -3,6 +3,120 @@
 @section('title', 'Analitik WA Rotator')
 
 @section('content')
+<!-- Flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<style>
+    .detail-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+    .stat-card {
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(164, 229, 189, 0.2);
+        color: var(--primary-color);
+    }
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1.2;
+    }
+    .stat-label {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+    .info-list-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--glass-border);
+    }
+    .info-list-item:last-child {
+        border-bottom: none;
+    }
+    .progress-bar-custom {
+        height: 6px;
+        background: var(--glass-border);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 8px;
+    }
+    .progress-bar-fill {
+        height: 100%;
+        background: var(--primary-color);
+        border-radius: 4px;
+    }
+
+    /* Tabs Styling */
+    .nav-tabs.glass-tabs {
+        border-bottom: 2px solid var(--glass-border);
+        gap: 16px;
+    }
+    .nav-tabs.glass-tabs .nav-link {
+        border: none;
+        background: transparent;
+        color: var(--text-secondary);
+        font-weight: 600;
+        padding: 12px 4px;
+        position: relative;
+    }
+    .nav-tabs.glass-tabs .nav-link:hover {
+        color: var(--text-primary);
+    }
+    .nav-tabs.glass-tabs .nav-link.active {
+        color: var(--primary-color);
+    }
+    .nav-tabs.glass-tabs .nav-link.active::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--primary-color);
+        border-radius: 2px 2px 0 0;
+    }
+
+    /* Table styling for Data Klik */
+    .table-glass {
+        color: var(--text-primary);
+    }
+    .table-glass th {
+        background: transparent;
+        color: var(--text-secondary);
+        border-bottom: 1px solid var(--glass-border);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        padding: 1rem;
+    }
+    .table-glass td {
+        background: transparent;
+        border-bottom: 1px solid var(--glass-border);
+        padding: 1rem;
+        font-size: 0.875rem;
+    }
+</style>
+
 <!-- Page Header (Title & Actions) -->
 <div class="d-flex align-items-center justify-content-between mb-4 mt-2 flex-wrap gap-3">
     <div>
@@ -219,7 +333,7 @@
             </div>
             
             <div class="table-responsive">
-                <table class="table align-middle mb-0 text-dark-custom" style="font-size: 0.85rem;">
+                <table class="table table-glass align-middle mb-0 text-dark-custom" style="font-size: 0.85rem;">
                     <thead>
                         <tr class="text-secondary small fw-bold" style="border-bottom: 2px solid var(--glass-border);">
                             <th class="ps-3 py-3">Waktu</th>
@@ -285,7 +399,7 @@
             </div>
             
             <div class="table-responsive">
-                <table class="table align-middle mb-0 text-dark-custom" style="font-size: 0.85rem;">
+                <table class="table table-glass align-middle mb-0 text-dark-custom" style="font-size: 0.85rem;">
                     <thead>
                         <tr class="text-secondary small fw-bold" style="border-bottom: 2px solid var(--glass-border);">
                             <th class="ps-3 py-3">Waktu</th>
@@ -294,6 +408,7 @@
                             <th class="py-3">Kota</th>
                             <th class="py-3">OS & Browser</th>
                             <th class="py-3">Referrer</th>
+                            <th class="text-center py-3">Unik</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -307,10 +422,17 @@
                                 <td class="py-3">{{ $click->city_name ?: '-' }}</td>
                                 <td class="py-3">{{ $click->os }} / {{ $click->browser }}</td>
                                 <td class="py-3 text-muted text-truncate" style="max-width: 150px;">{{ $click->referrer_host ?: 'Direct' }}</td>
+                                <td class="text-center py-3">
+                                    @if($click->is_unique)
+                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2.5 py-1 fw-semibold" style="font-size: 0.725rem;">Unik</span>
+                                    @else
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-2.5 py-1 fw-semibold" style="font-size: 0.725rem;">Berulang</span>
+                                    @endif
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center py-5 text-muted">
+                                <td colspan="7" class="text-center py-5 text-muted">
                                     Tidak ada data klik pada rentang tanggal ini.
                                 </td>
                             </tr>

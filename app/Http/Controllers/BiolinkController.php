@@ -260,4 +260,20 @@ class BiolinkController extends Controller
 
         return response()->stream($callback, 200, $headers);
     }
+
+    public function toggleBlock($id, $blockId)
+    {
+        $link = Link::where('user_id', \Illuminate\Support\Facades\Auth::id())->where('type', 'biolink')->findOrFail($id);
+        $block = $link->biolinkBlocks()->findOrFail($blockId);
+
+        $block->update([
+            'is_enabled' => !$block->is_enabled
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'is_enabled' => $block->is_enabled,
+            'message' => 'Status blok berhasil diperbarui!'
+        ]);
+    }
 }
