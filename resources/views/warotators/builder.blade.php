@@ -47,46 +47,47 @@
         font-weight: 600;
     }
 </style>
-<div class="row g-4 h-100 align-items-stretch">
-    <!-- Left Panel: Builder Options & Settings -->
-    <div class="col-lg-6 d-flex flex-column border-end border-secondary border-opacity-10 pe-lg-5" style="max-height: calc(100vh - 120px); overflow-y: auto;">
-        
-        <!-- Breadcrumb / Header -->
-        <div class="d-flex align-items-center justify-content-between mb-4">
-            <div>
-                <a href="{{ route('warotators.index') }}" class="text-decoration-none text-muted small fw-semibold d-inline-flex align-items-center gap-1.5 mb-1.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                    Kembali ke Dashboard
-                </a>
-                <h4 class="fw-bold mb-0 text-dark-custom" style="letter-spacing: -0.5px;">WA Rotator Builder</h4>
-            </div>
-            <div>
-                @php
-                    $fullUrl = $link->domain_id && $link->domain ? $link->domain->scheme . $link->domain->host . '/' . $link->url : url('/') . '/' . $link->url;
-                @endphp
-                <a href="{{ $fullUrl }}" target="_blank" class="btn btn-sm btn-light border d-inline-flex align-items-center gap-2 fw-semibold rounded-3 px-3 py-2 shadow-sm text-secondary" style="font-size: 0.825rem;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                    Buka Halaman
-                </a>
-            </div>
-        </div>
+<!-- Page Header (Full Width) -->
+@php
+    $fullUrl = $link->domain_id && $link->domain ? $link->domain->scheme . $link->domain->host . '/' . $link->url : url('/') . '/' . $link->url;
+@endphp
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-6">
+    <div class="d-flex align-items-center gap-2">
+        <a href="{{ route('warotators.index') }}" class="btn btn-sm btn-icon btn-light me-2">
+            <i class="ki-outline ki-arrow-left fs-2"></i>
+        </a>
+        <h1 class="page-heading d-flex text-gray-900 fw-bolder fs-3 my-0">
+            WA Rotator Builder: {{ $link->url }}
+        </h1>
+        <span class="badge badge-light-primary fw-semibold fs-8 px-2 py-1 ms-2">WhatsApp Rotator</span>
+    </div>
+    <div>
+        <a href="{{ $fullUrl }}" target="_blank" class="btn btn-sm btn-light-primary fw-bold d-inline-flex align-items-center gap-2">
+            <i class="ki-outline ki-exit-right-corner fs-4"></i> View Page
+        </a>
+    </div>
+</div>
 
+<div class="row g-6 g-xl-9 align-items-start">
+    <!-- Left Panel: Builder Options & Settings -->
+    <div class="col-lg-7 col-xl-8 pe-lg-5">
+        
         <!-- Tab Controls Navigation -->
-        <ul class="nav nav-tabs glass-tabs mb-4" id="builderTabs" role="tablist">
+        <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bold mb-5" id="builderTabs" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings-pane" type="button" role="tab" aria-selected="true">
+                <a class="nav-link text-active-primary py-3 active" id="settings-tab" data-bs-toggle="tab" href="#settings-pane" role="tab">
                     Rotator
-                </button>
+                </a>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="styling-tab" data-bs-toggle="tab" data-bs-target="#styling-pane" type="button" role="tab" aria-selected="false">
-                    Desain Tampilan
-                </button>
+                <a class="nav-link text-active-primary py-3" id="styling-tab" data-bs-toggle="tab" href="#styling-pane" role="tab">
+                    Styling
+                </a>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-pane" type="button" role="tab" aria-selected="false">
-                    Avatar & Gambar
-                </button>
+                <a class="nav-link text-active-primary py-3" id="profile-tab" data-bs-toggle="tab" href="#profile-pane" role="tab">
+                    Avatar & Media
+                </a>
             </li>
         </ul>
 
@@ -94,297 +95,249 @@
         <div class="tab-content flex-grow-1" id="builderTabsContent">
             
             <!-- TAB 1: Rotator Settings -->
-            <div class="tab-pane fade show active" id="settings-pane" role="tabpanel" tabindex="0">
-                <div class="glass-card p-4 border border-secondary border-opacity-10 rounded-3 mb-4" style="background: var(--card-bg-blur);">
-                    <form action="{{ route('warotators.settings.update', $link->id) }}" method="POST" id="rotatorSettingsForm">
-                        @csrf
-                        @method('PUT')
-                        
-                        <h6 class="fw-bold text-dark-custom mb-3">Informasi Utama Halaman</h6>
+            <div class="tab-pane fade show active" id="settings-pane" role="tabpanel">
+                <div class="card card-flush shadow-sm border-0 mb-4">
+                    <div class="card-body p-6">
+                        <form action="{{ route('warotators.settings.update', $link->id) }}" method="POST" id="rotatorSettingsForm">
+                            @csrf
+                            @method('PUT')
+                            
+                            <h4 class="fw-bold text-gray-900 mb-5">Main Information</h4>
 
-                        <!-- Domain & Path Alias -->
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label small fw-semibold text-secondary">Domain</label>
-                                <select name="domain_id" id="domain_id" class="form-select bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 text-secondary small">
-                                    <option value="0" {{ $link->domain_id == 0 ? 'selected' : '' }}>Domain Bawaan ({{ parse_url(url('/'), PHP_URL_HOST) }})</option>
-                                    @foreach($domains as $domain)
-                                        <option value="{{ $domain->id }}" {{ $link->domain_id == $domain->id ? 'selected' : '' }}>{{ $domain->host }}</option>
-                                    @endforeach
-                                </select>
+                            <!-- Domain & Path Alias -->
+                            <div class="row g-4 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fs-7 fw-semibold text-gray-900">Domain</label>
+                                    <select name="domain_id" id="domain_id" class="form-select form-select-sm form-select-solid" data-control="select2" data-hide-search="true">
+                                        <option value="0" {{ $link->domain_id == 0 ? 'selected' : '' }}>Default Domain ({{ parse_url(url('/'), PHP_URL_HOST) }})</option>
+                                        @foreach($domains as $domain)
+                                            <option value="{{ $domain->id }}" {{ $link->domain_id == $domain->id ? 'selected' : '' }}>{{ $domain->host }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fs-7 fw-semibold text-gray-900 required">Alias URL</label>
+                                    <input type="text" name="url" id="url" class="form-control form-control-sm form-control-solid" value="{{ $link->url }}" required />
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-semibold text-secondary">Alias URL <span class="text-danger">*</span></label>
-                                <input type="text" name="url" id="url" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small" value="{{ $link->url }}" required>
+
+                            <div class="fv-row mb-4">
+                                <label class="form-label fs-7 fw-semibold text-gray-900 required">Page Title</label>
+                                <input type="text" name="settings[title]" class="form-control form-control-sm form-control-solid" value="{{ $link->settings['title'] ?? '' }}" required placeholder="e.g. CS Fast Response" />
                             </div>
-                        </div>
 
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold text-secondary">Judul Halaman <span class="text-danger">*</span></label>
-                            <input type="text" name="settings[title]" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small" value="{{ $link->settings['title'] ?? '' }}" required placeholder="Contoh: CS Fast Response">
-                        </div>
+                            <div class="fv-row mb-6">
+                                <label class="form-label fs-7 fw-semibold text-gray-900">Subtitle / Description</label>
+                                <textarea name="settings[description]" class="form-control form-control-sm form-control-solid" rows="2" placeholder="e.g. Please fill the form to chat with our admin team.">{{ $link->settings['description'] ?? '' }}</textarea>
+                            </div>
 
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold text-secondary">Deskripsi / Subtitle Halaman</label>
-                            <textarea name="settings[description]" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small" rows="2" placeholder="Contoh: Silakan isi nama dan nomor WA untuk berkonsultasi gratis.">{{ $link->settings['description'] ?? '' }}</textarea>
-                        </div>
+                            <div class="separator separator-dashed my-5"></div>
+                            
+                            <h4 class="fw-bold text-gray-900 mb-5">Rotation & WhatsApp Settings</h4>
 
-                        <hr class="my-4 border-secondary border-opacity-15">
-                        
-                        <h6 class="fw-bold text-dark-custom mb-3">Pengaturan Rotasi & Form WhatsApp</h6>
+                            <div class="fv-row mb-4">
+                                <label class="form-label fs-7 fw-semibold text-gray-900 required">Target WhatsApp Numbers (Rotated)</label>
+                                <textarea name="settings[numbers]" class="form-control form-control-sm form-control-solid" rows="3" required placeholder="One per line or comma-separated (e.g. 628123456789, 628987654321)">{{ $link->settings['numbers'] ?? '' }}</textarea>
+                                <div class="form-text text-muted fs-8">Use international format without + (628xxxxxxxx). Distributed round-robin.</div>
+                            </div>
 
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold text-secondary">Nomor Tujuan WhatsApp (Dirotasi) <span class="text-danger">*</span></label>
-                            <textarea name="settings[numbers]" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small" rows="3" required placeholder="Satu nomor per baris atau dipisah koma (Contoh: 628123456789, 628987654321)">{{ $link->settings['numbers'] ?? '' }}</textarea>
-                            <div class="form-text text-muted" style="font-size: 0.725rem;">Gunakan format kode negara tanpa simbol + (Contoh: 628xxxxxxxx). Pengiriman pesan didistribusikan secara round-robin adil ke setiap nomor ini.</div>
-                        </div>
+                            <div class="fv-row mb-4">
+                                <label class="form-label fs-7 fw-semibold text-gray-900 required">Message Template</label>
+                                <textarea name="settings[template]" class="form-control form-control-sm form-control-solid" rows="3" required placeholder="Hello admin, my name is [nama]...">{{ $link->settings['template'] ?? '' }}</textarea>
+                                <div class="form-text text-muted fs-8">Placeholders: <code>[nama]</code>, <code>[kota]</code>, <code>[nomor]</code>, <code>[pesan]</code>.</div>
+                            </div>
 
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold text-secondary">Template Pesan WhatsApp <span class="text-danger">*</span></label>
-                            <textarea name="settings[template]" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small" rows="3" required placeholder="Contoh: Halo admin, nama saya [nama] dari [kota].">{{ $link->settings['template'] ?? '' }}</textarea>
-                            <div class="form-text text-muted" style="font-size: 0.725rem;">Gunakan placeholders dinamis: <code>[nama]</code>, <code>[kota]</code>, <code>[nomor]</code>, <code>[pesan]</code>.</div>
-                        </div>
+                            <div class="fv-row mb-4">
+                                <label class="form-label fs-7 fw-semibold text-gray-900 required">Form Button Text</label>
+                                <input type="text" name="settings[button_text]" class="form-control form-control-sm form-control-solid" value="{{ $link->settings['button_text'] ?? 'Claim Promo sekarang' }}" required placeholder="Contact CS Now" />
+                            </div>
 
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold text-secondary">Teks Tombol Form <span class="text-danger">*</span></label>
-                            <input type="text" name="settings[button_text]" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small" value="{{ $link->settings['button_text'] ?? 'Claim Promo sekarang' }}" required placeholder="Contoh: Hubungi CS Sekarang">
-                        </div>
-
-
-
-                        <div class="d-flex justify-content-end gap-2 mt-4">
-                            <button type="submit" class="btn btn-primary px-4 py-2 rounded-3 fw-semibold small" style="background-color: var(--primary-color); border-color: var(--primary-color);">Simpan Perubahan</button>
-                        </div>
-                    </form>
+                            <div class="d-flex justify-content-end gap-2 mt-6">
+                                <button type="submit" class="btn btn-sm btn-primary fw-bold">Save Settings</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
 
             <!-- TAB 2: Design Styling -->
-            <div class="tab-pane fade" id="styling-pane" role="tabpanel" tabindex="0">
-                <div class="glass-card p-4 border border-secondary border-opacity-10 rounded-3 mb-4" style="background: var(--card-bg-blur);">
-                    <form action="{{ route('warotators.settings.update', $link->id) }}" method="POST" id="rotatorStylingForm">
-                        @csrf
-                        @method('PUT')
+            <div class="tab-pane fade" id="styling-pane" role="tabpanel">
+                <div class="card card-flush shadow-sm border-0 mb-4">
+                    <div class="card-body p-6">
+                        <form action="{{ route('warotators.settings.update', $link->id) }}" method="POST" id="rotatorStylingForm">
+                            @csrf
+                            @method('PUT')
 
-                        <h6 class="fw-bold text-dark-custom mb-3">Latar Belakang Halaman (Background)</h6>
-                        
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold text-secondary">Tipe Latar Belakang</label>
-                            <select name="settings[bg_type]" id="bg_type" class="form-select bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 text-secondary small">
-                                <option value="solid" {{ ($link->settings['bg_type'] ?? 'solid') == 'solid' ? 'selected' : '' }}>Warna Solid</option>
-                                <option value="gradient" {{ ($link->settings['bg_type'] ?? 'solid') == 'gradient' ? 'selected' : '' }}>Warna Gradasi (Linear Gradient)</option>
-                                <option value="abstract_blobs" {{ ($link->settings['bg_type'] ?? 'solid') == 'abstract_blobs' ? 'selected' : '' }}>Abstract Blobs (Mesh Gradient)</option>
-                            </select>
-                        </div>
-
-                        <!-- Solid BG Color Picker -->
-                        <div class="mb-3" id="solidBgField">
-                            <label class="form-label small fw-semibold text-secondary">Warna Latar Belakang</label>
-                            <div class="d-flex align-items-center gap-2">
-                                <input type="color" name="settings[bg_color]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; background: transparent; cursor: pointer;" value="{{ $link->settings['bg_color'] ?? '#f3f4f6' }}">
-                                <input type="text" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small w-50" readonly value="{{ $link->settings['bg_color'] ?? '#f3f4f6' }}">
+                            <h4 class="fw-bold text-gray-900 mb-5">Page Background</h4>
+                            
+                            <div class="fv-row mb-4">
+                                <label class="form-label fs-7 fw-semibold text-gray-900">Background Type</label>
+                                <select name="settings[bg_type]" id="bg_type" class="form-select form-select-sm form-select-solid">
+                                    <option value="solid" {{ ($link->settings['bg_type'] ?? 'solid') == 'solid' ? 'selected' : '' }}>Solid Color</option>
+                                    <option value="gradient" {{ ($link->settings['bg_type'] ?? 'solid') == 'gradient' ? 'selected' : '' }}>Linear Gradient</option>
+                                    <option value="abstract_blobs" {{ ($link->settings['bg_type'] ?? 'solid') == 'abstract_blobs' ? 'selected' : '' }}>Abstract Blobs (Mesh Gradient)</option>
+                                </select>
                             </div>
-                        </div>
 
-                        <!-- Gradient BG Color Pickers -->
-                        <div class="row mb-3 d-none" id="gradientBgFields">
-                            <div class="col-md-6">
-                                <label class="form-label small fw-semibold text-secondary">Gradasi Mulai (Start)</label>
+                            <!-- Solid BG Color Picker -->
+                            <div class="fv-row mb-4" id="solidBgField">
+                                <label class="form-label fs-7 fw-semibold text-gray-900">Background Color</label>
                                 <div class="d-flex align-items-center gap-2">
-                                    <input type="color" name="settings[bg_gradient_start]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; background: transparent; cursor: pointer;" value="{{ $link->settings['bg_gradient_start'] ?? '#a4e5bd' }}">
-                                    <input type="text" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small" readonly value="{{ $link->settings['bg_gradient_start'] ?? '#a4e5bd' }}">
+                                    <input type="color" name="settings[bg_color]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; cursor: pointer;" value="{{ $link->settings['bg_color'] ?? '#f3f4f6' }}">
+                                    <input type="text" class="form-control form-control-sm form-control-solid w-150px" readonly value="{{ $link->settings['bg_color'] ?? '#f3f4f6' }}">
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-semibold text-secondary">Gradasi Selesai (End)</label>
-                                <div class="d-flex align-items-center gap-2">
-                                    <input type="color" name="settings[bg_gradient_end]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; background: transparent; cursor: pointer;" value="{{ $link->settings['bg_gradient_end'] ?? '#2ac3a6' }}">
-                                    <input type="text" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small" readonly value="{{ $link->settings['bg_gradient_end'] ?? '#2ac3a6' }}">
+
+                            <!-- Gradient BG Color Pickers -->
+                            <div class="row g-4 mb-4 d-none" id="gradientBgFields">
+                                <div class="col-md-6">
+                                    <label class="form-label fs-7 fw-semibold text-gray-900">Gradient Start</label>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" name="settings[bg_gradient_start]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; cursor: pointer;" value="{{ $link->settings['bg_gradient_start'] ?? '#a4e5bd' }}">
+                                        <input type="text" class="form-control form-control-sm form-control-solid" readonly value="{{ $link->settings['bg_gradient_start'] ?? '#a4e5bd' }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fs-7 fw-semibold text-gray-900">Gradient End</label>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" name="settings[bg_gradient_end]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; cursor: pointer;" value="{{ $link->settings['bg_gradient_end'] ?? '#2ac3a6' }}">
+                                        <input type="text" class="form-control form-control-sm form-control-solid" readonly value="{{ $link->settings['bg_gradient_end'] ?? '#2ac3a6' }}">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Abstract Blobs Settings -->
-                        <div id="abstractBlobsFields" class="d-none">
-                            <div class="mb-3">
-                                <label class="form-label small fw-semibold text-secondary">Warna Dasar Latar Belakang</label>
-                                <div class="d-flex align-items-center gap-2">
-                                    <input type="color" name="settings[bg_blob_base]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; background: transparent; cursor: pointer;" value="{{ $link->settings['bg_blob_base'] ?? '#f8fafc' }}">
-                                    <input type="text" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small w-50" readonly value="{{ $link->settings['bg_blob_base'] ?? '#f8fafc' }}">
+                            <!-- Abstract Blobs Settings -->
+                            <div id="abstractBlobsFields" class="d-none">
+                                <div class="fv-row mb-4">
+                                    <label class="form-label fs-7 fw-semibold text-gray-900">Blob Base Color</label>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" name="settings[bg_blob_base]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; cursor: pointer;" value="{{ $link->settings['bg_blob_base'] ?? '#f8fafc' }}">
+                                        <input type="text" class="form-control form-control-sm form-control-solid w-150px" readonly value="{{ $link->settings['bg_blob_base'] ?? '#f8fafc' }}">
+                                    </div>
+                                </div>
+                                <div class="fv-row mb-4">
+                                    <label class="form-label fs-7 fw-semibold text-gray-900">Blob 1 (Top Left)</label>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" name="settings[bg_blob_1]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; cursor: pointer;" value="{{ $link->settings['bg_blob_1'] ?? '#3b82f6' }}">
+                                        <input type="text" class="form-control form-control-sm form-control-solid w-150px" readonly value="{{ $link->settings['bg_blob_1'] ?? '#3b82f6' }}">
+                                    </div>
+                                </div>
+                                <div class="fv-row mb-4">
+                                    <label class="form-label fs-7 fw-semibold text-gray-900">Blob 2 (Center Right)</label>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" name="settings[bg_blob_2]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; cursor: pointer;" value="{{ $link->settings['bg_blob_2'] ?? '#ec4899' }}">
+                                        <input type="text" class="form-control form-control-sm form-control-solid w-150px" readonly value="{{ $link->settings['bg_blob_2'] ?? '#ec4899' }}">
+                                    </div>
+                                </div>
+                                <div class="fv-row mb-4">
+                                    <label class="form-label fs-7 fw-semibold text-gray-900">Blob 3 (Bottom Right)</label>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="color" name="settings[bg_blob_3]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; cursor: pointer;" value="{{ $link->settings['bg_blob_3'] ?? '#8b5cf6' }}">
+                                        <input type="text" class="form-control form-control-sm form-control-solid w-150px" readonly value="{{ $link->settings['bg_blob_3'] ?? '#8b5cf6' }}">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label small fw-semibold text-secondary">Warna Blob 1 (Atas Kiri)</label>
+
+                            <div class="separator separator-dashed my-5"></div>
+
+                            <h4 class="fw-bold text-gray-900 mb-5">Buttons & Texts</h4>
+
+                            <div class="fv-row mb-4">
+                                <label class="form-label fs-7 fw-semibold text-gray-900">Button Background Color</label>
                                 <div class="d-flex align-items-center gap-2">
-                                    <input type="color" name="settings[bg_blob_1]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; background: transparent; cursor: pointer;" value="{{ $link->settings['bg_blob_1'] ?? '#3b82f6' }}">
-                                    <input type="text" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small w-50" readonly value="{{ $link->settings['bg_blob_1'] ?? '#3b82f6' }}">
+                                    <input type="color" name="settings[btn_bg_color]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; cursor: pointer;" value="{{ $link->settings['btn_bg_color'] ?? '#2ac3a6' }}">
+                                    <input type="text" class="form-control form-control-sm form-control-solid w-150px" readonly value="{{ $link->settings['btn_bg_color'] ?? '#2ac3a6' }}">
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label small fw-semibold text-secondary">Warna Blob 2 (Tengah Kanan)</label>
+
+                            <div class="fv-row mb-4">
+                                <label class="form-label fs-7 fw-semibold text-gray-900">Button Text Color</label>
                                 <div class="d-flex align-items-center gap-2">
-                                    <input type="color" name="settings[bg_blob_2]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; background: transparent; cursor: pointer;" value="{{ $link->settings['bg_blob_2'] ?? '#ec4899' }}">
-                                    <input type="text" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small w-50" readonly value="{{ $link->settings['bg_blob_2'] ?? '#ec4899' }}">
+                                    <input type="color" name="settings[btn_text_color]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; cursor: pointer;" value="{{ $link->settings['btn_text_color'] ?? '#ffffff' }}">
+                                    <input type="text" class="form-control form-control-sm form-control-solid w-150px" readonly value="{{ $link->settings['btn_text_color'] ?? '#ffffff' }}">
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label small fw-semibold text-secondary">Warna Blob 3 (Bawah Kanan)</label>
+
+                            <div class="fv-row mb-4">
+                                <label class="form-label fs-7 fw-semibold text-gray-900">Title Text Color</label>
                                 <div class="d-flex align-items-center gap-2">
-                                    <input type="color" name="settings[bg_blob_3]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; background: transparent; cursor: pointer;" value="{{ $link->settings['bg_blob_3'] ?? '#8b5cf6' }}">
-                                    <input type="text" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small w-50" readonly value="{{ $link->settings['bg_blob_3'] ?? '#8b5cf6' }}">
+                                    <input type="color" name="settings[text_color]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; cursor: pointer;" value="{{ $link->settings['text_color'] ?? '#111827' }}">
+                                    <input type="text" class="form-control form-control-sm form-control-solid w-150px" readonly value="{{ $link->settings['text_color'] ?? '#111827' }}">
                                 </div>
                             </div>
-                        </div>
 
-                        <hr class="my-4 border-secondary border-opacity-15">
-
-                        <h6 class="fw-bold text-dark-custom mb-3">Tombol & Warna Teks</h6>
-
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold text-secondary">Warna Tombol (Background)</label>
-                            <div class="d-flex align-items-center gap-2">
-                                <input type="color" name="settings[btn_bg_color]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; background: transparent; cursor: pointer;" value="{{ $link->settings['btn_bg_color'] ?? '#2ac3a6' }}">
-                                <input type="text" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small w-50" readonly value="{{ $link->settings['btn_bg_color'] ?? '#2ac3a6' }}">
+                            <div class="d-flex justify-content-end gap-2 mt-6">
+                                <button type="submit" class="btn btn-sm btn-primary fw-bold">Save Styling</button>
                             </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold text-secondary">Warna Teks Tombol</label>
-                            <div class="d-flex align-items-center gap-2">
-                                <input type="color" name="settings[btn_text_color]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; background: transparent; cursor: pointer;" value="{{ $link->settings['btn_text_color'] ?? '#ffffff' }}">
-                                <input type="text" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small w-50" readonly value="{{ $link->settings['btn_text_color'] ?? '#ffffff' }}">
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold text-secondary">Warna Teks Judul Utama</label>
-                            <div class="d-flex align-items-center gap-2">
-                                <input type="color" name="settings[text_color]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; background: transparent; cursor: pointer;" value="{{ $link->settings['text_color'] ?? '#111827' }}">
-                                <input type="text" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small w-50" readonly value="{{ $link->settings['text_color'] ?? '#111827' }}">
-                            </div>
-                        </div>
-
-                        <hr class="my-4 border-secondary border-opacity-15">
-
-                        <h6 class="fw-bold text-dark-custom mb-3">Warna Form & Input</h6>
-
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold text-secondary">Warna Label Form</label>
-                            <div class="d-flex align-items-center gap-2">
-                                <input type="color" name="settings[form_label_color]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; background: transparent; cursor: pointer;" value="{{ $link->settings['form_label_color'] ?? '#4b5563' }}">
-                                <input type="text" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small w-50" readonly value="{{ $link->settings['form_label_color'] ?? '#4b5563' }}">
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold text-secondary">Warna Teks Input</label>
-                            <div class="d-flex align-items-center gap-2">
-                                <input type="color" name="settings[form_input_text_color]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; background: transparent; cursor: pointer;" value="{{ $link->settings['form_input_text_color'] ?? '#111827' }}">
-                                <input type="text" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small w-50" readonly value="{{ $link->settings['form_input_text_color'] ?? '#111827' }}">
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold text-secondary">Warna Background Input (Normal)</label>
-                            <div class="d-flex align-items-center gap-2">
-                                <input type="color" name="settings[form_input_bg_color]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; background: transparent; cursor: pointer;" value="{{ $link->settings['form_input_bg_color'] ?? '#f3f4f6' }}">
-                                <input type="text" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small w-50" readonly value="{{ $link->settings['form_input_bg_color'] ?? '#f3f4f6' }}">
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold text-secondary">Warna Background Input (Active/Focus)</label>
-                            <div class="d-flex align-items-center gap-2">
-                                <input type="color" name="settings[form_input_bg_active_color]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; background: transparent; cursor: pointer;" value="{{ $link->settings['form_input_bg_active_color'] ?? '#ffffff' }}">
-                                <input type="text" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small w-50" readonly value="{{ $link->settings['form_input_bg_active_color'] ?? '#ffffff' }}">
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold text-secondary">Warna Border Input (Active/Focus)</label>
-                            <div class="d-flex align-items-center gap-2">
-                                <input type="color" name="settings[form_input_border_active_color]" class="form-control form-control-color border-0 p-0 rounded-circle" style="width: 38px; height: 38px; background: transparent; cursor: pointer;" value="{{ $link->settings['form_input_border_active_color'] ?? '#2ac3a6' }}">
-                                <input type="text" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small w-50" readonly value="{{ $link->settings['form_input_border_active_color'] ?? '#2ac3a6' }}">
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-end gap-2 mt-4">
-                            <button type="submit" class="btn btn-primary px-4 py-2 rounded-3 fw-semibold small" style="background-color: var(--primary-color); border-color: var(--primary-color);">Simpan Desain</button>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
 
-            <!-- TAB 3: Profil Images -->
-            <div class="tab-pane fade" id="profile-pane" role="tabpanel" tabindex="0">
-                <div class="glass-card p-4 border border-secondary border-opacity-10 rounded-3 mb-4" style="background: var(--card-bg-blur);">
-                    
-                    <!-- Cover/Banner Image Upload Dropzone -->
-                    <h6 class="fw-bold text-dark-custom mb-3">Gambar Header (Banner)</h6>
-                    <form action="{{ route('warotators.settings.update', $link->id) }}" method="POST" enctype="multipart/form-data" class="profile-upload-form mb-4">
-                        @csrf
-                        @method('PUT')
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold text-secondary">Pilih File Banner</label>
-                            <div class="drag-drop-zone" id="banner-dropzone">
-                                <div class="drag-drop-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mb-2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <!-- TAB 3: Profile Images -->
+            <div class="tab-pane fade" id="profile-pane" role="tabpanel">
+                <div class="card card-flush shadow-sm border-0 mb-4">
+                    <div class="card-body p-6">
+                        <!-- Cover/Banner Image Upload Dropzone -->
+                        <h4 class="fw-bold text-gray-900 mb-4">Header Banner</h4>
+                        <form action="{{ route('warotators.settings.update', $link->id) }}" method="POST" enctype="multipart/form-data" class="profile-upload-form mb-6">
+                            @csrf
+                            @method('PUT')
+                            <div class="fv-row mb-4">
+                                <label class="form-label fs-7 fw-semibold text-gray-900">Choose Banner Image</label>
+                                <div class="drag-drop-zone" id="banner-dropzone">
+                                    <i class="ki-outline ki-file-up fs-2x text-muted mb-2"></i>
+                                    <p class="mb-1 fs-7 fw-semibold text-gray-800">Drag & drop image here or click to browse</p>
+                                    <p class="mb-0 text-muted fs-8">Supports JPEG, PNG, JPG, GIF, WebP (Max 4MB)</p>
+                                    <div class="image-preview-container d-none mt-2">
+                                        <img class="img-preview rounded-3" style="max-height: 120px; max-width: 100%; object-fit: contain;" src="">
+                                    </div>
+                                    <input type="file" name="cover" id="cover-file-input" accept="image/*">
                                 </div>
-                                <p class="mb-1 small fw-semibold text-dark-custom dropzone-text">Tarik & lepas gambar di sini atau klik untuk memilih</p>
-                                <p class="mb-0 text-muted extra-small" style="font-size: 0.7rem;">Mendukung JPEG, PNG, JPG, GIF, WebP (Maks 4MB)</p>
-                                <!-- Preview Container inside dropzone -->
-                                <div class="image-preview-container d-none mt-2">
-                                    <img class="img-preview rounded-3" style="max-height: 120px; max-width: 100%; object-fit: contain; border: 1px solid rgba(0,0,0,0.1);" src="">
+                            </div>
+                            <div class="fv-row mb-4">
+                                <label class="form-label fs-7 fw-semibold text-gray-900">Or use Banner Image URL</label>
+                                <input type="url" name="settings[banner_url]" id="banner-url-input" class="form-control form-control-sm form-control-solid" placeholder="https://example.com/banner.jpg" value="{{ $link->settings['banner_url'] ?? '' }}">
+                                <div class="banner-url-preview-container {{ empty($link->settings['banner_url']) ? 'd-none' : '' }} mt-2">
+                                    <img class="banner-url-preview rounded-3" style="max-height: 120px; max-width: 100%; object-fit: contain;" src="{{ $link->settings['banner_url'] ?? '' }}">
                                 </div>
-                                <input type="file" name="cover" id="cover-file-input" accept="image/*">
                             </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold text-secondary">Atau gunakan URL Gambar Banner</label>
-                            <input type="url" name="settings[banner_url]" id="banner-url-input" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small" placeholder="https://example.com/banner.jpg" value="{{ $link->settings['banner_url'] ?? '' }}">
-                            <div class="banner-url-preview-container {{ empty($link->settings['banner_url']) ? 'd-none' : '' }} mt-2">
-                                <img class="banner-url-preview rounded-3" style="max-height: 120px; max-width: 100%; object-fit: contain; border: 1px solid rgba(0,0,0,0.1);" src="{{ $link->settings['banner_url'] ?? '' }}">
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-sm btn-primary fw-bold">Upload Banner</button>
                             </div>
-                        </div>
-                        <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-primary btn-sm px-3 py-2 rounded-3 fw-semibold">Unggah Banner</button>
-                        </div>
-                    </form>
+                        </form>
 
-                    <hr class="my-4 border-secondary border-opacity-15">
+                        <div class="separator separator-dashed my-6"></div>
 
-                    <!-- Avatar/Logo Image Upload -->
-                    <h6 class="fw-bold text-dark-custom mb-3">Gambar Logo / Avatar Profil</h6>
-                    <form action="{{ route('warotators.settings.update', $link->id) }}" method="POST" enctype="multipart/form-data" class="profile-upload-form">
-                        @csrf
-                        @method('PUT')
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold text-secondary">Pilih File Foto Profil</label>
-                            <div class="drag-drop-zone" id="avatar-dropzone">
-                                <div class="drag-drop-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mb-2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        <!-- Avatar Upload Dropzone -->
+                        <h4 class="fw-bold text-gray-900 mb-4">Profile Avatar</h4>
+                        <form action="{{ route('warotators.settings.update', $link->id) }}" method="POST" enctype="multipart/form-data" class="profile-upload-form">
+                            @csrf
+                            @method('PUT')
+                            <div class="fv-row mb-4">
+                                <label class="form-label fs-7 fw-semibold text-gray-900">Choose Avatar Image</label>
+                                <div class="drag-drop-zone" id="avatar-dropzone">
+                                    <i class="ki-outline ki-user-square fs-2x text-muted mb-2"></i>
+                                    <p class="mb-1 fs-7 fw-semibold text-gray-800">Drag & drop avatar here or click to browse</p>
+                                    <p class="mb-0 text-muted fs-8">Cropped automatically to 1:1 square ratio</p>
+                                    <div class="image-preview-container d-none mt-2">
+                                        <img class="img-preview rounded-circle" style="height: 100px; width: 100px; object-fit: cover;" src="">
+                                    </div>
+                                    <input type="file" name="avatar" id="avatar-file-input" accept="image/*">
                                 </div>
-                                <p class="mb-1 small fw-semibold text-dark-custom dropzone-text">Tarik & lepas gambar di sini atau klik untuk memilih</p>
-                                <p class="mb-0 text-muted extra-small" style="font-size: 0.7rem;">Mendukung JPEG, PNG, JPG, GIF, WebP (Maks 2MB)</p>
-                                <!-- Preview Container inside dropzone -->
-                                <div class="image-preview-container d-none mt-2">
-                                    <img class="img-preview rounded-circle" style="height: 100px; width: 100px; object-fit: cover; border: 1px solid rgba(0,0,0,0.1);" src="">
+                            </div>
+                            <div class="fv-row mb-4">
+                                <label class="form-label fs-7 fw-semibold text-gray-900">Or use Avatar Image URL</label>
+                                <input type="url" name="settings[avatar_url]" id="avatar-url-input" class="form-control form-control-sm form-control-solid" placeholder="https://example.com/avatar.jpg" value="{{ $link->settings['avatar_url'] ?? '' }}">
+                                <div class="avatar-url-preview-container {{ empty($link->settings['avatar_url']) ? 'd-none' : '' }} mt-2">
+                                    <img class="avatar-url-preview rounded-circle" style="height: 100px; width: 100px; object-fit: cover;" src="{{ $link->settings['avatar_url'] ?? '' }}">
                                 </div>
-                                <input type="file" name="avatar" id="avatar-file-input" accept="image/*">
                             </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold text-secondary">Atau gunakan URL Foto Profil</label>
-                            <input type="url" name="settings[avatar_url]" id="avatar-url-input" class="form-control bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 small" placeholder="https://example.com/avatar.jpg" value="{{ $link->settings['avatar_url'] ?? '' }}">
-                            <div class="avatar-url-preview-container {{ empty($link->settings['avatar_url']) ? 'd-none' : '' }} mt-2">
-                                <img class="avatar-url-preview rounded-circle" style="height: 100px; width: 100px; object-fit: cover; border: 1px solid rgba(0,0,0,0.1);" src="{{ $link->settings['avatar_url'] ?? '' }}">
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-sm btn-primary fw-bold">Upload Avatar</button>
                             </div>
-                        </div>
-                        <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-primary btn-sm px-3 py-2 rounded-3 fw-semibold">Unggah Profil</button>
-                        </div>
-                    </form>
-
+                        </form>
+                    </div>
                 </div>
             </div>
             
@@ -392,18 +345,18 @@
     </div>
 
     <!-- Right Panel: Live Mobile Mockup Preview Frame -->
-    <div class="col-lg-6 d-none d-lg-flex justify-content-center align-items-center ps-lg-5" style="position: sticky; top: 100px; height: calc(100vh - 120px);">
-        <div class="mockup-container position-relative shadow-2xl overflow-hidden" style="width: 375px; height: 750px; border-radius: 36px; border: 12px solid #111827; background: #000; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4);">
+    <div class="col-lg-5 col-xl-4 d-none d-lg-flex justify-content-center align-items-start ps-lg-5">
+        <div class="mockup-container position-relative shadow-2xl overflow-hidden" style="width: 360px; height: 720px; border-radius: 36px; border: 12px solid #111827; background: #000; flex-shrink: 0; position: sticky; top: 115px; z-index: 10;">
             <!-- Camera Notch -->
-            <div class="position-absolute start-50 translate-middle-x" style="top: 0; width: 120px; height: 20px; background: #111827; border-radius: 0 0 12px 12px; z-index: 100;"></div>
+            <div class="position-absolute start-50 translate-middle-x" style="top: 0; width: 120px; height: 20px; background: #111827; border-radius: 0 0 12px 12px; z-index: 5;"></div>
             
             <!-- Iframe Loading spinner -->
-            <div class="iframe-spinner position-absolute top-50 start-50 translate-middle text-success d-none">
+            <div class="iframe-spinner position-absolute top-50 start-50 translate-middle text-primary d-none">
                 <div class="spinner-border" role="status"></div>
             </div>
             
             <!-- Real-time landing page frame -->
-            <iframe id="livePreviewFrame" src="{{ $fullUrl }}" class="w-100 h-100 border-0 bg-white" style="border-radius: 28px;"></iframe>
+            <iframe id="livePreviewFrame" src="{{ $fullUrl }}" class="w-100 h-100 border-0 bg-white" style="border-radius: 24px;"></iframe>
         </div>
     </div>
 </div>
@@ -411,22 +364,23 @@
 <!-- Cropper Modal -->
 <div class="modal fade" id="cropModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="cropModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-card border border-secondary border-opacity-15" style="background: var(--card-bg-blur); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 16px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.15);">
-            <div class="modal-header border-bottom border-secondary border-opacity-15 p-3">
-                <h6 class="modal-title fw-bold text-dark-custom m-0 d-flex align-items-center gap-2" id="cropModalLabel" style="font-size: 0.95rem;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2ac3a6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.13 1L6 16a2 2 0 0 0 2 2h15"></path><path d="M1 6.13L16 6a2 2 0 0 1 2 2v15"></path></svg>
-                    Potong Foto Profil (Aspek Rasio 1:1)
-                </h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content rounded-3 border-0 shadow-lg">
+            <div class="modal-header pb-0 border-0 justify-content-between">
+                <h3 class="modal-title fw-bold text-gray-900" id="cropModalLabel">
+                    Crop Avatar Photo (1:1 Ratio)
+                </h3>
+                <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                    <i class="ki-outline ki-cross fs-1"></i>
+                </div>
             </div>
-            <div class="modal-body p-3 text-center" style="background: rgba(0,0,0,0.02);">
+            <div class="modal-body py-6 text-center">
                 <div class="img-container d-flex justify-content-center align-items-center" style="max-height: 380px; overflow: hidden; border-radius: 8px;">
                     <img id="imageToCrop" src="" style="max-width: 100%; display: block;">
                 </div>
             </div>
-            <div class="modal-footer border-top border-secondary border-opacity-15 p-3">
-                <button type="button" class="btn btn-sm btn-light border rounded-3 fw-semibold text-secondary px-3 py-1.5" data-bs-dismiss="modal" style="font-size: 0.775rem;">Batal</button>
-                <button type="button" id="cropButton" class="btn btn-sm btn-primary rounded-3 fw-semibold px-4 py-1.5" style="background-color: var(--primary-color); border-color: var(--primary-color); font-size: 0.775rem;">Potong & Simpan</button>
+            <div class="modal-footer border-0 pt-0 pb-6">
+                <button type="button" class="btn btn-light fw-bold" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="cropButton" class="btn btn-primary fw-bold">Crop & Save</button>
             </div>
         </div>
     </div>

@@ -1,91 +1,95 @@
 @extends('layouts.auth')
 
-@section('title', 'Login')
+@section('title', 'Sign In')
 
 @section('content')
-<form method="POST" action="{{ route('login') }}" class="text-start">
+<form method="POST" action="{{ route('login') }}" class="form w-100" novalidate="novalidate">
     @csrf
 
-    <!-- Email Address -->
-    <div class="mb-3">
-        <label for="email" class="form-label small fw-semibold text-secondary">Email address</label>
-        <div class="input-group glass-input-group">
-            <span class="input-group-text d-flex align-items-center justify-content-center" style="width: 46px;">
-                <span data-duo-icons="user" style="width: 18px; height: 18px; color: var(--text-secondary);"></span>
-            </span>
-            <input type="email" class="form-control ps-2" id="email" name="email" value="{{ old('email') }}" required autofocus placeholder="name@example.com">
+    <!-- Heading -->
+    <div class="text-center mb-11">
+        <h1 class="text-gray-900 fw-bolder mb-3">Sign In</h1>
+        <div class="text-gray-500 fw-semibold fs-6">Enter your credentials to access your account</div>
+    </div>
+
+    <!-- Error Alert -->
+    @if ($errors->any())
+        <div class="alert alert-danger d-flex align-items-center p-4 mb-6 rounded-3">
+            <i class="ki-outline ki-cross-circle fs-2hx text-danger me-4"></i>
+            <div class="d-flex flex-column">
+                <h5 class="mb-1 text-danger fw-bold">Login Failed</h5>
+                <span class="fs-7 text-gray-800">{{ $errors->first() }}</span>
+            </div>
         </div>
+    @endif
+
+    <!-- Email -->
+    <div class="fv-row mb-8">
+        <label class="form-label fs-6 fw-semibold text-gray-900">Email Address</label>
+        <input type="email" placeholder="name@example.com" name="email" value="{{ old('email') }}" autocomplete="off" class="form-control form-control-solid @error('email') is-invalid @enderror" required autofocus />
         @error('email')
-            <div class="text-danger small mt-1">{{ $message }}</div>
+            <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 
     <!-- Password -->
-    <div class="mb-3">
-        <label for="password" class="form-label small fw-semibold text-secondary">Password</label>
-        <div class="input-group glass-input-group">
-            <span class="input-group-text d-flex align-items-center justify-content-center" style="width: 46px;">
-                <!-- Custom Padlock SVG (Duotone) -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary);">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" opacity="0.25" fill="currentColor" style="stroke: none;"></rect>
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
+    <div class="fv-row mb-3">
+        <label class="form-label fs-6 fw-semibold text-gray-900">Password</label>
+        <div class="position-relative mb-3">
+            <input type="password" placeholder="••••••••" name="password" autocomplete="off" class="form-control form-control-solid @error('password') is-invalid @enderror" id="password" required />
+            <span class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2" id="toggle-password">
+                <i class="ki-outline ki-eye fs-2" id="toggle-password-icon"></i>
             </span>
-            <input type="password" class="form-control ps-2 pe-0" id="password" name="password" required placeholder="••••••••">
-            <button class="btn text-secondary d-flex align-items-center justify-content-center" type="button" id="toggle-password" style="width: 46px; padding: 0;">
-                <!-- Custom Eye SVG (Duotone) -->
-                <svg id="toggle-password-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary); transition: all 0.2s ease;">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" opacity="0.25" fill="currentColor" style="stroke: none;"></path>
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3" fill="currentColor"></circle>
-                </svg>
-            </button>
         </div>
         @error('password')
-            <div class="text-danger small mt-1">{{ $message }}</div>
+            <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
 
-    <!-- Remember Me -->
-    <div class="mb-3 form-check d-flex align-items-center gap-2 ps-0">
-        <input type="checkbox" class="form-check-input m-0" id="remember" name="remember" style="width: 18px; height: 18px; cursor: pointer;">
-        <label class="form-check-label small text-secondary" for="remember" style="cursor: pointer; user-select: none; line-height: 1;">Remember me</label>
+    <!-- Wrapper -->
+    <div class="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">
+        <div>
+            <label class="form-check form-check-custom form-check-solid">
+                <input class="form-check-input" type="checkbox" name="remember" id="remember" />
+                <span class="form-check-label text-gray-700 fs-7">Remember me</span>
+            </label>
+        </div>
+        @if (Route::has('password.request'))
+            <a href="{{ route('password.request') }}" class="link-primary fs-7">Forgot Password?</a>
+        @endif
     </div>
 
-    <!-- Submit Button -->
-    <div class="d-grid gap-2 mt-4">
-        <button type="submit" class="btn btn-primary rounded-3 py-2 fw-semibold shadow-sm d-flex align-items-center justify-content-center">
-            <span data-duo-icons="power" class="me-2" style="width: 18px; height: 18px; color: #fff;"></span>Sign In
+    <!-- Submit button -->
+    <div class="d-grid mb-10">
+        <button type="submit" class="btn btn-primary">
+            <span class="indicator-label">Sign In</span>
         </button>
     </div>
 
-    <div class="text-center mt-4">
-        <p class="small text-secondary mb-0">Don't have an account? <a href="{{ route('register') }}" class="text-decoration-none fw-semibold">Sign Up</a></p>
-    </div>
+    <!-- Sign up link -->
+    @if (Route::has('register'))
+        <div class="text-gray-500 text-center fw-semibold fs-6">
+            Not a member yet? 
+            <a href="{{ route('register') }}" class="link-primary fw-bold">Sign Up</a>
+        </div>
+    @endif
 </form>
 
+@push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const togglePasswordBtn = document.getElementById('toggle-password');
         const passwordInput = document.getElementById('password');
-        const iconSpan = document.getElementById('toggle-password-icon');
+        const icon = document.getElementById('toggle-password-icon');
         
-        if (togglePasswordBtn && passwordInput) {
+        if (togglePasswordBtn && passwordInput && icon) {
             togglePasswordBtn.addEventListener('click', function() {
                 const isPassword = passwordInput.getAttribute('type') === 'password';
                 passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
-                
-                // Toggle eye icon styling
-                if (iconSpan) {
-                    if (isPassword) {
-                        iconSpan.style.color = 'var(--primary-color)';
-                    } else {
-                        iconSpan.style.color = 'var(--text-secondary)';
-                    }
-                }
+                icon.className = isPassword ? 'ki-outline ki-eye-slash fs-2' : 'ki-outline ki-eye fs-2';
             });
         }
     });
 </script>
+@endpush
 @endsection

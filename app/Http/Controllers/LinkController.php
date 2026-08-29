@@ -175,6 +175,16 @@ class LinkController extends Controller
                 ->limit(5)
                 ->get();
 
+            // Top Devices
+            $topDevices = \App\Models\TrackLink::select('device_type', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
+                ->where('link_id', $link->link_id ?? $link->id)
+                ->whereNull('biolink_block_id')
+                ->whereBetween('datetime', [$startDate->toDateTimeString(), $endDate->toDateTimeString()])
+                ->groupBy('device_type')
+                ->orderByDesc('count')
+                ->limit(5)
+                ->get();
+
             // Top OS & Browser
             $topOs = \App\Models\TrackLink::select('os', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
                 ->where('link_id', $link->link_id ?? $link->id)
@@ -264,7 +274,7 @@ class LinkController extends Controller
 
         return view($viewName, compact(
             'link', 'totalClicks', 'uniqueClicks', 'chartDates', 'chartData', 
-            'topReferrers', 'topCountries', 'topOs', 'topBrowsers', 'startDate', 'endDate', 'rawClicks', 'biolinkBlocks', 'whatsappLeads'
+            'topReferrers', 'topCountries', 'topDevices', 'topOs', 'topBrowsers', 'startDate', 'endDate', 'rawClicks', 'biolinkBlocks', 'whatsappLeads'
         ));
     }
 

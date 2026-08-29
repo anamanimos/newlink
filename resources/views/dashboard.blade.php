@@ -6,186 +6,186 @@
 
 @php
     if (!function_exists('renderCardIcon')) {
-        function renderCardIcon($iconName) {
+        function renderCardIcon($iconName, $color = 'primary') {
+            $iconClass = 'ki-element-11';
             if ($iconName == 'hash') {
-                return '<span class="fw-bold fs-5">#</span>';
+                $iconClass = 'ki-abstract-26';
             } elseif ($iconName == 'app') {
-                return '<span data-duo-icons="app" style="width: 18px; height: 18px;"></span>';
+                $iconClass = 'ki-profile-user';
             } elseif ($iconName == 'link') {
-                return '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9 17H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3" opacity="0.25" fill="currentColor" style="stroke: none;"></path>
-                    <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
-                    <line x1="8" y1="12" x2="16" y2="12"></line>
-                </svg>';
+                $iconClass = 'ki-disconnect';
             } elseif ($iconName == 'qrcode') {
-                return '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" opacity="0.25" fill="currentColor" style="stroke: none;"></rect>
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                    <rect x="7" y="7" width="3" height="3" fill="currentColor"></rect>
-                    <rect x="14" y="7" width="3" height="3" fill="currentColor"></rect>
-                    <rect x="7" y="14" width="3" height="3" fill="currentColor"></rect>
-                    <rect x="14" y="14" width="3" height="3" fill="currentColor"></rect>
-                </svg>';
+                $iconClass = 'ki-scan-barcode';
             } elseif ($iconName == 'card') {
-                return '<span data-duo-icons="credit-card" style="width: 18px; height: 18px;"></span>';
+                $iconClass = 'ki-credit-cart';
             } elseif ($iconName == 'clicks') {
-                return '<span data-duo-icons="compass" style="width: 18px; height: 18px;"></span>';
+                $iconClass = 'ki-chart-simple';
             } elseif ($iconName == 'calendar') {
-                return '<span data-duo-icons="calendar" style="width: 18px; height: 18px;"></span>';
+                $iconClass = 'ki-calendar';
             } elseif ($iconName == 'chart') {
-                return '<span data-duo-icons="chart-pie" style="width: 18px; height: 18px;"></span>';
+                $iconClass = 'ki-chart-pie-simple';
             }
-            return '';
+            return '<i class="ki-outline ' . $iconClass . ' fs-2 text-' . $color . '"></i>';
         }
     }
 @endphp
 
 <!-- Page Header (Title & Actions) -->
-<div class="d-flex align-items-center justify-content-between mb-4 mt-2">
-    <h4 class="fw-bold mb-0 d-flex align-items-center text-dark-custom" style="font-size: 1.5rem; letter-spacing: -0.5px;">
-        <span data-duo-icons="dashboard" style="width: 22px; height: 22px; margin-right: 12px;" class="text-muted"></span>
-        @if($type == 'link')
-            Shortened Links
-        @elseif($type == 'biolink')
-            Biolink Pages
-        @elseif($type == 'warotator')
-            WhatsApp Rotator
-        @elseif($type == 'qrcode')
-            QR Codes
-        @else
-            Links
-        @endif
-        <span class="ms-2 text-muted" style="cursor: help;" data-bs-toggle="tooltip" title="Daftar tautan biolink dan tautan pendek Anda.">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-        </span>
-    </h4>
+<div class="d-flex flex-stack mb-6">
     <div class="d-flex align-items-center gap-2">
-        <button id="toggleStatsBtn" class="btn btn-outline-secondary p-0 d-flex align-items-center justify-content-center rounded-3 border-opacity-15" style="width: 38px; height: 38px;" data-bs-toggle="tooltip" data-bs-placement="top" title="Sembunyikan Statistik">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-            </svg>
+        <h1 class="page-heading d-flex text-gray-900 fw-bolder fs-3 my-0">
+            @if($type == 'link')
+                Shortened Links
+            @elseif($type == 'biolink')
+                Biolink Pages
+            @elseif($type == 'warotator')
+                WhatsApp Rotator
+            @elseif($type == 'qrcode')
+                QR Codes
+            @else
+                Links & Biolinks
+            @endif
+        </h1>
+        <span class="badge badge-light-primary fw-semibold fs-8 px-2 py-1 ms-2">
+            @if($type == 'link') Shortlinks @elseif($type == 'biolink') Biolinks @elseif($type == 'warotator') Rotator @else Overview @endif
+        </span>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+        <button id="toggleStatsBtn" class="btn btn-icon btn-sm btn-light-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Toggle Statistics">
+            <i class="ki-outline ki-eye fs-2"></i>
         </button>
+
         @if($type == 'biolink')
-            <button class="btn btn-primary d-flex align-items-center gap-2 py-2 px-3.5 fw-semibold rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#createBiolinkModal" style="background-color: var(--primary-color); border-color: var(--primary-color);">
-                <span data-duo-icons="add-circle" style="width: 16px; height: 16px;"></span>
-                Create Biolink
+            <button class="btn btn-sm btn-primary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#createBiolinkModal">
+                <i class="ki-outline ki-plus fs-2"></i> Create Biolink
             </button>
         @elseif($type == 'warotator')
-            <a href="{{ route('warotators.create') }}" class="btn btn-primary d-flex align-items-center gap-2 py-2 px-3.5 fw-semibold rounded-3 shadow-sm" style="background-color: var(--primary-color); border-color: var(--primary-color); text-decoration: none;">
-                <span data-duo-icons="add-circle" style="width: 16px; height: 16px;"></span>
-                Create WA Rotator
+            <a href="{{ route('warotators.create') }}" class="btn btn-sm btn-primary d-flex align-items-center gap-2 text-decoration-none">
+                <i class="ki-outline ki-plus fs-2"></i> Create WA Rotator
             </a>
         @else
-            <button class="btn btn-primary d-flex align-items-center gap-2 py-2 px-3.5 fw-semibold rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#createLinkModal" style="background-color: var(--primary-color); border-color: var(--primary-color);">
-                <span data-duo-icons="add-circle" style="width: 16px; height: 16px;"></span>
-                Create Link
+            <button class="btn btn-sm btn-primary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#createLinkModal">
+                <i class="ki-outline ki-plus fs-2"></i> Create Link
             </button>
         @endif
     </div>
 </div>
-
-
 
 <!-- Stats & Chart Section Wrapper -->
 <div id="dashboardStatsWrapper">
-    <!-- Stats Row -->
-    <div class="row g-3 mb-4">
-        <!-- Card 1 -->
-        <div class="col-6 col-md-3">
-            <div class="glass-card p-3 d-flex align-items-center w-100 border border-secondary border-opacity-10 rounded-3" style="background: var(--card-bg-blur); height: 74px;">
-                <div class="stats-icon-box p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
-                    {!! renderCardIcon($card1_icon) !!}
+    <div class="row g-5 g-xl-8 mb-6">
+        <!-- Left Column: 4 Stat Cards Stacked -->
+        <div class="col-lg-4">
+            <div class="row g-5 g-xl-8">
+                <!-- Card 1 -->
+                <div class="col-6">
+                    <div class="card card-flush shadow-sm border-0 h-100">
+                        <div class="card-body d-flex flex-column align-items-start p-5">
+                            <div class="symbol symbol-45px symbol-circle mb-3">
+                                <span class="symbol-label bg-light-primary">
+                                    {!! renderCardIcon($card1_icon, 'primary') !!}
+                                </span>
+                            </div>
+                            <span class="fs-2hx fw-bold text-gray-900 lh-1 mb-1">{{ $card1_val }}</span>
+                            <span class="text-gray-500 fw-semibold fs-7">{{ $card1_lbl }}</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="min-w-0">
-                    <h4 class="fw-bold mb-0 text-truncate" style="line-height: 1.1; font-size: 1.25rem;">{{ $card1_val }}</h4>
-                    <span class="text-secondary small text-truncate d-block" style="font-size: 0.675rem; font-weight: 500;">{{ $card1_lbl }}</span>
+                <!-- Card 2 -->
+                <div class="col-6">
+                    <div class="card card-flush shadow-sm border-0 h-100">
+                        <div class="card-body d-flex flex-column align-items-start p-5">
+                            <div class="symbol symbol-45px symbol-circle mb-3">
+                                <span class="symbol-label bg-light-success">
+                                    {!! renderCardIcon($card2_icon, 'success') !!}
+                                </span>
+                            </div>
+                            <span class="fs-2hx fw-bold text-gray-900 lh-1 mb-1">{{ $card2_val }}</span>
+                            <span class="text-gray-500 fw-semibold fs-7">{{ $card2_lbl }}</span>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Card 2 -->
-        <div class="col-6 col-md-3">
-            <div class="glass-card p-3 d-flex align-items-center w-100 border border-secondary border-opacity-10 rounded-3" style="background: var(--card-bg-blur); height: 74px;">
-                <div class="stats-icon-box p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
-                    {!! renderCardIcon($card2_icon) !!}
+                <!-- Card 3 -->
+                <div class="col-6">
+                    <div class="card card-flush shadow-sm border-0 h-100">
+                        <div class="card-body d-flex flex-column align-items-start p-5">
+                            <div class="symbol symbol-45px symbol-circle mb-3">
+                                <span class="symbol-label bg-light-info">
+                                    {!! renderCardIcon($card3_icon, 'info') !!}
+                                </span>
+                            </div>
+                            <span class="fs-2hx fw-bold text-gray-900 lh-1 mb-1">{{ $card3_val }}</span>
+                            <span class="text-gray-500 fw-semibold fs-7">{{ $card3_lbl }}</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="min-w-0">
-                    <h4 class="fw-bold mb-0 text-truncate" style="line-height: 1.1; font-size: 1.25rem;">{{ $card2_val }}</h4>
-                    <span class="text-secondary small text-truncate d-block" style="font-size: 0.675rem; font-weight: 500;">{{ $card2_lbl }}</span>
+                <!-- Card 4 -->
+                <div class="col-6">
+                    <div class="card card-flush shadow-sm border-0 h-100">
+                        <div class="card-body d-flex flex-column align-items-start p-5">
+                            <div class="symbol symbol-45px symbol-circle mb-3">
+                                <span class="symbol-label bg-light-warning">
+                                    {!! renderCardIcon($card4_icon, 'warning') !!}
+                                </span>
+                            </div>
+                            <span class="fs-2hx fw-bold text-gray-900 lh-1 mb-1">{{ $card4_val }}</span>
+                            <span class="text-gray-500 fw-semibold fs-7">{{ $card4_lbl }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Card 3 -->
-        <div class="col-6 col-md-3">
-            <div class="glass-card p-3 d-flex align-items-center w-100 border border-secondary border-opacity-10 rounded-3" style="background: var(--card-bg-blur); height: 74px;">
-                <div class="stats-icon-box p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
-                    {!! renderCardIcon($card3_icon) !!}
+        <!-- Right Column: Chart Area -->
+        <div class="col-lg-8">
+            <div class="card card-flush shadow-sm border-0 h-100">
+                <div class="card-header pt-5">
+                    <h3 class="card-title align-items-start flex-column">
+                        <span class="card-label fw-bold text-gray-900 fs-5">Link Performance</span>
+                        <span class="text-gray-500 mt-1 fw-semibold fs-7">Clicks & visitors statistics</span>
+                    </h3>
+                    <div class="card-toolbar">
+                        <span class="badge badge-light-primary fw-semibold fs-8">Last 30 Days</span>
+                    </div>
                 </div>
-                <div class="min-w-0">
-                    <h4 class="fw-bold mb-0 text-truncate" style="line-height: 1.1; font-size: 1.25rem;">{{ $card3_val }}</h4>
-                    <span class="text-secondary small text-truncate d-block" style="font-size: 0.675rem; font-weight: 500;">{{ $card3_lbl }}</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 4 -->
-        <div class="col-6 col-md-3">
-            <div class="glass-card p-3 d-flex align-items-center w-100 border border-secondary border-opacity-10 rounded-3" style="background: var(--card-bg-blur); height: 74px;">
-                <div class="stats-icon-box p-2 rounded-3 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
-                    {!! renderCardIcon($card4_icon) !!}
-                </div>
-                <div class="min-w-0">
-                    <h4 class="fw-bold mb-0 text-truncate" style="line-height: 1.1; font-size: 1.25rem;">{{ $card4_val }}</h4>
-                    <span class="text-secondary small text-truncate d-block" style="font-size: 0.675rem; font-weight: 500;">{{ $card4_lbl }}</span>
+                <div class="card-body pt-2 pb-5 d-flex align-items-center">
+                    <div style="height: 260px; width: 100%;">
+                        <canvas id="clicksChart"></canvas>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Chart Area -->
-    <div class="glass-card p-4 mb-4 rounded-3 border border-secondary border-opacity-10" style="background: var(--card-bg-blur);">
-        <div class="d-flex align-items-center justify-content-between mb-3">
-            <h6 class="fw-bold mb-0">Link Performance</h6>
-            <span class="badge rounded-pill" style="background: var(--primary-light); color: #166534; font-weight: 500; font-size: 0.75rem;">Last 30 Days</span>
-        </div>
-        <div style="height: 220px; width: 100%;">
-            <canvas id="clicksChart"></canvas>
         </div>
     </div>
 </div>
 
-
-<!-- Links List Section -->
-<div class="glass-card p-4 rounded-3 border border-secondary border-opacity-10 mb-5" style="background: var(--card-bg-blur);">
+<!-- Links List Section Card -->
+<div class="card card-flush shadow-sm border-0 mb-6">
     <!-- Card Header: Pagination Limit & Filters -->
-    <div class="d-flex align-items-center justify-content-between pb-3 border-bottom" style="border-color: var(--glass-border) !important;">
+    <div class="card-header align-items-center py-5 gap-2 gap-md-5">
         <!-- Left Side: Pagination size selector -->
-        <div class="d-flex align-items-center gap-2">
-            <span class="text-secondary small fw-semibold">Tampilkan</span>
-            <form method="GET" action="{{ request()->url() }}" class="d-inline-block m-0">
-                @foreach(request()->except(['per_page', 'page']) as $k => $v)
-                    <input type="hidden" name="{{ $k }}" value="{{ $v }}">
-                @endforeach
-                <select name="per_page" class="form-select bg-transparent border rounded-3 py-1 ps-2.5 pe-4 text-secondary small" style="width: 80px; height: 32px; font-size: 0.775rem;">
-                    <option value="10" {{ request('per_page', 25) == 10 ? 'selected' : '' }}>10</option>
-                    <option value="25" {{ request('per_page', 25) == 25 ? 'selected' : '' }}>25</option>
-                    <option value="50" {{ request('per_page', 25) == 50 ? 'selected' : '' }}>50</option>
-                    <option value="100" {{ request('per_page', 25) == 100 ? 'selected' : '' }}>100</option>
-                </select>
-            </form>
-            <span class="text-secondary small fw-semibold">data</span>
+        <div class="card-title">
+            <div class="d-flex align-items-center position-relative my-1">
+                <span class="text-gray-600 fs-7 fw-semibold me-2">Show</span>
+                <form method="GET" action="{{ request()->url() }}" class="d-inline-block m-0">
+                    @foreach(request()->except(['per_page', 'page']) as $k => $v)
+                        <input type="hidden" name="{{ $k }}" value="{{ $v }}">
+                    @endforeach
+                    <select name="per_page" class="form-select form-select-sm form-select-solid w-75px" onchange="this.form.submit()">
+                        <option value="10" {{ request('per_page', 25) == 10 ? 'selected' : '' }}>10</option>
+                        <option value="25" {{ request('per_page', 25) == 25 ? 'selected' : '' }}>25</option>
+                        <option value="50" {{ request('per_page', 25) == 50 ? 'selected' : '' }}>50</option>
+                        <option value="100" {{ request('per_page', 25) == 100 ? 'selected' : '' }}>100</option>
+                    </select>
+                </form>
+                <span class="text-gray-600 fs-7 fw-semibold ms-2">entries</span>
+            </div>
         </div>
 
         <!-- Right Side: Search Box & Filter Icon Dropdown -->
-        <div class="d-flex align-items-center gap-2">
+        <div class="card-toolbar flex-row-fluid justify-content-end gap-3">
             <!-- Search Box Form -->
-            <form id="searchForm" method="GET" action="{{ request()->url() }}" class="m-0">
+            <form id="searchForm" method="GET" action="{{ request()->url() }}" class="d-flex align-items-center position-relative my-1">
                 @if(request('type'))
                     <input type="hidden" name="type" value="{{ request('type') }}">
                 @endif
@@ -204,25 +204,16 @@
                 @if(request('domain_id'))
                     <input type="hidden" name="domain_id" value="{{ request('domain_id') }}">
                 @endif
-                <div class="glass-input-group d-flex align-items-center border rounded-3 p-1 bg-transparent" style="width: 240px; height: 38px;">
-                    <span class="px-2 text-muted">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    </span>
-                    <input type="text" name="search" class="form-control bg-transparent border-0 py-0.5 small" placeholder="Cari URL, alias atau target..." value="{{ request('search') }}" style="font-size: 0.8rem;">
-                </div>
+                <i class="ki-outline ki-magnifier fs-3 position-absolute ms-4 text-gray-500"></i>
+                <input type="text" name="search" class="form-control form-control-sm form-control-solid w-200px w-md-250px ps-11" placeholder="Search links..." value="{{ request('search') }}" />
             </form>
 
             <!-- Filter Dropdown Container -->
             <div class="dropdown">
-                <button class="btn btn-outline-secondary p-0 d-flex align-items-center justify-content-center rounded-3 border-opacity-15 dropdown-toggle no-caret" type="button" id="filterDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false" style="width: 38px; height: 38px;" title="Filter data" data-bs-toggle="tooltip">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <!-- Funnel cup area (Secondary layer) -->
-                        <polygon points="22 4 12 12.5 2 4" opacity="0.3" fill="currentColor" style="stroke: none;"></polygon>
-                        <!-- Funnel outline (Primary layer) -->
-                        <polyline points="22 4 2 4 10 12.46 10 19 14 21 14 12.46 22 4"></polyline>
-                    </svg>
+                <button class="btn btn-sm btn-icon btn-light-secondary dropdown-toggle no-caret" type="button" id="filterDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false" title="Filter data">
+                    <i class="ki-outline ki-filter fs-3"></i>
                 </button>
-                <div class="dropdown-menu dropdown-menu-end p-3 shadow-lg border rounded-3" aria-labelledby="filterDropdownBtn" onclick="event.stopPropagation()" style="width: 280px; background: var(--header-bg); border-color: var(--glass-border);">
+                <div class="dropdown-menu dropdown-menu-end p-5 shadow-lg border-0 rounded-3 w-300px" aria-labelledby="filterDropdownBtn" onclick="event.stopPropagation()">
                     <form id="filterForm" method="GET" action="{{ request()->url() }}" class="m-0">
                         @if(request('type'))
                             <input type="hidden" name="type" value="{{ request('type') }}">
@@ -234,51 +225,51 @@
                             <input type="hidden" name="search" value="{{ request('search') }}">
                         @endif
 
-                        <div class="mb-2">
-                            <label class="form-label small fw-semibold text-secondary">Status</label>
-                            <select name="status" class="form-select bg-transparent border rounded-3 py-1.5 text-secondary small select2-simple">
-                                <option value="">Semua Status</option>
-                                <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Aktif</option>
-                                <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Nonaktif</option>
+                        <div class="mb-4">
+                            <label class="form-label fs-7 fw-bold text-gray-700">Status</label>
+                            <select name="status" class="form-select form-select-sm form-select-solid">
+                                <option value="">All Statuses</option>
+                                <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
+                                <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
                             </select>
                         </div>
 
-                        <div class="mb-2">
-                            <label class="form-label small fw-semibold text-secondary">Proyek</label>
-                            <select name="project_id" class="form-select bg-transparent border rounded-3 py-1.5 text-secondary small select2-simple">
-                                <option value="">Semua Proyek</option>
+                        <div class="mb-4">
+                            <label class="form-label fs-7 fw-bold text-gray-700">Project</label>
+                            <select name="project_id" class="form-select form-select-sm form-select-solid">
+                                <option value="">All Projects</option>
                                 @foreach($projects as $project)
                                     <option value="{{ $project->id }}" {{ request('project_id') == $project->id ? 'selected' : '' }}>{{ $project->name }}</option>
                                 @endforeach
                             </select>
                         </div>
 
-                        <div class="mb-2">
-                            <label class="form-label small fw-semibold text-secondary">Domain</label>
-                            <select name="domain_id" class="form-select bg-transparent border rounded-3 py-1.5 text-secondary small select2-simple">
-                                <option value="">Semua Domain</option>
-                                <option value="0" {{ request('domain_id') === '0' ? 'selected' : '' }}>Domain Bawaan</option>
+                        <div class="mb-4">
+                            <label class="form-label fs-7 fw-bold text-gray-700">Domain</label>
+                            <select name="domain_id" class="form-select form-select-sm form-select-solid">
+                                <option value="">All Domains</option>
+                                <option value="0" {{ request('domain_id') === '0' ? 'selected' : '' }}>Default Domain</option>
                                 @foreach($domains as $domain)
                                     <option value="{{ $domain->id }}" {{ request('domain_id') == $domain->id ? 'selected' : '' }}>{{ $domain->host }}</option>
                                 @endforeach
                             </select>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label small fw-semibold text-secondary">Urutkan</label>
-                            <select name="sort" class="form-select bg-transparent border rounded-3 py-1.5 text-secondary small select2-simple">
-                                <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Terbaru</option>
-                                <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Terlama</option>
-                                <option value="clicks_desc" {{ request('sort') == 'clicks_desc' ? 'selected' : '' }}>Klik Terbanyak</option>
-                                <option value="clicks_asc" {{ request('sort') == 'clicks_asc' ? 'selected' : '' }}>Klik Terkecil</option>
-                                <option value="title_asc" {{ request('sort') == 'title_asc' ? 'selected' : '' }}>Nama (A-Z)</option>
-                                <option value="title_desc" {{ request('sort') == 'title_desc' ? 'selected' : '' }}>Nama (Z-A)</option>
+                        <div class="mb-5">
+                            <label class="form-label fs-7 fw-bold text-gray-700">Sort By</label>
+                            <select name="sort" class="form-select form-select-sm form-select-solid">
+                                <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Newest</option>
+                                <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest</option>
+                                <option value="clicks_desc" {{ request('sort') == 'clicks_desc' ? 'selected' : '' }}>Most Clicks</option>
+                                <option value="clicks_asc" {{ request('sort') == 'clicks_asc' ? 'selected' : '' }}>Least Clicks</option>
+                                <option value="title_asc" {{ request('sort') == 'title_asc' ? 'selected' : '' }}>Name (A-Z)</option>
+                                <option value="title_desc" {{ request('sort') == 'title_desc' ? 'selected' : '' }}>Name (Z-A)</option>
                             </select>
                         </div>
 
                         <div class="d-flex gap-2">
-                            <a id="btnResetFilters" href="{{ request()->url() }}?type={{ request('type', 'link') }}&per_page={{ request('per_page', 25) }}" class="btn btn-light btn-sm rounded-3 py-1.5 px-3 fw-semibold flex-grow-1" style="font-size: 0.775rem;">Reset</a>
-                            <button type="submit" class="btn btn-primary btn-sm rounded-3 py-1.5 px-3 fw-semibold flex-grow-1" style="font-size: 0.775rem; background-color: var(--primary-color); border-color: var(--primary-color);">Terapkan</button>
+                            <a id="btnResetFilters" href="{{ request()->url() }}?type={{ request('type', 'link') }}&per_page={{ request('per_page', 25) }}" class="btn btn-sm btn-light fw-bold flex-grow-1">Reset</a>
+                            <button type="submit" class="btn btn-sm btn-primary fw-bold flex-grow-1">Apply</button>
                         </div>
                     </form>
                 </div>
@@ -286,54 +277,63 @@
         </div>
     </div>
 
-    <!-- Bulk Action Panel -->
-    <div id="bulkActionsBar" class="d-none p-3 align-items-center justify-content-between" style="background: var(--primary-light); border-top: 1px solid rgba(164, 229, 189, 0.2); border-bottom: 1px solid rgba(164, 229, 189, 0.2); margin-left: -1.5rem; margin-right: -1.5rem; padding-left: 1.5rem; padding-right: 1.5rem;">
-        <div class="d-flex align-items-center gap-2">
-            <span class="small fw-semibold d-flex align-items-center gap-2" style="color: var(--text-primary);">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-success"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                <span id="selectedCount" class="badge rounded-pill px-2.5 py-1" style="background-color: var(--primary-color) !important; color: var(--active-text) !important; font-size: 0.75rem; font-weight: 700;">0</span> item terpilih
-            </span>
+    <!-- Card Body -->
+    <div class="card-body pt-0">
+        <!-- Bulk Action Panel -->
+        <div id="bulkActionsBar" class="d-none align-items-center justify-content-between p-4 bg-light-primary rounded mb-4">
+            <div class="d-flex align-items-center gap-2">
+                <span class="fs-7 fw-bold text-gray-800 d-flex align-items-center gap-2">
+                    <i class="ki-outline ki-check fs-4 text-primary"></i>
+                    <span id="selectedCount" class="badge badge-primary fs-8 fw-bolder">0</span> item selected
+                </span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn btn-sm btn-light-success fw-bold bulk-btn" data-action="enable">
+                    <i class="ki-outline ki-check-circle fs-5 me-1"></i> Enable
+                </button>
+                <button type="button" class="btn btn-sm btn-light-secondary fw-bold bulk-btn" data-action="disable">
+                    <i class="ki-outline ki-cross-circle fs-5 me-1"></i> Disable
+                </button>
+                <button type="button" class="btn btn-sm btn-light-danger fw-bold bulk-btn" data-action="delete">
+                    <i class="ki-outline ki-trash fs-5 me-1"></i> Delete
+                </button>
+            </div>
         </div>
-        <div class="d-flex align-items-center gap-2">
-            <button type="button" class="btn btn-outline-theme btn-sm py-1.5 px-3 fw-semibold bulk-btn" data-action="enable" style="font-size: 0.75rem; border-radius: 8px !important;">Aktifkan</button>
-            <button type="button" class="btn btn-outline-gray btn-sm py-1.5 px-3 fw-semibold bulk-btn" data-action="disable" style="font-size: 0.75rem; border-radius: 8px !important;">Nonaktifkan</button>
-            <button type="button" class="btn btn-soft-danger btn-sm py-1.5 px-3 fw-semibold bulk-btn" data-action="delete" style="font-size: 0.75rem; border-radius: 8px !important;">Hapus</button>
-        </div>
-    </div>
 
-    <!-- Table Wrapper for AJAX dynamic updates -->
-    <div id="linksTableWrapper">
-        @include('partials.links_table')
+        <!-- Table Wrapper for AJAX dynamic updates -->
+        <div id="linksTableWrapper">
+            @include('partials.links_table')
+        </div>
     </div>
 </div>
 
 <!-- Create Link Modal -->
 <div class="modal fade" id="createLinkModal" tabindex="-1" aria-labelledby="createLinkModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-card border border-secondary border-opacity-10 rounded-3 p-2" style="background: var(--header-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
-            <div class="modal-header border-0 pb-1">
-                <h6 class="modal-title fw-bold text-dark-custom" id="createLinkModalLabel">Buat Tautan Pendek</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content rounded-3 border-0 shadow-lg">
+            <div class="modal-header pb-0 border-0 justify-content-between">
+                <h3 class="modal-title fw-bold text-gray-900" id="createLinkModalLabel">Create Shortlink</h3>
+                <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                    <i class="ki-outline ki-cross fs-1"></i>
+                </div>
             </div>
             <form action="{{ route('links.store') }}" method="POST">
                 @csrf
-                <div class="modal-body py-2">
+                <div class="modal-body py-6 px-lg-8">
                     <!-- Destination URL -->
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Target URL <span class="text-danger">*</span></label>
-                        <div class="glass-input-group d-flex align-items-center border rounded-3 p-1">
-                            <span class="px-2 text-muted">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                            </span>
-                            <input type="url" name="location_url" class="form-control bg-transparent border-0 py-1 small" placeholder="https://example.com/alamat-panjang" required value="{{ old('location_url') }}">
+                    <div class="fv-row mb-5">
+                        <label class="form-label fs-6 fw-semibold text-gray-900 required">Target URL</label>
+                        <div class="position-relative">
+                            <i class="ki-outline ki-disconnect fs-3 position-absolute ms-4 top-50 translate-middle-y text-gray-500"></i>
+                            <input type="url" name="location_url" class="form-control form-control-solid ps-12" placeholder="https://example.com/long-page-url" required value="{{ old('location_url') }}" />
                         </div>
                     </div>
 
                     <!-- Custom Domain -->
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Domain</label>
-                        <select name="domain_id" id="create_domain_id" class="form-select bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 text-secondary small">
-                            <option value="0" selected>Domain Bawaan ({{ parse_url(url('/'), PHP_URL_HOST) }})</option>
+                    <div class="fv-row mb-5">
+                        <label class="form-label fs-6 fw-semibold text-gray-900">Domain</label>
+                        <select name="domain_id" id="create_domain_id" class="form-select form-select-solid">
+                            <option value="0" selected>Default Domain ({{ parse_url(url('/'), PHP_URL_HOST) }})</option>
                             @foreach($domains as $domain)
                                 <option value="{{ $domain->id }}">{{ $domain->host }}</option>
                             @endforeach
@@ -341,32 +341,32 @@
                     </div>
 
                     <!-- Custom Alias Path -->
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Alias URL (Opsional)</label>
-                        <div class="glass-input-group d-flex align-items-center border rounded-3 p-1">
-                            <span class="px-2 text-muted small fw-bold" id="create_domain_prefix">
+                    <div class="fv-row mb-5">
+                        <label class="form-label fs-6 fw-semibold text-gray-900">Custom Alias (Optional)</label>
+                        <div class="input-group input-group-solid">
+                            <span class="input-group-text text-gray-600 fw-bold" id="create_domain_prefix">
                                 {{ parse_url(url('/'), PHP_URL_HOST) }}/
                             </span>
-                            <input type="text" name="url" id="create_url" class="form-control bg-transparent border-0 py-1 small" placeholder="custom-alias" value="{{ old('url') }}">
+                            <input type="text" name="url" id="create_url" class="form-control form-control-solid" placeholder="custom-alias" value="{{ old('url') }}" />
                         </div>
-                        <div id="create_alias_feedback" class="mt-1.5" style="font-size: 0.725rem;"></div>
-                        <div class="form-text text-muted" style="font-size: 0.7rem;">Jika dikosongkan, alias acak akan dibuat otomatis.</div>
+                        <div id="create_alias_feedback" class="mt-1 fs-7"></div>
+                        <div class="form-text text-muted fs-8">Leave empty to generate an automatic random alias.</div>
                     </div>
 
                     <!-- Project -->
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Proyek</label>
-                        <select name="project_id" class="form-select bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 text-secondary small">
-                            <option value="" selected>Tanpa Proyek</option>
+                    <div class="fv-row mb-2">
+                        <label class="form-label fs-6 fw-semibold text-gray-900">Project</label>
+                        <select name="project_id" class="form-select form-select-solid">
+                            <option value="" selected>No Project</option>
                             @foreach($projects as $project)
                                 <option value="{{ $project->id }}">{{ $project->name }}</option>
                             @endforeach
                         </select>
                     </div>
                 </div>
-                <div class="modal-footer border-0 pt-1">
-                    <button type="button" class="btn btn-light btn-sm rounded-3 px-3 py-2 fw-semibold" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" id="create_submit_btn" class="btn btn-primary btn-sm rounded-3 px-3 py-2 fw-semibold" style="background-color: var(--primary-color); border-color: var(--primary-color);">Buat Tautan</button>
+                <div class="modal-footer border-0 pt-0 px-lg-8 pb-6">
+                    <button type="button" class="btn btn-light fw-bold" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" id="create_submit_btn" class="btn btn-primary fw-bold">Create Link</button>
                 </div>
             </form>
         </div>
@@ -376,20 +376,22 @@
 <!-- Create Biolink Modal -->
 <div class="modal fade" id="createBiolinkModal" tabindex="-1" aria-labelledby="createBiolinkModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-card border border-secondary border-opacity-10 rounded-3 p-2" style="background: var(--header-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
-            <div class="modal-header border-0 pb-1">
-                <h6 class="modal-title fw-bold text-dark-custom" id="createBiolinkModalLabel">Buat Halaman Biolink</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content rounded-3 border-0 shadow-lg">
+            <div class="modal-header pb-0 border-0 justify-content-between">
+                <h3 class="modal-title fw-bold text-gray-900" id="createBiolinkModalLabel">Create Biolink Page</h3>
+                <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                    <i class="ki-outline ki-cross fs-1"></i>
+                </div>
             </div>
             <form action="{{ route('links.store') }}" method="POST">
                 @csrf
                 <input type="hidden" name="type" value="biolink">
-                <div class="modal-body py-2">
+                <div class="modal-body py-6 px-lg-8">
                     <!-- Custom Domain -->
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Domain</label>
-                        <select name="domain_id" id="create_bio_domain_id" class="form-select bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 text-secondary small">
-                            <option value="0" selected>Domain Bawaan ({{ parse_url(url('/'), PHP_URL_HOST) }})</option>
+                    <div class="fv-row mb-5">
+                        <label class="form-label fs-6 fw-semibold text-gray-900">Domain</label>
+                        <select name="domain_id" id="create_bio_domain_id" class="form-select form-select-solid">
+                            <option value="0" selected>Default Domain ({{ parse_url(url('/'), PHP_URL_HOST) }})</option>
                             @foreach($domains as $domain)
                                 <option value="{{ $domain->id }}">{{ $domain->host }}</option>
                             @endforeach
@@ -397,55 +399,54 @@
                     </div>
 
                     <!-- Custom Alias Path -->
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Alias URL <span class="text-danger">*</span></label>
-                        <div class="glass-input-group d-flex align-items-center border rounded-3 p-1">
-                            <span class="px-2 text-muted small fw-bold" id="create_bio_domain_prefix">
+                    <div class="fv-row mb-3">
+                        <label class="form-label fs-6 fw-semibold text-gray-900 required">Custom Alias</label>
+                        <div class="input-group input-group-solid">
+                            <span class="input-group-text text-gray-600 fw-bold" id="create_bio_domain_prefix">
                                 {{ parse_url(url('/'), PHP_URL_HOST) }}/
                             </span>
-                            <input type="text" name="url" id="create_bio_url" class="form-control bg-transparent border-0 py-1 small" placeholder="custom-alias" required value="{{ old('url') }}">
+                            <input type="text" name="url" id="create_bio_url" class="form-control form-control-solid" placeholder="my-page" required value="{{ old('url') }}" />
                         </div>
-                        <div id="create_bio_alias_feedback" class="mt-1.5" style="font-size: 0.725rem;"></div>
+                        <div id="create_bio_alias_feedback" class="mt-1 fs-7"></div>
                     </div>
                 </div>
-                <div class="modal-footer border-0 pt-1">
-                    <button type="button" class="btn btn-light btn-sm rounded-3 px-3 py-2 fw-semibold" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary btn-sm rounded-3 px-3 py-2 fw-semibold" style="background-color: var(--primary-color); border-color: var(--primary-color);">Buat Halaman Biolink</button>
+                <div class="modal-footer border-0 pt-0 px-lg-8 pb-6">
+                    <button type="button" class="btn btn-light fw-bold" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary fw-bold">Create Biolink</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-
 <!-- Edit Link Modal -->
 <div class="modal fade" id="editLinkModal" tabindex="-1" aria-labelledby="editLinkModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content glass-card border border-secondary border-opacity-10 rounded-3 p-2" style="background: var(--header-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
-            <div class="modal-header border-0 pb-1">
-                <h6 class="modal-title fw-bold text-dark-custom" id="editLinkModalLabel">Perbarui Tautan Pendek</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content rounded-3 border-0 shadow-lg">
+            <div class="modal-header pb-0 border-0 justify-content-between">
+                <h3 class="modal-title fw-bold text-gray-900" id="editLinkModalLabel">Edit Link Settings</h3>
+                <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                    <i class="ki-outline ki-cross fs-1"></i>
+                </div>
             </div>
             <form id="editLinkForm" action="" method="POST">
                 @csrf
                 @method('PUT')
-                <div class="modal-body py-2">
+                <div class="modal-body py-6 px-lg-8">
                     <!-- Destination URL -->
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Target URL <span class="text-danger">*</span></label>
-                        <div class="glass-input-group d-flex align-items-center border rounded-3 p-1">
-                            <span class="px-2 text-muted">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                            </span>
-                            <input type="url" name="location_url" id="edit_location_url" class="form-control bg-transparent border-0 py-1 small" placeholder="https://example.com/alamat-panjang" required>
+                    <div class="fv-row mb-5" id="edit_location_wrapper">
+                        <label class="form-label fs-6 fw-semibold text-gray-900 required">Target URL</label>
+                        <div class="position-relative">
+                            <i class="ki-outline ki-disconnect fs-3 position-absolute ms-4 top-50 translate-middle-y text-gray-500"></i>
+                            <input type="url" name="location_url" id="edit_location_url" class="form-control form-control-solid ps-12" placeholder="https://example.com/target" required />
                         </div>
                     </div>
 
                     <!-- Custom Domain -->
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Domain</label>
-                        <select name="domain_id" id="edit_domain_id" class="form-select bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 text-secondary small">
-                            <option value="0">Domain Bawaan ({{ parse_url(url('/'), PHP_URL_HOST) }})</option>
+                    <div class="fv-row mb-5">
+                        <label class="form-label fs-6 fw-semibold text-gray-900">Domain</label>
+                        <select name="domain_id" id="edit_domain_id" class="form-select form-select-solid">
+                            <option value="0">Default Domain ({{ parse_url(url('/'), PHP_URL_HOST) }})</option>
                             @foreach($domains as $domain)
                                 <option value="{{ $domain->id }}">{{ $domain->host }}</option>
                             @endforeach
@@ -453,31 +454,31 @@
                     </div>
 
                     <!-- Custom Alias Path -->
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Alias URL <span class="text-danger">*</span></label>
-                        <div class="glass-input-group d-flex align-items-center border rounded-3 p-1">
-                            <span class="px-2 text-muted small fw-bold" id="edit_domain_prefix">
+                    <div class="fv-row mb-5">
+                        <label class="form-label fs-6 fw-semibold text-gray-900 required">Custom Alias</label>
+                        <div class="input-group input-group-solid">
+                            <span class="input-group-text text-gray-600 fw-bold" id="edit_domain_prefix">
                                 {{ parse_url(url('/'), PHP_URL_HOST) }}/
                             </span>
-                            <input type="text" name="url" id="edit_url" class="form-control bg-transparent border-0 py-1 small" placeholder="custom-alias" required>
+                            <input type="text" name="url" id="edit_url" class="form-control form-control-solid" placeholder="custom-alias" required />
                         </div>
-                        <div id="edit_alias_feedback" class="mt-1.5" style="font-size: 0.725rem;"></div>
+                        <div id="edit_alias_feedback" class="mt-1 fs-7"></div>
                     </div>
 
                     <!-- Project -->
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Proyek</label>
-                        <select name="project_id" id="edit_project_id" class="form-select bg-transparent border border-secondary border-opacity-15 py-2 rounded-3 text-secondary small">
-                            <option value="">Tanpa Proyek</option>
+                    <div class="fv-row mb-2">
+                        <label class="form-label fs-6 fw-semibold text-gray-900">Project</label>
+                        <select name="project_id" id="edit_project_id" class="form-select form-select-solid">
+                            <option value="">No Project</option>
                             @foreach($projects as $project)
                                 <option value="{{ $project->id }}">{{ $project->name }}</option>
                             @endforeach
                         </select>
                     </div>
                 </div>
-                <div class="modal-footer border-0 pt-1">
-                    <button type="button" class="btn btn-light btn-sm rounded-3 px-3 py-2 fw-semibold" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" id="edit_submit_btn" class="btn btn-primary btn-sm rounded-3 px-3 py-2 fw-semibold" style="background-color: var(--primary-color); border-color: var(--primary-color);">Simpan Perubahan</button>
+                <div class="modal-footer border-0 pt-0 px-lg-8 pb-6">
+                    <button type="button" class="btn btn-light fw-bold" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" id="edit_submit_btn" class="btn btn-primary fw-bold">Save Changes</button>
                 </div>
             </form>
         </div>
@@ -503,14 +504,6 @@
 
         // ─── SweetAlert2 Global Theme Config ───
         const swalTheme = {
-            background: getComputedStyle(document.documentElement).getPropertyValue('--header-bg').trim() || '#ffffff',
-            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim() || '#1e293b',
-            backdrop: `
-                rgba(0,0,0,0.4)
-                url("")
-                center center
-                no-repeat
-            `,
             customClass: {
                 popup: 'swal-glass-popup',
                 confirmButton: 'swal-confirm-btn',
@@ -538,9 +531,7 @@
                 });
                 Toast.fire({
                     icon: type,
-                    title: message,
-                    background: 'transparent',
-                    color: swalTheme.color
+                    title: message
                 });
             } else {
                 Swal.fire({
@@ -601,23 +592,23 @@
 
         // Custom chart gradients
         const chartBg = ctx.getContext('2d');
-        const gradient = chartBg.createLinearGradient(0, 0, 0, 220);
-        gradient.addColorStop(0, 'rgba(164, 229, 189, 0.35)');
-        gradient.addColorStop(1, 'rgba(164, 229, 189, 0.02)');
+        const gradient = chartBg.createLinearGradient(0, 0, 0, 260);
+        gradient.addColorStop(0, 'rgba(37, 99, 235, 0.15)');
+        gradient.addColorStop(1, 'rgba(37, 99, 235, 0.01)');
 
         new Chart(ctx, {
             type: 'line',
             data: {
                 labels: {!! json_encode($chartLabels) !!},
                 datasets: [{
-                    label: 'Pageviews',
+                    label: 'Clicks',
                     data: {!! json_encode($chartData) !!},
-                    borderColor: '#5ec489',
-                    borderWidth: 2.2,
+                    borderColor: '#2563eb',
+                    borderWidth: 2.5,
                     backgroundColor: gradient,
                     fill: true,
                     tension: 0.35,
-                    pointBackgroundColor: '#5ec489',
+                    pointBackgroundColor: '#2563eb',
                     pointBorderColor: '#ffffff',
                     pointBorderWidth: 1.5,
                     pointRadius: 3,
@@ -1089,9 +1080,10 @@
 
         if (toggleStatsBtn && statsWrapper) {
             const statsHidden = localStorage.getItem('dashboard_stats_hidden') === 'true';
+            const iconEl = toggleStatsBtn.querySelector('i');
             
             function applyStatsState(hidden) {
-                const newTitle = hidden ? 'Tampilkan Statistik' : 'Sembunyikan Statistik';
+                const newTitle = hidden ? 'Show Statistics' : 'Hide Statistics';
                 toggleStatsBtn.setAttribute('title', newTitle);
                 toggleStatsBtn.setAttribute('data-bs-title', newTitle);
 
@@ -1106,10 +1098,14 @@
 
                 if (hidden) {
                     statsWrapper.classList.add('d-none');
-                    toggleStatsBtn.querySelector('svg').innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+                    if (iconEl) {
+                        iconEl.className = 'ki-outline ki-eye-slash fs-2';
+                    }
                 } else {
                     statsWrapper.classList.remove('d-none');
-                    toggleStatsBtn.querySelector('svg').innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+                    if (iconEl) {
+                        iconEl.className = 'ki-outline ki-eye fs-2';
+                    }
                 }
             }
 
@@ -1130,176 +1126,93 @@
         display: none !important;
     }
 
-    /* Select2 glassmorphism styling overrides */
+    /* Select2 Metronic style overrides */
     .select2-container--default .select2-selection--single {
-        background-color: #f3f4f1 !important;
-        border: 1px solid #e2e8f0 !important;
+        background-color: var(--bs-gray-100) !important;
+        border: 1px solid var(--bs-gray-300) !important;
         height: 42px !important;
-        border-radius: 8px !important;
+        border-radius: .475rem !important;
         display: flex;
         align-items: center;
-        transition: all 0.2s ease;
-    }
-    [data-bs-theme="dark"] .select2-container--default .select2-selection--single {
-        background-color: #1e293b !important;
-        border: 1px solid #334155 !important;
     }
     .select2-container--default .select2-selection--single .select2-selection__rendered {
-        color: var(--text-secondary) !important;
-        font-size: 0.8rem !important;
+        color: var(--bs-gray-700) !important;
+        font-size: .925rem !important;
         padding-left: 12px !important;
     }
     .select2-container--default .select2-selection--single .select2-selection__arrow {
         height: 40px !important;
         right: 8px !important;
     }
-    .select2-container--default .select2-selection--single .select2-selection__arrow b {
-        border-color: var(--text-secondary) transparent transparent transparent !important;
-    }
-    .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
-        border-color: transparent transparent var(--text-secondary) transparent !important;
-    }
     .select2-dropdown {
-        background-color: var(--header-bg) !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
-        border: 1px solid var(--glass-border) !important;
-        border-radius: 8px !important;
+        background-color: var(--bs-body-bg) !important;
+        border: 1px solid var(--bs-gray-300) !important;
+        border-radius: .475rem !important;
         overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+        box-shadow: 0 .5rem 1.5rem .5rem rgba(0, 0, 0, .075) !important;
         z-index: 9999;
     }
     .select2-container--default .select2-search--dropdown .select2-search__field {
-        background-color: rgba(255, 255, 255, 0.05) !important;
-        border: 1px solid var(--glass-border) !important;
-        border-radius: 6px !important;
-        color: var(--text-primary) !important;
+        background-color: var(--bs-gray-100) !important;
+        border: 1px solid var(--bs-gray-300) !important;
+        border-radius: .475rem !important;
+        color: var(--bs-gray-800) !important;
         padding: 6px 10px !important;
-        font-size: 0.8rem !important;
+        font-size: .925rem !important;
         outline: none !important;
     }
     .select2-results__option {
-        font-size: 0.8rem !important;
+        font-size: .925rem !important;
         padding: 8px 12px !important;
-        color: var(--text-secondary) !important;
-        background-color: transparent !important;
+        color: var(--bs-gray-700) !important;
     }
     .select2-container--default .select2-results__option--highlighted[aria-selected] {
-        background-color: var(--primary-color) !important;
+        background-color: var(--bs-primary) !important;
         color: #ffffff !important;
     }
     .select2-container--default .select2-results__option[aria-selected=true] {
-        background-color: var(--primary-light) !important;
-        color: var(--primary-color) !important;
-    }
-    .select2-container .select2-selection--single .select2-selection__placeholder {
-        color: var(--text-secondary) !important;
+        background-color: var(--bs-primary-light) !important;
+        color: var(--bs-primary) !important;
     }
 
-    /* Styling to match AltumCode row list spacing */
-    table tbody tr:hover {
-        background: rgba(148, 163, 184, 0.03) !important;
-    }
-    .hover-bg-light:hover {
-        background: rgba(148, 163, 184, 0.1);
-    }
-    
-    /* Pagination design corrections */
-    .pagination {
-        margin: 0;
-    }
-    .page-link {
-        color: var(--text-secondary);
-        background-color: transparent;
-        border: 1px solid var(--glass-border);
-        padding: 6px 12px;
-        font-size: 0.8rem;
-        font-weight: 500;
-        border-radius: 6px !important;
-        margin: 0 2px;
-        transition: all 0.2s ease;
-    }
-    .page-link:hover {
-        color: var(--primary-color);
-        background-color: var(--primary-light);
-        border-color: var(--glass-border);
-    }
-    .page-item.active .page-link {
-        background-color: var(--primary-color) !important;
-        border-color: var(--primary-color) !important;
-        color: #ffffff !important;
-    }
-    .page-item.disabled .page-link {
-        background-color: transparent;
-        color: #64748b;
-        opacity: 0.5;
-    }
-    /* ─── SweetAlert2 Glassmorphic Styling ─── */
+    /* SweetAlert2 Metronic Styling */
     .swal-glass-popup {
-        border-radius: 16px !important;
-        border: 1px solid var(--glass-border) !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15) !important;
-    }
-    [data-bs-theme="dark"] .swal-glass-popup {
-        background: var(--header-bg) !important;
-        color: var(--text-primary) !important;
+        border-radius: .75rem !important;
+        border: 1px solid var(--bs-gray-200) !important;
+        box-shadow: 0 .5rem 1.5rem .5rem rgba(0, 0, 0, .075) !important;
     }
     .swal-glass-toast {
-        background: transparent !important;
-        border-radius: 12px !important;
-        border: 1px solid var(--glass-border) !important;
-        backdrop-filter: blur(16px) !important;
-        -webkit-backdrop-filter: blur(16px) !important;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
-        font-size: 0.875rem !important;
+        border-radius: .475rem !important;
+        border: 1px solid var(--bs-gray-200) !important;
+        box-shadow: 0 .25rem .75rem .25rem rgba(0, 0, 0, .075) !important;
+        font-size: .925rem !important;
     }
     .swal-confirm-btn {
-        background-color: var(--primary-color) !important;
+        background-color: var(--bs-primary) !important;
         color: #ffffff !important;
         border: none !important;
-        border-radius: 8px !important;
+        border-radius: .475rem !important;
         padding: 10px 24px !important;
-        font-size: 0.85rem !important;
+        font-size: .925rem !important;
         font-weight: 600 !important;
-        transition: all 0.2s ease !important;
         cursor: pointer !important;
     }
     .swal-confirm-btn:hover {
-        opacity: 0.9 !important;
-        transform: translateY(-1px) !important;
+        opacity: 0.85 !important;
     }
     .swal-cancel-btn {
-        background-color: #f1f5f9 !important;
-        color: #475569 !important;
-        border: 1px solid #e2e8f0 !important;
-        border-radius: 8px !important;
+        background-color: var(--bs-gray-200) !important;
+        color: var(--bs-gray-700) !important;
+        border: none !important;
+        border-radius: .475rem !important;
         padding: 10px 24px !important;
-        font-size: 0.85rem !important;
+        font-size: .925rem !important;
         font-weight: 600 !important;
         margin-right: 8px !important;
-        transition: all 0.2s ease !important;
         cursor: pointer !important;
     }
     .swal-cancel-btn:hover {
-        background-color: #e2e8f0 !important;
-    }
-    [data-bs-theme="dark"] .swal-cancel-btn {
-        background-color: #334155 !important;
-        color: #e2e8f0 !important;
-        border-color: #475569 !important;
-    }
-    [data-bs-theme="dark"] .swal-cancel-btn:hover {
-        background-color: #475569 !important;
-    }
-    body:not(.swal2-toast-shown) .swal2-container.swal2-backdrop-show {
-        background: rgba(255, 255, 255, 0.75) !important;
-        backdrop-filter: blur(12px) !important;
-        -webkit-backdrop-filter: blur(12px) !important;
-    }
-    [data-bs-theme="dark"] body:not(.swal2-toast-shown) .swal2-container.swal2-backdrop-show {
-        background: rgba(15, 23, 42, 0.85) !important;
+        background-color: var(--bs-gray-300) !important;
     }
 </style>
 @endsection

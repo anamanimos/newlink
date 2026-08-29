@@ -69,16 +69,21 @@ Route::middleware('auth')->group(function () {
     Route::put('/domains/{id}', [\App\Http\Controllers\DomainController::class, 'update'])->name('domains.update');
     Route::delete('/domains/{id}', [\App\Http\Controllers\DomainController::class, 'destroy'])->name('domains.destroy');
 
-    Route::get('/pixels', function () { 
-        return view('modules.pixels', ['pixels' => \App\Models\Pixel::where('user_id', auth()->id())->latest()->get()]); 
-    })->name('pixels.index');
+    Route::get('/pixels', [\App\Http\Controllers\PixelController::class, 'index'])->name('pixels.index');
+    Route::post('/pixels', [\App\Http\Controllers\PixelController::class, 'store'])->name('pixels.store');
+    Route::put('/pixels/{id}', [\App\Http\Controllers\PixelController::class, 'update'])->name('pixels.update');
+    Route::delete('/pixels/{id}', [\App\Http\Controllers\PixelController::class, 'destroy'])->name('pixels.destroy');
     Route::get('/profile', function () { return view('modules.profile'); })->name('profile.edit');
 });
 
 // Admin routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
-    Route::get('/users', function () { return view('admin.modules.users', ['users' => \App\Models\User::latest()->get()]); })->name('admin.users');
+    Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.users');
+    Route::post('/users', [\App\Http\Controllers\Admin\UserController::class, 'store'])->name('admin.users.store');
+    Route::put('/users/{id}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('admin.users.update');
+    Route::delete('/users/{id}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('admin.users.destroy');
+    Route::post('/users/{id}/login-as', [\App\Http\Controllers\Admin\UserController::class, 'loginAs'])->name('admin.users.login-as');
     Route::get('/domains', [\App\Http\Controllers\Admin\DomainController::class, 'index'])->name('admin.domains');
     Route::post('/domains', [\App\Http\Controllers\Admin\DomainController::class, 'store'])->name('admin.domains.store');
     Route::put('/domains/{id}', [\App\Http\Controllers\Admin\DomainController::class, 'update'])->name('admin.domains.update');

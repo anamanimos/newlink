@@ -29,4 +29,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function links()
+    {
+        return $this->hasMany(Link::class);
+    }
+
+    public function domains()
+    {
+        return $this->hasMany(Domain::class);
+    }
+
+    public function pixels()
+    {
+        return $this->hasMany(Pixel::class);
+    }
 }

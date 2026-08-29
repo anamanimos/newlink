@@ -1,60 +1,103 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-bs-theme="light">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'Welcome') | {{ config('app.name', 'NewLink') }}</title>
+    <title>@yield('title', 'Authentication') | {{ config('app.name', 'NewLink') }}</title>
 
-    <!-- Vite Assets -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
-    <style>
-        .auth-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            position: relative;
-        }
-        .auth-card {
-            width: 100%;
-            max-width: 420px;
-            padding: 40px 12px;
-        }
-    </style>
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
+
+    <!-- Google Fonts Inter -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
+
+    <!-- Metronic Global Stylesheets Bundle -->
+    <link href="{{ asset('assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
+
+    @stack('styles')
+    @yield('styles')
 </head>
-<body>
-    <!-- Theme Switcher Floating -->
-    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
-        <button type="button" id="theme-switcher" class="theme-toggle-btn shadow-sm" aria-label="Toggle Theme">
-            <!-- Icon is dynamically inserted by JS -->
-        </button>
-    </div>
 
-    <div class="auth-container">
-        <!-- Radial background accents matching mint green theme -->
-        <div class="position-absolute top-25 start-25 translate-middle w-50 h-50 rounded-circle opacity-15 filter-blur" style="background-color: var(--primary-color); filter: blur(100px); pointer-events: none; z-index: -1;"></div>
-        <div class="position-absolute bottom-25 end-25 translate-middle w-50 h-50 rounded-circle opacity-10 filter-blur" style="background-color: var(--primary-color); filter: blur(100px); pointer-events: none; z-index: -1;"></div>
+<body id="kt_body" class="app-blank bgi-size-cover bgi-attachment-fixed bgi-position-center">
+    
+    <!-- Theme mode setup on page load -->
+    <script>
+        var defaultThemeMode = "light";
+        var themeMode;
+        if (document.documentElement) {
+            if (document.documentElement.hasAttribute("data-bs-theme-mode")) {
+                themeMode = document.documentElement.getAttribute("data-bs-theme-mode");
+            } else {
+                if (localStorage.getItem("data-bs-theme") !== null) {
+                    themeMode = localStorage.getItem("data-bs-theme");
+                } else {
+                    themeMode = defaultThemeMode;
+                }
+            }
+            if (themeMode === "system") {
+                themeMode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+            }
+            document.documentElement.setAttribute("data-bs-theme", themeMode);
+        }
+    </script>
 
-        <div class="auth-card">
-            <div class="mb-4 text-center">
-                <h2 class="fw-bold tracking-tight mb-1" style="color: var(--text-primary); letter-spacing: -0.5px;">{{ config('app.name', 'NamsLink') }}</h2>
-                <p class="text-muted small">Modern Link-in-Bio & Shortener</p>
+    <!-- Root Container -->
+    <div class="d-flex flex-column flex-root" id="kt_app_root">
+        <div class="d-flex flex-column flex-lg-row flex-column-fluid">
+            
+            <!-- Body / Form Column -->
+            <div class="d-flex flex-column flex-lg-row-fluid w-lg-50 p-10 order-2 order-lg-1">
+                <div class="d-flex flex-center flex-column flex-lg-row-fluid">
+                    <div class="w-lg-500px p-10">
+                        @yield('content')
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="w-lg-500px d-flex flex-stack px-10 mx-auto">
+                    <div class="text-gray-500 fw-semibold fs-6">
+                        &copy; {{ date('Y') }} {{ config('app.name', 'NewLink') }}
+                    </div>
+                    <div class="d-flex fw-semibold text-primary fs-base gap-5">
+                        <a href="{{ url('/') }}" class="text-muted text-hover-primary">Home</a>
+                    </div>
+                </div>
             </div>
 
-            @yield('content')
+            <!-- Aside / Banner Column -->
+            <div class="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-1 order-lg-2" style="background-image: url('{{ asset('assets/media/misc/auth-bg.png') }}')">
+                <div class="d-flex flex-column flex-center py-7 py-lg-15 px-5 px-md-15 w-100">
+                    <!-- Logo -->
+                    <a href="{{ url('/') }}" class="mb-12">
+                        <span class="fs-2hx fw-bolder text-white">
+                            <i class="ki-outline ki-fasten text-primary fs-3x me-2"></i>{{ config('app.name', 'NewLink') }}
+                        </span>
+                    </a>
 
-            <div class="mt-4 pt-3 border-top d-flex flex-column align-items-center gap-1" style="border-top-color: var(--glass-border) !important;">
-                <span class="text-muted" style="font-size: 0.675rem;">Crafted with love by</span>
-                <a href="https://artspaceproduction.my.id" target="_blank" class="d-block mt-1">
-                    <img src="/logo_1.png" alt="Artspace Production" class="theme-logo-light" style="height: 32px; width: auto;">
-                    <img src="/logo_2.png" alt="Artspace Production" class="theme-logo-dark" style="height: 32px; width: auto;">
-                </a>
+                    <!-- Image Illustration -->
+                    <img class="d-none d-lg-block mx-auto w-275px w-md-50 w-xl-500px mb-10 mb-lg-20" src="{{ asset('assets/media/misc/auth-screens.png') }}" alt="" />
+
+                    <!-- Title -->
+                    <h1 class="d-none d-lg-block text-white fs-2qx fw-bolder text-center mb-7">
+                        Fast, Efficient and Productive
+                    </h1>
+                    <div class="d-none d-lg-block text-white fs-base text-center">
+                        All-in-one Biolink builder, Shortened links, and WhatsApp lead rotation platform.
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
+
+    <!-- Metronic Global Javascript Bundle -->
+    <script>var hostUrl = "{{ asset('assets/') }}/";</script>
+    <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
+    <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
+
+    @stack('scripts')
+    @yield('scripts')
 </body>
 </html>

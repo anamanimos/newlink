@@ -3,11 +3,11 @@
     if (request('search')) {
         $activeFilters[] = [
             'type' => 'search',
-            'label' => 'Kata Kunci: "' . request('search') . '"'
+            'label' => 'Keyword: "' . request('search') . '"'
         ];
     }
     if (request('status')) {
-        $statusLabel = request('status') === 'active' ? 'Aktif' : 'Nonaktif';
+        $statusLabel = request('status') === 'active' ? 'Active' : 'Inactive';
         $activeFilters[] = [
             'type' => 'status',
             'label' => 'Status: ' . $statusLabel
@@ -18,7 +18,7 @@
         if ($proj) {
             $activeFilters[] = [
                 'type' => 'project',
-                'label' => 'Proyek: ' . $proj->name
+                'label' => 'Project: ' . $proj->name
             ];
         }
     }
@@ -26,7 +26,7 @@
         if (request('domain_id') === '0') {
             $activeFilters[] = [
                 'type' => 'domain',
-                'label' => 'Domain: Domain Bawaan'
+                'label' => 'Domain: Default Domain'
             ];
         } else {
             $dom = $domains->firstWhere('id', request('domain_id'));
@@ -41,36 +41,32 @@
 @endphp
 
 @if(!empty($activeFilters))
-    <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-        <span class="text-secondary small fw-semibold">Filter Aktif:</span>
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
+        <span class="text-gray-600 fs-7 fw-semibold">Active Filters:</span>
         @foreach($activeFilters as $filter)
-            <span class="badge bg-light text-secondary border d-inline-flex align-items-center gap-2 py-1.5 px-2.5 rounded-3 fw-medium" style="font-size: 0.75rem;">
+            <span class="badge badge-light-primary d-inline-flex align-items-center gap-2 py-2 px-3 fs-7 fw-medium">
                 {{ $filter['label'] }}
-                <button type="button" class="btn-close btn-remove-filter p-0 m-0 bg-none border-0 text-muted hover-text-dark d-inline-flex align-items-center" data-filter-type="{{ $filter['type'] }}" aria-label="Clear filter" style="font-size: 0.65rem; width: 0.65rem; height: 0.65rem; line-height: 1;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <button type="button" class="btn-close btn-remove-filter p-0 m-0 bg-none border-0 text-muted d-inline-flex align-items-center" data-filter-type="{{ $filter['type'] }}" aria-label="Clear filter" style="font-size: 0.65rem; width: 0.65rem; height: 0.65rem; line-height: 1;">
+                    <i class="ki-outline ki-cross fs-7"></i>
                 </button>
             </span>
         @endforeach
         
-        <button type="button" id="btnClearAllFilters" class="btn btn-link text-decoration-none p-0 small fw-semibold text-danger" style="font-size: 0.75rem;">
-            Bersihkan Semua
+        <button type="button" id="btnClearAllFilters" class="btn btn-link text-danger text-decoration-none p-0 fs-7 fw-semibold">
+            Clear All
         </button>
     </div>
 @endif
 
 <!-- Table -->
 @if($links->isEmpty())
-    <div class="text-center py-5">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted mb-3">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="16" x2="12" y2="12"></line>
-            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-        </svg>
-        <p class="text-secondary mb-0">Tidak ada link ditemukan. Silakan buat baru atau sesuaikan kata kunci filter Anda!</p>
+    <div class="text-center py-10">
+        <i class="ki-outline ki-search-list fs-4x text-muted mb-3"></i>
+        <p class="text-gray-600 fw-semibold fs-6 mb-0">No links found. Create a new link or adjust your search filters!</p>
     </div>
 @else
     <div class="table-responsive">
-        <table class="table align-middle mb-0" style="border-collapse: separate; border-spacing: 0 10px;">
+        <table class="table align-middle table-row-dashed fs-6 gy-4 mb-0" id="kt_table_links">
             @php
                 $currentSort = request('sort', 'latest');
                 $linkSort = $currentSort == 'title_asc' ? 'title_desc' : 'title_asc';
@@ -78,46 +74,48 @@
                 $dibuatSort = ($currentSort == 'latest' || empty(request('sort'))) ? 'oldest' : 'latest';
             @endphp
             <thead>
-                <tr style="border-bottom: 2px solid var(--glass-border);">
-                    <th class="ps-3 py-3" style="width: 40px; border: none;">
-                        <input type="checkbox" id="selectAllLinks" class="form-check-input">
+                <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
+                    <th class="w-10px pe-2">
+                        <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
+                            <input class="form-check-input" type="checkbox" id="selectAllLinks" />
+                        </div>
                     </th>
-                    <th class="text-secondary small fw-bold py-3" colspan="2" style="border: none; padding-left: 20px;">
-                        <a href="{{ request()->fullUrlWithQuery(['sort' => $linkSort]) }}" class="text-secondary text-decoration-none d-inline-flex align-items-center gap-1">
+                    <th class="min-w-250px">
+                        <a href="{{ request()->fullUrlWithQuery(['sort' => $linkSort]) }}" class="text-muted text-hover-primary d-inline-flex align-items-center gap-1">
                             Link
                             @if($currentSort == 'title_asc')
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                                <i class="ki-outline ki-arrow-up fs-6 text-primary"></i>
                             @elseif($currentSort == 'title_desc')
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                                <i class="ki-outline ki-arrow-down fs-6 text-primary"></i>
                             @endif
                         </a>
                     </th>
-                    <th class="text-secondary small fw-bold py-3" style="border: none; min-width: 180px;">Original URL</th>
-                    <th class="text-secondary small fw-bold py-3" style="border: none; width: 120px;">Project</th>
-                    <th class="text-secondary small fw-bold py-3" style="border: none; width: 100px;">
-                        <a href="{{ request()->fullUrlWithQuery(['sort' => $klikSort]) }}" class="text-secondary text-decoration-none d-inline-flex align-items-center gap-1">
-                            Klik
+                    <th class="min-w-150px">Original Target</th>
+                    <th class="min-w-100px">Project</th>
+                    <th class="min-w-80px">
+                        <a href="{{ request()->fullUrlWithQuery(['sort' => $klikSort]) }}" class="text-muted text-hover-primary d-inline-flex align-items-center gap-1">
+                            Clicks
                             @if($currentSort == 'clicks_asc')
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                                <i class="ki-outline ki-arrow-up fs-6 text-primary"></i>
                             @elseif($currentSort == 'clicks_desc')
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                                <i class="ki-outline ki-arrow-down fs-6 text-primary"></i>
                             @endif
                         </a>
                     </th>
-                    <th class="text-secondary small fw-bold py-3" style="border: none; width: 120px;">
-                        <a href="{{ request()->fullUrlWithQuery(['sort' => $dibuatSort]) }}" class="text-secondary text-decoration-none d-inline-flex align-items-center gap-1">
-                            Dibuat
+                    <th class="min-w-100px d-none d-md-table-cell">
+                        <a href="{{ request()->fullUrlWithQuery(['sort' => $dibuatSort]) }}" class="text-muted text-hover-primary d-inline-flex align-items-center gap-1">
+                            Created
                             @if($currentSort == 'oldest')
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                                <i class="ki-outline ki-arrow-up fs-6 text-primary"></i>
                             @elseif($currentSort == 'latest' || empty(request('sort')))
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                                <i class="ki-outline ki-arrow-down fs-6 text-primary"></i>
                             @endif
                         </a>
                     </th>
-                    <th class="text-secondary small fw-bold text-end pe-3 py-3" style="border: none; width: 120px;">Aksi</th>
+                    <th class="text-end min-w-120px pe-3">Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="text-gray-600 fw-semibold">
                 @foreach($links as $link)
                     @php
                         $domainHost = null;
@@ -133,67 +131,65 @@
                         } else {
                             $fullShortenedUrl = url($link->url);
                         }
+
+                        if ($link->type === 'biolink') {
+                            $detailRoute = route('biolinks.show', $link->id);
+                        } elseif ($link->type === 'warotator') {
+                            $detailRoute = route('warotators.show', $link->id);
+                        } else {
+                            $detailRoute = route('links.show', $link->id);
+                        }
                     @endphp
-                    <tr style="background: rgba(255, 255, 255, 0.01); transition: all 0.2s ease;">
+                    <tr>
                         <!-- Bulk Checkbox -->
-                        <td class="ps-3" style="width: 40px; border: none;">
-                            <input type="checkbox" class="form-check-input link-checkbox" value="{{ $link->id }}">
-                        </td>
-                        <!-- Icon/Avatar -->
-                        <td class="ps-3 pe-2 py-2.5" style="width: 56px; border: none;">
-                            @if($link->type == 'biolink')
-                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: rgba(164, 229, 189, 0.2); color: #166534;">
-                                    <span data-duo-icons="app" style="width: 16px; height: 16px;"></span>
-                                </div>
-                            @elseif($link->type == 'warotator')
-                                <div class="rounded-circle d-flex align-items-center justify-content-center text-success" style="width: 36px; height: 36px; background: rgba(37, 211, 102, 0.15); color: #15803d;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                                </div>
-                            @else
-                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: rgba(164, 229, 189, 0.2); color: #166534;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M9 17H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3" opacity="0.25" fill="currentColor" style="stroke: none;"></path>
-                                        <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path>
-                                        <line x1="8" y1="12" x2="16" y2="12"></line>
-                                    </svg>
-                                </div>
-                            @endif
+                        <td>
+                            <div class="form-check form-check-sm form-check-custom form-check-solid">
+                                <input class="form-check-input link-checkbox" type="checkbox" value="{{ $link->id }}" />
+                            </div>
                         </td>
 
-                        <!-- Link Title & URL -->
-                        <td class="px-2 py-2.5" style="border: none;">
-                            @php
-                                if ($link->type === 'biolink') {
-                                    $detailRoute = route('biolinks.show', $link->id);
-                                } elseif ($link->type === 'warotator') {
-                                    $detailRoute = route('warotators.show', $link->id);
-                                } else {
-                                    $detailRoute = route('links.show', $link->id);
-                                }
-                            @endphp
-                            <a href="{{ $detailRoute }}" class="fw-semibold text-decoration-none text-primary d-block mb-0.5" style="font-size: 0.925rem; letter-spacing: -0.2px;">
-                                {{ $link->url }}
-                            </a>
-                            <a href="{{ $fullShortenedUrl }}" target="_blank" class="text-muted text-decoration-none small text-truncate d-block" style="max-width: 280px; font-size: 0.75rem;">
-                                {{ $fullShortenedUrl }}
-                            </a>
+                        <!-- Link with Symbol/Avatar -->
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="symbol symbol-40px symbol-circle me-4">
+                                    @if($link->type == 'biolink')
+                                        <span class="symbol-label bg-light-primary">
+                                            <i class="ki-outline ki-abstract-26 fs-2 text-primary"></i>
+                                        </span>
+                                    @elseif($link->type == 'warotator')
+                                        <span class="symbol-label bg-light-success">
+                                            <i class="ki-outline ki-whatsapp fs-2 text-success"></i>
+                                        </span>
+                                    @else
+                                        <span class="symbol-label bg-light-info">
+                                            <i class="ki-outline ki-disconnect fs-2 text-info"></i>
+                                        </span>
+                                    @endif
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <a href="{{ $detailRoute }}" class="text-gray-800 text-hover-primary fs-6 fw-bold mb-1">
+                                        {{ $link->url }}
+                                    </a>
+                                    <a href="{{ $fullShortenedUrl }}" target="_blank" class="text-muted text-hover-primary fs-7 text-truncate d-inline-block" style="max-width: 250px;">
+                                        {{ $fullShortenedUrl }}
+                                    </a>
+                                </div>
+                            </div>
                         </td>
 
-                        <!-- Original URL -->
-                        <td class="px-2 py-2.5" style="border: none; max-width: 220px;">
+                        <!-- Original Target URL -->
+                        <td>
                             @if($link->type == 'warotator')
-                                <span class="text-muted small d-block text-truncate" style="max-width: 200px; font-size: 0.8rem;" title="{{ $link->settings['numbers'] ?? '' }}">
-                                    Rotator: {{ $link->settings['numbers'] ?? '' }}
-                                </span>
+                                <span class="badge badge-light-success fs-8">WA Rotator</span>
                             @else
-                                <span class="text-muted small d-block text-truncate" style="max-width: 200px; font-size: 0.8rem;" title="{{ $link->location_url }}">
+                                <span class="text-gray-600 fs-7 d-block text-truncate" style="max-width: 200px;" title="{{ $link->location_url }}">
                                     {{ $link->location_url }}
                                 </span>
                             @endif
                         </td>
 
                         <!-- Project -->
-                        <td class="px-2 py-2.5" style="border: none;">
+                        <td>
                             @php
                                 $projectName = null;
                                 if ($link->project_id && isset($projects)) {
@@ -202,65 +198,58 @@
                                 }
                             @endphp
                             @if($projectName)
-                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-10 rounded-pill px-2.5 py-1" style="font-size: 0.7rem; font-weight: 500;">
+                                <span class="badge badge-light-primary fw-semibold fs-8">
                                     {{ $projectName }}
                                 </span>
                             @else
-                                <span class="text-muted small" style="font-size: 0.75rem;">—</span>
+                                <span class="text-muted fs-8">—</span>
                             @endif
                         </td>
 
                         <!-- Clicks counter -->
-                        <td class="px-2 py-2.5" style="border: none; width: 90px;">
-                             <div class="d-flex align-items-center text-secondary small gap-2" style="font-size: 0.8rem;">
-                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="18" y1="20" x2="18" y2="10"></line>
-                                    <line x1="12" y1="20" x2="12" y2="4"></line>
-                                    <line x1="6" y1="20" x2="6" y2="14"></line>
-                                </svg>
-                                <span class="fw-bold">{{ number_format($link->clicks) }}</span>
+                        <td>
+                            <div class="badge badge-light fw-bold text-gray-800 fs-7">
+                                <i class="ki-outline ki-chart-simple fs-6 text-primary me-1"></i>{{ number_format($link->clicks) }}
                             </div>
                         </td>
 
                         <!-- Created Date -->
-                        <td class="px-2 py-2.5 d-none d-md-table-cell" style="border: none; width: 100px;">
-                            <span class="text-muted small" style="font-size: 0.775rem;">
-                                {{ date('j M', strtotime($link->created_at)) }}
+                        <td class="d-none d-md-table-cell">
+                            <span class="text-muted fs-7">
+                                {{ date('j M Y', strtotime($link->created_at)) }}
                             </span>
                         </td>
 
-                        <!-- Suffix controls -->
-                        <td class="pe-3 ps-2 py-2.5 text-end" style="border: none; width: 150px;">
-                            <div class="d-inline-flex align-items-center gap-2.5">
-                                <!-- Copy -->
-                                <button class="btn p-1.5 text-muted border-0 bg-transparent rounded-circle hover-bg-light btn-copy-link" data-url="{{ $fullShortenedUrl }}" title="Salin Link">
-                                    <span data-duo-icons="copy" style="width: 16px; height: 16px;"></span>
+                        <!-- Actions -->
+                        <td class="text-end pe-3">
+                            <div class="d-inline-flex align-items-center gap-2">
+                                <!-- Copy Button -->
+                                <button class="btn btn-icon btn-sm btn-light-primary btn-copy-link" data-url="{{ $fullShortenedUrl }}" title="Copy link">
+                                    <i class="ki-outline ki-copy fs-4"></i>
                                 </button>
 
-                                 <!-- Toggle -->
-                                 <div class="form-check form-switch p-0 m-0 d-flex align-items-center">
-                                     <input class="form-check-input m-0 link-status-toggle" type="checkbox" role="switch" data-id="{{ $link->id }}" {{ $link->is_enabled ? 'checked' : '' }} style="width: 28px; height: 16px; cursor: pointer;">
-                                 </div>
+                                <!-- Status Switch -->
+                                <div class="form-check form-switch form-check-custom form-check-solid p-0 m-0">
+                                    <input class="form-check-input h-20px w-35px link-status-toggle" type="checkbox" data-id="{{ $link->id }}" {{ $link->is_enabled ? 'checked' : '' }} title="Toggle status" />
+                                </div>
 
-                                 <!-- Dropdown menu -->
-                                 <div class="dropdown">
-                                     <button class="btn p-1 text-muted border-0 bg-transparent rounded-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                         <span data-duo-icons="app_dots" style="width: 16px; height: 16px;"></span>
-                                     </button>
-                                     <ul class="dropdown-menu dropdown-menu-end glass-card border-0 shadow-lg p-1.5">
-                                         <li>
-                                             <a class="dropdown-item rounded-2 py-1.5 small" href="{{ $detailRoute }}">
-                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2 text-muted" style="width: 14px; height: 14px; vertical-align: middle;"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                                                 Lihat Analitik
-                                             </a>
-                                         </li>
-                                         <li>
+                                <!-- Action Dropdown -->
+                                <div class="dropdown">
+                                    <button class="btn btn-icon btn-sm btn-light-secondary dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="ki-outline ki-dots-vertical fs-4"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 py-3 px-2 rounded-3 w-175px">
+                                        <li>
+                                            <a class="dropdown-item rounded-2 py-2 fs-7 d-flex align-items-center gap-2" href="{{ $detailRoute }}">
+                                                <i class="ki-outline ki-chart-line fs-5 text-primary"></i> Analytics
+                                            </a>
+                                        </li>
+                                        <li>
                                             @if($link->type == 'biolink')
-                                                <a class="dropdown-item rounded-2 py-1.5 small" href="{{ route('biolinks.builder', $link->id) }}">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2 text-muted" style="width: 14px; height: 14px; vertical-align: middle;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
-                                                    Edit Biolink
+                                                <a class="dropdown-item rounded-2 py-2 fs-7 d-flex align-items-center gap-2" href="{{ route('biolinks.builder', $link->id) }}">
+                                                    <i class="ki-outline ki-pencil fs-5 text-success"></i> Edit Biolink
                                                 </a>
-                                                <a class="dropdown-item rounded-2 py-1.5 small btn-edit-link" href="#"
+                                                <a class="dropdown-item rounded-2 py-2 fs-7 d-flex align-items-center gap-2 btn-edit-link" href="#"
                                                    data-id="{{ $link->id }}"
                                                    data-type="{{ $link->type }}"
                                                    data-url="{{ $link->url }}"
@@ -269,15 +258,13 @@
                                                    data-domain="{{ $link->domain_id }}"
                                                    data-bs-toggle="modal"
                                                    data-bs-target="#editLinkModal">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2 text-muted" style="width: 14px; height: 14px; vertical-align: middle;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                                                    Edit Pengaturan
+                                                    <i class="ki-outline ki-setting-2 fs-5 text-muted"></i> Settings
                                                 </a>
                                             @elseif($link->type == 'warotator')
-                                                <a class="dropdown-item rounded-2 py-1.5 small" href="{{ route('warotators.builder', $link->id) }}">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2 text-muted" style="width: 14px; height: 14px; vertical-align: middle;"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
-                                                    Edit WA Rotator
+                                                <a class="dropdown-item rounded-2 py-2 fs-7 d-flex align-items-center gap-2" href="{{ route('warotators.builder', $link->id) }}">
+                                                    <i class="ki-outline ki-pencil fs-5 text-success"></i> Edit Rotator
                                                 </a>
-                                                <a class="dropdown-item rounded-2 py-1.5 small btn-edit-link" href="#"
+                                                <a class="dropdown-item rounded-2 py-2 fs-7 d-flex align-items-center gap-2 btn-edit-link" href="#"
                                                    data-id="{{ $link->id }}"
                                                    data-type="{{ $link->type }}"
                                                    data-url="{{ $link->url }}"
@@ -286,11 +273,10 @@
                                                    data-domain="{{ $link->domain_id }}"
                                                    data-bs-toggle="modal"
                                                    data-bs-target="#editLinkModal">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2 text-muted" style="width: 14px; height: 14px; vertical-align: middle;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                                                    Edit Pengaturan
+                                                    <i class="ki-outline ki-setting-2 fs-5 text-muted"></i> Settings
                                                 </a>
                                             @else
-                                                <a class="dropdown-item rounded-2 py-1.5 small btn-edit-link" href="#"
+                                                <a class="dropdown-item rounded-2 py-2 fs-7 d-flex align-items-center gap-2 btn-edit-link" href="#"
                                                    data-id="{{ $link->id }}"
                                                    data-type="{{ $link->type }}"
                                                    data-url="{{ $link->url }}"
@@ -299,16 +285,16 @@
                                                    data-domain="{{ $link->domain_id }}"
                                                    data-bs-toggle="modal"
                                                    data-bs-target="#editLinkModal">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2 text-muted" style="width: 14px; height: 14px; vertical-align: middle;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-                                                    Edit Link
+                                                    <i class="ki-outline ki-pencil fs-5 text-primary"></i> Edit Link
                                                 </a>
                                             @endif
-                                         </li>
-                                         <li>
-                                             <a class="dropdown-item rounded-2 py-1.5 small text-danger btn-delete-link" href="#" data-id="{{ $link->id }}">
-                                                 Delete Link
-                                             </a>
-                                         </li>
+                                        </li>
+                                        <li><hr class="dropdown-divider my-1 opacity-25"></li>
+                                        <li>
+                                            <a class="dropdown-item rounded-2 py-2 fs-7 text-danger d-flex align-items-center gap-2 btn-delete-link" href="#" data-id="{{ $link->id }}">
+                                                <i class="ki-outline ki-trash fs-5 text-danger"></i> Delete Link
+                                            </a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -320,8 +306,8 @@
     </div>
 
     <!-- Pagination -->
-    <div class="d-flex justify-content-between align-items-center mt-4">
-        <span class="text-muted small">
+    <div class="d-flex justify-content-between align-items-center mt-6">
+        <span class="text-gray-500 fs-7">
             Showing {{ $links->firstItem() }}-{{ $links->lastItem() }} of {{ $links->total() }} results
         </span>
         <div>

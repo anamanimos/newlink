@@ -213,20 +213,16 @@
     </div>
 
     <!-- Cover Photo Header (Full Width edge-to-edge) -->
-    @if(($link->settings['show_cover'] ?? '1') == '1')
-        <div class="cover-photo-full"></div>
-    @endif
+    <div class="cover-photo-full" style="display: {{ ($link->settings['show_cover'] ?? '1') == '1' ? 'block' : 'none' }};"></div>
 
     <!-- Biolink Profile and Blocks Content -->
     <div class="biolink-content" style="{{ ($link->settings['show_cover'] ?? '1') == '0' ? 'margin-top: 40px;' : '' }}">
         <!-- Profile Avatar -->
-        @if(($link->settings['show_avatar'] ?? '1') == '1')
-            <img src="{{ $link->settings['avatar_url'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($link->settings['title'] ?? 'BL') . '&background=a4e5bd&color=111827&size=128' }}" alt="Profile" class="profile-image">
-        @endif
+        <img src="{{ $link->settings['avatar_url'] ?? 'https://ui-avatars.com/api/?name=' . urlencode($link->settings['title'] ?? 'BL') . '&background=a4e5bd&color=111827&size=128' }}" alt="Profile" class="profile-image" style="display: {{ ($link->settings['show_avatar'] ?? '1') == '1' ? 'block' : 'none' }};">
         
         <!-- Profile Title & Verified Badge -->
         <h1 class="profile-title">
-            {{ $link->settings['title'] ?? 'My Biolink' }}
+            <span class="profile-title-text">{{ $link->settings['title'] ?? 'My Biolink' }}</span>
             @if($link->is_verified)
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#0095f6" style="color: white; flex-shrink: 0; margin-top: 1px;" title="Verified Profile">
                     <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>

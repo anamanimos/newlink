@@ -9,15 +9,27 @@ class ProjectController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Project::where('user_id', auth()->id())->latest();
+        $userId = auth()->id();
+        $totalProjects = Project::where('user_id', $userId)->count();
+        $totalProjectLinks = \App\Models\Link::where('user_id', $userId)->whereNotNull('project_id')->count();
+        $topProject = Project::where('user_id', $userId)->withCount('links')->orderBy('links_count', 'desc')->first();
+        $avgLinksPerProject = $totalProjects > 0 ? round($totalProjectLinks / $totalProjects, 1) : 0;
 
-        if ($request->has('search')) {
+        $query = Project::where('user_id', $userId)->withCount('links')->latest();
+
+        if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        $projects = $query->paginate(25)->withQueryString();
+        $projects = $query->paginate(15)->withQueryString();
 
-        return view('projects.index', compact('projects'));
+        return view('projects.index', compact(
+            'projects',
+            'totalProjects',
+            'totalProjectLinks',
+            'topProject',
+            'avgLinksPerProject'
+        ));
     }
 
     public function store(Request $request)
