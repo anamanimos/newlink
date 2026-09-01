@@ -332,6 +332,42 @@ class AdminController extends Controller
         } elseif ($action === 'enable' || $action === 'activate') {
             Link::whereIn('id', $ids)->update(['is_enabled' => 1]);
             $message = "Berhasil mengaktifkan {$count} tautan.";
+        } elseif ($action === 'move_domain' || $action === 'change_domain') {
+            $targetDomainId = $request->input('target_domain_id');
+            $targetDomainId = ($targetDomainId === '' || $targetDomainId === null || $targetDomainId == '0') ? 0 : (int)$targetDomainId;
+
+            // Fetch target domain host name
+            $targetDomainHost = 'Default Domain (' . parse_url(url('/'), PHP_URL_HOST) . ')';
+            if ($targetDomainId > 0) {
+                $domainModel = Domain::find($targetDomainId);
+                if (!$domainModel) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Domain tujuan tidak ditemukan.'
+                    ], 422);
+                }
+                $targetDomainHost = $domainModel->host;
+            }
+
+            // Check slug collisions on target domain
+            $linksToMove = Link::whereIn('id', $ids)->get();
+            $slugs = $linksToMove->pluck('url')->toArray();
+
+            $conflicts = Link::where('domain_id', $targetDomainId)
+                ->whereNotIn('id', $ids)
+                ->whereIn('url', $slugs)
+                ->pluck('url')
+                ->toArray();
+
+            if (!empty($conflicts)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal memindahkan domain: Terdapat slug/alias yang bentrok pada domain tujuan: /' . implode(', /', $conflicts)
+                ], 422);
+            }
+
+            Link::whereIn('id', $ids)->update(['domain_id' => $targetDomainId]);
+            $message = "Berhasil memindahkan {$count} tautan ke domain {$targetDomainHost}.";
         } else {
             return response()->json([
                 'success' => false,

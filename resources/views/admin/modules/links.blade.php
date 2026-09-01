@@ -277,6 +277,9 @@
                     <i class="ki-outline ki-check-square fs-4 text-warning me-1"></i>
                     <span id="selected_count">0</span> tautan dipilih
                 </span>
+                <button type="button" class="btn btn-xs btn-primary fw-bold d-flex align-items-center gap-1" id="btn_bulk_move_domain">
+                    <i class="ki-outline ki-geolocation fs-7"></i> Pindah Domain
+                </button>
                 <button type="button" class="btn btn-xs btn-light-warning text-warning-emphasis fw-bold d-flex align-items-center gap-1 btn-bulk-action" data-action="disable">
                     <i class="ki-outline ki-cross-circle fs-7"></i> Nonaktifkan
                 </button>
@@ -739,6 +742,57 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Bulk Move Domain -->
+<div class="modal fade" id="modal_bulk_move_domain" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mw-500px">
+        <div class="modal-content rounded-3 shadow-lg">
+            <form id="bulkMoveDomainForm">
+                @csrf
+                <div class="modal-header pb-0 border-0 justify-content-between">
+                    <h4 class="fw-bolder text-gray-900 mb-0 d-flex align-items-center gap-2">
+                        <i class="ki-outline ki-geolocation fs-2 text-primary"></i>
+                        Pindah Domain Masal
+                    </h4>
+                    <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                        <i class="ki-outline ki-cross fs-1"></i>
+                    </div>
+                </div>
+
+                <div class="modal-body py-4">
+                    <div class="p-3 bg-light-primary rounded-3 border border-primary border-dashed mb-4">
+                        <div class="d-flex align-items-center gap-2 text-primary fw-bold fs-7">
+                            <i class="ki-outline ki-information-2 fs-4 text-primary"></i>
+                            Memindahkan <span id="modal_bulk_move_count" class="fw-bolder fs-6 px-1 badge badge-primary">0</span> tautan terpilih ke domain baru.
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fs-7 fw-semibold text-gray-900 required">Pilih Domain Tujuan</label>
+                        <select name="target_domain_id" id="bulk_target_domain_id" class="form-select form-select-solid form-select-sm" required>
+                            <option value="0">Default Domain ({{ parse_url(url('/'), PHP_URL_HOST) }})</option>
+                            @if(isset($domains))
+                                @foreach($domains as $domain)
+                                    <option value="{{ $domain->id }}">
+                                        {{ $domain->host }} {{ $domain->type == 1 ? '(System)' : '(Custom)' }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                        <div class="text-muted fs-8 mt-1">Seluruh tautan yang dipilih akan langsung dialihkan ke domain ini.</div>
+                    </div>
+                </div>
+
+                <div class="modal-footer pt-0 border-0">
+                    <button type="button" class="btn btn-light btn-sm fw-semibold" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-sm fw-bold d-flex align-items-center gap-1" id="btn_submit_bulk_move">
+                        <i class="ki-outline ki-check fs-6"></i> Pindahkan Sekarang
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -902,6 +956,114 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // ----------------------------------------------------
+    // BULK MOVE DOMAIN HANDLER
+    // ----------------------------------------------------
+    const btnBulkMoveDomain = document.getElementById('btn_bulk_move_domain');
+    if (btnBulkMoveDomain) {
+        btnBulkMoveDomain.addEventListener('click', function(e) {
+            e.preventDefault();
+            const selected = getSelectedCheckboxes();
+            if (selected.length === 0) {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Perhatian',
+                        text: 'Pilih minimal satu tautan terlebih dahulu.'
+                    });
+                } else {
+                    alert('Pilih minimal satu tautan.');
+                }
+                return;
+            }
+
+            const countSpan = document.getElementById('modal_bulk_move_count');
+            if (countSpan) countSpan.textContent = selected.length;
+
+            const modalEl = document.getElementById('modal_bulk_move_domain');
+            if (modalEl) {
+                const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                modal.show();
+            }
+        });
+    }
+
+    const bulkMoveDomainForm = document.getElementById('bulkMoveDomainForm');
+    if (bulkMoveDomainForm) {
+        bulkMoveDomainForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const selected = getSelectedCheckboxes();
+            const ids = selected.map(cb => cb.value);
+            const targetDomainId = document.getElementById('bulk_target_domain_id').value;
+            const submitBtn = document.getElementById('btn_submit_bulk_move');
+
+            if (ids.length === 0) {
+                alert('Pilih minimal satu tautan.');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Memindahkan...';
+
+            fetch("{{ route('admin.links.bulk-action') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    action: 'move_domain',
+                    ids: ids,
+                    target_domain_id: targetDomainId
+                })
+            })
+            .then(res => res.json())
+            .then(res => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="ki-outline ki-check fs-6"></i> Pindahkan Sekarang';
+
+                if (res.success) {
+                    const modalEl = document.getElementById('modal_bulk_move_domain');
+                    if (modalEl) {
+                        const modal = bootstrap.Modal.getInstance(modalEl);
+                        if (modal) modal.hide();
+                    }
+
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: res.message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        alert(res.message);
+                        window.location.reload();
+                    }
+                } else {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: res.message || 'Gagal memindahkan domain.'
+                        });
+                    } else {
+                        alert(res.message || 'Gagal memindahkan domain.');
+                    }
+                }
+            })
+            .catch(err => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="ki-outline ki-check fs-6"></i> Pindahkan Sekarang';
+                alert('Terjadi kesalahan koneksi.');
+            });
+        });
+    }
 
     // ----------------------------------------------------
     // EDIT LINK & TITLE MODAL HANDLER
