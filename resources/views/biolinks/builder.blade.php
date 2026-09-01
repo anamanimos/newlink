@@ -617,8 +617,8 @@
     </div>
 
     <!-- Right Column: Desktop Preview Panel (d-none on mobile) -->
-    <div class="col-lg-5 col-xl-4 d-none d-lg-flex justify-content-center align-items-start ps-lg-5 pb-10">
-        <div class="mockup-container position-relative shadow-2xl overflow-hidden" style="width: 340px; height: calc(100vh - 180px); max-height: 680px; min-height: 520px; border-radius: 36px; border: 12px solid #111827; background: #000; flex-shrink: 0; position: sticky; top: 100px; z-index: 5; margin-bottom: 2rem;">
+    <div class="col-lg-5 col-xl-4 d-none d-lg-flex justify-content-center align-items-start ps-lg-5 pb-10" style="margin-top: -55px;">
+        <div class="mockup-container position-relative shadow-2xl overflow-hidden" style="width: 340px; height: calc(100vh - 150px); max-height: 680px; min-height: 520px; border-radius: 36px; border: 12px solid #111827; background: #000; flex-shrink: 0; position: sticky; top: 80px; z-index: 5; margin-bottom: 2rem;">
             <!-- Camera Notch -->
             <div class="position-absolute start-50 translate-middle-x" style="top: 0; width: 120px; height: 20px; background: #111827; border-radius: 0 0 12px 12px; z-index: 5;"></div>
             <iframe src="{{ $previewUrl }}" class="w-100 h-100 border-0 bg-white" style="border-radius: 24px;"></iframe>
