@@ -305,6 +305,46 @@ class AdminController extends Controller
     }
 
     /**
+     * Handle bulk actions for links (Delete, Enable, Disable).
+     */
+    public function bulkAction(Request $request)
+    {
+        $action = $request->input('action');
+        $ids = (array) $request->input('ids', []);
+
+        if (empty($ids)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada tautan yang dipilih.'
+            ], 422);
+        }
+
+        $count = count($ids);
+
+        if ($action === 'delete') {
+            Link::whereIn('id', $ids)->delete();
+            $message = "Berhasil menghapus {$count} tautan.";
+        } elseif ($action === 'disable' || $action === 'deactivate') {
+            Link::whereIn('id', $ids)->update(['is_enabled' => 0]);
+            $message = "Berhasil menonaktifkan {$count} tautan.";
+        } elseif ($action === 'enable' || $action === 'activate') {
+            Link::whereIn('id', $ids)->update(['is_enabled' => 1]);
+            $message = "Berhasil mengaktifkan {$count} tautan.";
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Aksi tidak valid.'
+            ], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'count' => $count
+        ]);
+    }
+
+    /**
      * Delete a link (Admin).
      */
     public function destroyLink(Request $request, $id)

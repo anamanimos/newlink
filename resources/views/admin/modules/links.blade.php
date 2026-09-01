@@ -270,11 +270,38 @@
     @endif
 
     <div class="card-body pt-0">
+        <!-- Bulk Actions Toolbar -->
+        <div id="bulk_actions_toolbar" class="d-none d-flex flex-wrap align-items-center justify-content-between gap-2 p-3 mb-4 bg-light-warning rounded-3 border border-warning">
+            <div class="d-flex align-items-center flex-wrap gap-2">
+                <span class="fs-7 fw-bolder text-gray-900 me-2">
+                    <i class="ki-outline ki-check-square fs-4 text-warning me-1"></i>
+                    <span id="selected_count">0</span> tautan dipilih
+                </span>
+                <button type="button" class="btn btn-xs btn-light-warning text-warning-emphasis fw-bold d-flex align-items-center gap-1 btn-bulk-action" data-action="disable">
+                    <i class="ki-outline ki-cross-circle fs-7"></i> Nonaktifkan
+                </button>
+                <button type="button" class="btn btn-xs btn-light-success text-success fw-bold d-flex align-items-center gap-1 btn-bulk-action" data-action="enable">
+                    <i class="ki-outline ki-check-circle fs-7"></i> Aktifkan
+                </button>
+                <button type="button" class="btn btn-xs btn-danger fw-bold d-flex align-items-center gap-1 btn-bulk-action" data-action="delete">
+                    <i class="ki-outline ki-trash fs-7"></i> Hapus Terpilih
+                </button>
+            </div>
+            <button type="button" class="btn btn-xs btn-link text-muted p-0 text-decoration-none" id="btn_cancel_bulk">
+                Batal Pilih
+            </button>
+        </div>
+
         <div class="table-responsive">
             <table class="table align-middle table-row-dashed fs-7 gy-4 mb-0" id="kt_table_admin_links">
                 <thead>
                     <tr class="text-start text-muted fw-bold fs-8 text-uppercase gs-0">
-                        <th class="min-w-220px">Tautan / Slug</th>
+                        <th class="w-10px pe-2">
+                            <div class="form-check form-check-sm form-check-custom form-check-solid me-1">
+                                <input class="form-check-input" type="checkbox" id="selectAllLinks" title="Pilih Semua" />
+                            </div>
+                        </th>
+                        <th class="min-w-200px">Tautan / Slug</th>
                         <th class="min-w-160px">Tujuan / Konten</th>
                         <th class="min-w-140px">Pemilik</th>
                         <th class="min-w-120px">Domain</th>
@@ -291,6 +318,13 @@
                             $fullPublicUrl = $link->full_url;
                         @endphp
                         <tr id="link-row-{{ $link->id }}">
+                            <!-- Bulk Checkbox -->
+                            <td>
+                                <div class="form-check form-check-sm form-check-custom form-check-solid">
+                                    <input class="form-check-input link-checkbox" type="checkbox" value="{{ $link->id }}" data-slug="{{ $link->url }}" />
+                                </div>
+                            </td>
+
                             <!-- Slug & Link Title -->
                             <td>
                                 <div class="d-flex align-items-center">
@@ -452,7 +486,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="text-center py-10 text-muted">
+                            <td colspan="10" class="text-center py-10 text-muted">
                                 <i class="ki-outline ki-disconnect fs-4x text-muted mb-3"></i>
                                 <p class="fs-6 fw-semibold mb-1">Tidak ada data tautan ditemukan.</p>
                                 <p class="fs-8 text-muted mb-0">Coba ubah kata kunci pencarian atau reset filter Anda.</p>
@@ -477,7 +511,7 @@
     </div>
 </div>
 
-<!-- Modal Multi-Filter Links (All Filters Support Multi-Select) -->
+<!-- Modal Multi-Filter Links -->
 <div class="modal fade" id="modal_filter_links" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered mw-600px">
         <div class="modal-content">
@@ -587,7 +621,7 @@
                             <label class="fs-7 fw-semibold mb-2">Urutan Tampilan</label>
                             <select name="sort" class="form-select form-select-solid form-select-sm">
                                 <option value="latest" {{ request('sort', 'latest') === 'latest' ? 'selected' : '' }}>Terbaru</option>
-                                <option value="oldest" {{ request('sort') === 'oldest' ? 'selected' : '' }}>Terlama</option>
+                                <option value="oldest" {{ request('sort', 'oldest') === 'oldest' ? 'selected' : '' }}>Terlama</option>
                                 <option value="clicks_desc" {{ request('sort') === 'clicks_desc' ? 'selected' : '' }}>Klik Tertinggi</option>
                                 <option value="clicks_asc" {{ request('sort') === 'clicks_asc' ? 'selected' : '' }}>Klik Terendah</option>
                                 <option value="url_asc" {{ request('sort') === 'url_asc' ? 'selected' : '' }}>Slug (A-Z)</option>
@@ -624,7 +658,168 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Filter Modal Trigger
+    // ----------------------------------------------------
+    // BULK ACTIONS HANDLER
+    // ----------------------------------------------------
+    const selectAllLinks = document.getElementById('selectAllLinks');
+    const bulkToolbar = document.getElementById('bulk_actions_toolbar');
+    const selectedCountSpan = document.getElementById('selected_count');
+    const btnCancelBulk = document.getElementById('btn_cancel_bulk');
+
+    function getSelectedCheckboxes() {
+        return Array.from(document.querySelectorAll('.link-checkbox:checked'));
+    }
+
+    function updateBulkToolbar() {
+        const selected = getSelectedCheckboxes();
+        const totalCheckboxes = document.querySelectorAll('.link-checkbox').length;
+
+        if (selectedCountSpan) {
+            selectedCountSpan.textContent = selected.length;
+        }
+
+        if (selected.length > 0) {
+            bulkToolbar.classList.remove('d-none');
+        } else {
+            bulkToolbar.classList.add('d-none');
+        }
+
+        if (selectAllLinks) {
+            selectAllLinks.checked = totalCheckboxes > 0 && selected.length === totalCheckboxes;
+            selectAllLinks.indeterminate = selected.length > 0 && selected.length < totalCheckboxes;
+        }
+    }
+
+    if (selectAllLinks) {
+        selectAllLinks.addEventListener('change', function() {
+            const isChecked = this.checked;
+            document.querySelectorAll('.link-checkbox').forEach(cb => {
+                cb.checked = isChecked;
+            });
+            updateBulkToolbar();
+        });
+    }
+
+    document.querySelectorAll('.link-checkbox').forEach(cb => {
+        cb.addEventListener('change', updateBulkToolbar);
+    });
+
+    if (btnCancelBulk) {
+        btnCancelBulk.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelectorAll('.link-checkbox').forEach(cb => cb.checked = false);
+            if (selectAllLinks) selectAllLinks.checked = false;
+            updateBulkToolbar();
+        });
+    }
+
+    // Execute Bulk Action
+    document.querySelectorAll('.btn-bulk-action').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const action = this.getAttribute('data-action');
+            const selected = getSelectedCheckboxes();
+            const ids = selected.map(cb => cb.value);
+
+            if (ids.length === 0) {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Perhatian',
+                        text: 'Pilih minimal satu tautan terlebih dahulu.'
+                    });
+                } else {
+                    alert('Pilih minimal satu tautan.');
+                }
+                return;
+            }
+
+            let confirmTitle = 'Konfirmasi Aksi';
+            let confirmText = `Jalankan aksi pada ${ids.length} tautan terpilih?`;
+            let confirmBtnText = 'Ya, Lanjutkan';
+            let confirmBtnClass = 'btn btn-primary';
+
+            if (action === 'delete') {
+                confirmTitle = 'Hapus Tautan Terpilih?';
+                confirmText = `Apakah Anda yakin ingin menghapus ${ids.length} tautan terpilih secara permanen?`;
+                confirmBtnText = 'Ya, Hapus Semua!';
+                confirmBtnClass = 'btn btn-danger';
+            } else if (action === 'disable') {
+                confirmTitle = 'Nonaktifkan Tautan Terpilih?';
+                confirmText = `Nonaktifkan status ${ids.length} tautan terpilih?`;
+                confirmBtnText = 'Ya, Nonaktifkan!';
+                confirmBtnClass = 'btn btn-warning';
+            } else if (action === 'enable') {
+                confirmTitle = 'Aktifkan Tautan Terpilih?';
+                confirmText = `Aktifkan status ${ids.length} tautan terpilih?`;
+                confirmBtnText = 'Ya, Aktifkan!';
+                confirmBtnClass = 'btn btn-success';
+            }
+
+            const executeBulk = () => {
+                fetch("{{ route('admin.links.bulk-action') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ action: action, ids: ids })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.success) {
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: res.message,
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            alert(res.message);
+                            window.location.reload();
+                        }
+                    } else {
+                        alert(res.message || 'Gagal memproses aksi massal.');
+                    }
+                })
+                .catch(err => {
+                    alert('Terjadi kesalahan koneksi.');
+                });
+            };
+
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: confirmTitle,
+                    text: confirmText,
+                    icon: action === 'delete' ? 'warning' : 'question',
+                    showCancelButton: true,
+                    confirmButtonText: confirmBtnText,
+                    cancelButtonText: 'Batal',
+                    customClass: {
+                        confirmButton: confirmBtnClass,
+                        cancelButton: 'btn btn-light'
+                    }
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        executeBulk();
+                    }
+                });
+            } else {
+                if (confirm(confirmText)) {
+                    executeBulk();
+                }
+            }
+        });
+    });
+
+    // ----------------------------------------------------
+    // FILTER MODAL HANDLER
+    // ----------------------------------------------------
     const btnOpenFilterModal = document.getElementById('btn_open_filter_modal');
     if (btnOpenFilterModal) {
         btnOpenFilterModal.addEventListener('click', function(e) {
@@ -821,7 +1016,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Delete Link Handler
+    // Delete Single Link Handler
     document.querySelectorAll('.btn-delete-link').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();

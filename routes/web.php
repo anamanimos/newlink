@@ -128,6 +128,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::delete('/plans/{id}', [\App\Http\Controllers\Admin\PlanController::class, 'destroy'])->name('admin.plans.destroy');
     Route::get('/statistics/{type?}', [\App\Http\Controllers\Admin\StatisticsController::class, 'index'])->name('admin.statistics');
     Route::get('/links', [AdminController::class, 'links'])->name('admin.links');
+    Route::post('/links/bulk-action', [AdminController::class, 'bulkAction'])->name('admin.links.bulk-action');
     Route::post('/links/{id}/toggle-verify', [AdminController::class, 'toggleVerify'])->name('admin.links.toggle-verify');
     Route::post('/links/{id}/toggle-status', [AdminController::class, 'toggleStatusLink'])->name('admin.links.toggle-status');
     Route::delete('/links/{id}', [AdminController::class, 'destroyLink'])->name('admin.links.destroy');
