@@ -73,8 +73,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/pixels', [\App\Http\Controllers\PixelController::class, 'store'])->name('pixels.store');
     Route::put('/pixels/{id}', [\App\Http\Controllers\PixelController::class, 'update'])->name('pixels.update');
     Route::delete('/pixels/{id}', [\App\Http\Controllers\PixelController::class, 'destroy'])->name('pixels.destroy');
+    Route::get('/clicks', [\App\Http\Controllers\ClickLogController::class, 'index'])->name('clicks.index');
+    Route::get('/account/api', [\App\Http\Controllers\UserApiController::class, 'index'])->name('user.api');
+    Route::post('/account/api/regenerate', [\App\Http\Controllers\UserApiController::class, 'regenerate'])->name('user.api.regenerate');
     Route::get('/profile', function () { return view('modules.profile'); })->name('profile.edit');
 });
+
+// Public API Documentation
+Route::get('/api-docs', [\App\Http\Controllers\ApiDocsController::class, 'index'])->name('api-docs');
 
 // Admin routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
@@ -89,9 +95,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::put('/domains/{id}', [\App\Http\Controllers\Admin\DomainController::class, 'update'])->name('admin.domains.update');
     Route::delete('/domains/{id}', [\App\Http\Controllers\Admin\DomainController::class, 'destroy'])->name('admin.domains.destroy');
     Route::get('/settings/{tab?}', [AdminController::class, 'settings'])->name('admin.settings');
-    Route::get('/plans', function () { return view('admin.modules.plans'); })->name('admin.plans');
+    Route::get('/plans', [\App\Http\Controllers\Admin\PlanController::class, 'index'])->name('admin.plans');
+    Route::post('/plans', [\App\Http\Controllers\Admin\PlanController::class, 'store'])->name('admin.plans.store');
+    Route::put('/plans/{id}', [\App\Http\Controllers\Admin\PlanController::class, 'update'])->name('admin.plans.update');
+    Route::delete('/plans/{id}', [\App\Http\Controllers\Admin\PlanController::class, 'destroy'])->name('admin.plans.destroy');
+    Route::get('/statistics/{type?}', [\App\Http\Controllers\Admin\StatisticsController::class, 'index'])->name('admin.statistics');
     Route::get('/links', [AdminController::class, 'links'])->name('admin.links');
     Route::post('/links/{id}/toggle-verify', [AdminController::class, 'toggleVerify'])->name('admin.links.toggle-verify');
+    Route::get('/sync-legacy/check', [\App\Http\Controllers\Admin\SyncController::class, 'checkConnection'])->name('admin.sync.check');
+    Route::post('/sync-legacy/step', [\App\Http\Controllers\Admin\SyncController::class, 'processStep'])->name('admin.sync.step');
 });
 
 // Root redirects to login or dashboard

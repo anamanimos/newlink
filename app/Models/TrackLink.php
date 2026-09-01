@@ -22,4 +22,14 @@ class TrackLink extends Model
     {
         return $this->belongsTo(Link::class, 'link_id', 'id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function biolinkBlock()
+    {
+        return $this->belongsTo(BiolinkBlock::class, 'biolink_block_id', 'id');
+    }
 }

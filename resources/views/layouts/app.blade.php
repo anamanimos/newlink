@@ -231,9 +231,27 @@
                                         </a>
                                     </div>
                                     <div class="menu-item">
+                                        <a class="menu-link {{ request()->routeIs('admin.plans*') ? 'active' : '' }}" href="{{ route('admin.plans') }}">
+                                            <span class="menu-icon"><i class="ki-outline ki-crown fs-2"></i></span>
+                                            <span class="menu-title">Plans</span>
+                                        </a>
+                                    </div>
+                                    <div class="menu-item">
+                                        <a class="menu-link {{ request()->routeIs('admin.statistics*') ? 'active' : '' }}" href="{{ route('admin.statistics') }}">
+                                            <span class="menu-icon"><i class="ki-outline ki-chart-line-star fs-2"></i></span>
+                                            <span class="menu-title">Statistics</span>
+                                        </a>
+                                    </div>
+                                    <div class="menu-item">
                                         <a class="menu-link {{ request()->is('admin/settings*') ? 'active' : '' }}" href="{{ route('admin.settings') }}">
                                             <span class="menu-icon"><i class="ki-outline ki-setting-2 fs-2"></i></span>
                                             <span class="menu-title">Settings</span>
+                                        </a>
+                                    </div>
+                                    <div class="menu-item">
+                                        <a class="menu-link" href="{{ route('api-docs') }}" target="_blank">
+                                            <span class="menu-icon"><i class="ki-outline ki-code fs-2"></i></span>
+                                            <span class="menu-title">API Docs</span>
                                         </a>
                                     </div>
                                 @else
@@ -303,6 +321,27 @@
                                         <a class="menu-link {{ request()->routeIs('pixels.*') ? 'active' : '' }}" href="{{ route('pixels.index') }}">
                                             <span class="menu-icon"><i class="ki-outline ki-code fs-2"></i></span>
                                             <span class="menu-title">Tracking Pixels</span>
+                                        </a>
+                                    </div>
+
+                                    <div class="menu-item">
+                                        <a class="menu-link {{ request()->routeIs('clicks.*') ? 'active' : '' }}" href="{{ route('clicks.index') }}">
+                                            <span class="menu-icon"><i class="ki-outline ki-chart-simple-3 fs-2"></i></span>
+                                            <span class="menu-title">Click Activity</span>
+                                        </a>
+                                    </div>
+
+                                    <div class="menu-item">
+                                        <a class="menu-link {{ request()->routeIs('user.api*') ? 'active' : '' }}" href="{{ route('user.api') }}">
+                                            <span class="menu-icon"><i class="ki-outline ki-key fs-2"></i></span>
+                                            <span class="menu-title">API & Integrations</span>
+                                        </a>
+                                    </div>
+
+                                    <div class="menu-item">
+                                        <a class="menu-link" href="{{ route('api-docs') }}" target="_blank">
+                                            <span class="menu-icon"><i class="ki-outline ki-document fs-2"></i></span>
+                                            <span class="menu-title">API Docs</span>
                                         </a>
                                     </div>
                                 @endif
