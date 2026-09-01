@@ -91,6 +91,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/account/api', [\App\Http\Controllers\UserApiController::class, 'index'])->name('user.api');
     Route::post('/account/api/regenerate', [\App\Http\Controllers\UserApiController::class, 'regenerate'])->name('user.api.regenerate');
     Route::get('/profile', function () { return view('modules.profile'); })->name('profile.edit');
+
+    // Online Tools Module
+    Route::get('/tools', [\App\Http\Controllers\ToolController::class, 'index'])->name('tools.index');
+    Route::get('/tools/whatsapp-link-generator', [\App\Http\Controllers\ToolController::class, 'whatsappLinkGenerator'])->name('tools.whatsapp-link-generator');
+    Route::get('/tools/utm-link-generator', [\App\Http\Controllers\ToolController::class, 'utmLinkGenerator'])->name('tools.utm-link-generator');
+    Route::get('/tools/slug-generator', [\App\Http\Controllers\ToolController::class, 'slugGenerator'])->name('tools.slug-generator');
+    Route::get('/tools/password-generator', [\App\Http\Controllers\ToolController::class, 'passwordGenerator'])->name('tools.password-generator');
+    Route::get('/tools/uuid-generator', [\App\Http\Controllers\ToolController::class, 'uuidGenerator'])->name('tools.uuid-generator');
+    Route::get('/tools/lorem-ipsum-generator', [\App\Http\Controllers\ToolController::class, 'loremIpsumGenerator'])->name('tools.lorem-ipsum-generator');
 });
 
 // Public API Documentation

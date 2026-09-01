@@ -249,6 +249,12 @@
                                         </a>
                                     </div>
                                     <div class="menu-item">
+                                        <a class="menu-link {{ request()->routeIs('tools.*') ? 'active' : '' }}" href="{{ route('tools.index') }}">
+                                            <span class="menu-icon"><i class="ki-outline ki-wrench fs-2"></i></span>
+                                            <span class="menu-title">Online Tools</span>
+                                        </a>
+                                    </div>
+                                    <div class="menu-item">
                                         <a class="menu-link" href="{{ route('api-docs') }}" target="_blank">
                                             <span class="menu-icon"><i class="ki-outline ki-code fs-2"></i></span>
                                             <span class="menu-title">API Docs</span>
@@ -301,6 +307,13 @@
                                         <div class="menu-content pb-2">
                                             <span class="menu-section text-muted text-uppercase fs-8 ls-1">Tools & Management</span>
                                         </div>
+                                    </div>
+
+                                    <div class="menu-item">
+                                        <a class="menu-link {{ request()->routeIs('tools.*') ? 'active' : '' }}" href="{{ route('tools.index') }}">
+                                            <span class="menu-icon"><i class="ki-outline ki-wrench fs-2"></i></span>
+                                            <span class="menu-title">Online Tools</span>
+                                        </a>
                                     </div>
 
                                     <div class="menu-item">
