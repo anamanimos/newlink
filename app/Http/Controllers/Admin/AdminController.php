@@ -88,8 +88,53 @@ class AdminController extends Controller
         if (!in_array($tab, $allowedTabs)) {
             $tab = 'main';
         }
+
+        $settings = \App\Models\Setting::get($tab, []);
         
-        return view('admin.modules.settings', compact('tab'));
+        return view('admin.modules.settings', compact('tab', 'settings'));
+    }
+
+    public function updateSettings(Request $request, $tab = 'main')
+    {
+        $data = $request->except(['_token', '_method']);
+
+        if ($tab === 'payment') {
+            // Process payment settings toggles and currencies
+            $currencies = [];
+            if ($request->has('currencies_code') && is_array($request->currencies_code)) {
+                foreach ($request->currencies_code as $idx => $code) {
+                    $code = strtoupper(trim($code));
+                    if ($code) {
+                        $currencies[$code] = [
+                            'code' => $code,
+                            'symbol' => $request->currencies_symbol[$idx] ?? '$',
+                            'default_payment_processor' => $request->currencies_default_processor[$idx] ?? 'paypal',
+                        ];
+                    }
+                }
+            }
+
+            $paymentData = [
+                'is_enabled' => $request->has('is_enabled'),
+                'type' => $request->input('type', 'both'),
+                'default_payment_type' => $request->input('default_payment_type', 'one_time'),
+                'default_payment_frequency' => $request->input('default_payment_frequency', 'monthly'),
+                'currencies' => $currencies,
+                'default_currency' => strtoupper($request->input('default_currency', 'USD')),
+                'codes_is_enabled' => $request->has('codes_is_enabled'),
+                'taxes_and_billing_is_enabled' => $request->has('taxes_and_billing_is_enabled'),
+                'invoices_is_enabled' => $request->has('invoices_is_enabled'),
+                'user_plan_expiry_reminder' => (int) $request->input('user_plan_expiry_reminder', 0),
+                'user_plan_expiry_checker_is_enabled' => $request->has('user_plan_expiry_checker_is_enabled'),
+                'currency_exchange_api_key' => $request->input('currency_exchange_api_key', ''),
+            ];
+
+            \App\Models\Setting::set('payment', $paymentData);
+        } else {
+            \App\Models\Setting::set($tab, $data);
+        }
+
+        return back()->with('success', ucfirst(str_replace('-', ' ', $tab)) . ' settings updated successfully.');
     }
 
     /**
