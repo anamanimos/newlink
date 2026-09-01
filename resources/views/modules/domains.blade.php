@@ -121,7 +121,7 @@
                                         <!-- SSL Status -->
                                         <td>
                                             <div id="ssl-badge-{{ $domain->id }}" class="mb-1">
-                                                @if($domain->ssl_status === 'active' || $domain->scheme === 'https://')
+                                                @if(\App\Services\DomainSslService::isSslActive($domain))
                                                     <span class="badge badge-light-success fw-bold fs-8">
                                                         <i class="ki-outline ki-shield-tick fs-8 text-success me-1"></i> HTTPS Aktif 🔒
                                                     </span>
@@ -131,7 +131,7 @@
                                                     </span>
                                                 @else
                                                     <span class="badge badge-light-secondary fw-bold fs-8">
-                                                        <i class="ki-outline ki-shield fs-8 text-muted me-1"></i> Belum Ada SSL
+                                                        <i class="ki-outline ki-shield fs-8 text-muted me-1"></i> Belum Terpasang
                                                     </span>
                                                 @endif
                                             </div>

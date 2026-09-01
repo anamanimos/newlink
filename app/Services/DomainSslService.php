@@ -168,4 +168,28 @@ class DomainSslService
             'output' => $outputStr
         ];
     }
+
+    /**
+     * Check if SSL is actively provisioned for a domain
+     */
+    public static function isSslActive($domain): bool
+    {
+        if (is_object($domain)) {
+            if ($domain->ssl_status === 'active') {
+                return true;
+            }
+            $host = $domain->host;
+        } else {
+            $host = (string) $domain;
+        }
+
+        $host = strtolower(trim(preg_replace('#^https?://#', '', $host), '/'));
+        
+        // Check if certificate file exists on server
+        if (file_exists("/etc/letsencrypt/live/{$host}/fullchain.pem")) {
+            return true;
+        }
+
+        return false;
+    }
 }
