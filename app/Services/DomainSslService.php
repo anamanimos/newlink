@@ -58,6 +58,73 @@ class DomainSslService
     }
 
     /**
+     * Resolve fresh DNS A records using authoritative DoH APIs to bypass local DNS cache
+     */
+    public static function resolveDnsIps(string $host): array
+    {
+        $ips = [];
+
+        // 1. Query Google DNS-over-HTTPS (DoH) for live authoritative record
+        try {
+            $res = \Illuminate\Support\Facades\Http::timeout(3)->get("https://dns.google/resolve?name=" . urlencode($host) . "&type=A");
+            if ($res->successful()) {
+                $json = $res->json();
+                if (!empty($json['Answer'])) {
+                    foreach ($json['Answer'] as $ans) {
+                        if (isset($ans['type']) && $ans['type'] == 1 && isset($ans['data']) && filter_var($ans['data'], FILTER_VALIDATE_IP)) {
+                            $ips[] = $ans['data'];
+                        }
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            // fallback
+        }
+
+        // 2. Query Cloudflare DoH API if Google DNS returned empty
+        if (empty($ips)) {
+            try {
+                $res = \Illuminate\Support\Facades\Http::timeout(3)
+                    ->withHeaders(['Accept' => 'application/dns-json'])
+                    ->get("https://cloudflare-dns.com/dns-query?name=" . urlencode($host) . "&type=A");
+                if ($res->successful()) {
+                    $json = $res->json();
+                    if (!empty($json['Answer'])) {
+                        foreach ($json['Answer'] as $ans) {
+                            if (isset($ans['type']) && $ans['type'] == 1 && isset($ans['data']) && filter_var($ans['data'], FILTER_VALIDATE_IP)) {
+                                $ips[] = $ans['data'];
+                            }
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+                // fallback
+            }
+        }
+
+        // 3. Fallback to PHP native DNS resolution
+        if (empty($ips)) {
+            $records = @dns_get_record($host, DNS_A);
+            if ($records) {
+                foreach ($records as $r) {
+                    if (isset($r['ip'])) {
+                        $ips[] = $r['ip'];
+                    }
+                }
+            }
+        }
+
+        if (empty($ips)) {
+            $singleIp = @gethostbyname($host);
+            if ($singleIp && $singleIp !== $host && filter_var($singleIp, FILTER_VALIDATE_IP)) {
+                $ips[] = $singleIp;
+            }
+        }
+
+        return array_values(array_unique($ips));
+    }
+
+    /**
      * Check if a domain's DNS is pointed to this server
      */
     public static function verifyDns(string $host): array
@@ -75,22 +142,7 @@ class DomainSslService
             ];
         }
 
-        $resolvedIps = [];
-        $records = @dns_get_record($host, DNS_A);
-        if ($records) {
-            foreach ($records as $r) {
-                if (isset($r['ip'])) {
-                    $resolvedIps[] = $r['ip'];
-                }
-            }
-        }
-
-        if (empty($resolvedIps)) {
-            $singleIp = @gethostbyname($host);
-            if ($singleIp && $singleIp !== $host) {
-                $resolvedIps[] = $singleIp;
-            }
-        }
+        $resolvedIps = self::resolveDnsIps($host);
 
         $isMatch = in_array($serverIp, $resolvedIps);
         $isCloudflare = false;
