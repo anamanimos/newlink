@@ -15,19 +15,46 @@ class DomainSslService
             return $envIp;
         }
 
-        if (isset($_SERVER['SERVER_ADDR']) && $_SERVER['SERVER_ADDR'] !== '127.0.0.1' && $_SERVER['SERVER_ADDR'] !== '::1') {
-            return $_SERVER['SERVER_ADDR'];
-        }
+        return cache()->remember('server_public_ip_v2', 86400, function () {
+            // Check reliable public IP check APIs
+            $services = [
+                'https://api.ipify.org',
+                'https://icanhazip.com',
+                'https://ifconfig.me/ip',
+            ];
 
-        $appHost = parse_url(config('app.url'), PHP_URL_HOST);
-        if ($appHost && $appHost !== 'localhost' && !str_ends_with($appHost, '.test')) {
-            $resolved = gethostbyname($appHost);
-            if ($resolved && $resolved !== $appHost) {
-                return $resolved;
+            foreach ($services as $url) {
+                try {
+                    $context = stream_context_create([
+                        'http' => ['timeout' => 2]
+                    ]);
+                    $ip = @file_get_contents($url, false, $context);
+                    if ($ip) {
+                        $ip = trim($ip);
+                        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+                            return $ip;
+                        }
+                    }
+                } catch (\Exception $e) {
+                    // continue
+                }
             }
-        }
 
-        return '127.0.0.1';
+            // If server address is already a valid public IP
+            if (isset($_SERVER['SERVER_ADDR']) && filter_var($_SERVER['SERVER_ADDR'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+                return $_SERVER['SERVER_ADDR'];
+            }
+
+            $appHost = parse_url(config('app.url'), PHP_URL_HOST);
+            if ($appHost && $appHost !== 'localhost' && !str_ends_with($appHost, '.test')) {
+                $resolved = @gethostbyname($appHost);
+                if ($resolved && $resolved !== $appHost && filter_var($resolved, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+                    return $resolved;
+                }
+            }
+
+            return $_SERVER['SERVER_ADDR'] ?? '127.0.0.1';
+        });
     }
 
     /**
