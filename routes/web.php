@@ -68,6 +68,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/domains', [\App\Http\Controllers\DomainController::class, 'store'])->name('domains.store');
     Route::put('/domains/{id}', [\App\Http\Controllers\DomainController::class, 'update'])->name('domains.update');
     Route::delete('/domains/{id}', [\App\Http\Controllers\DomainController::class, 'destroy'])->name('domains.destroy');
+    Route::post('/domains/{id}/verify-dns', [\App\Http\Controllers\DomainController::class, 'verifyDns'])->name('domains.verify-dns');
+    Route::post('/domains/{id}/provision-ssl', [\App\Http\Controllers\DomainController::class, 'provisionSsl'])->name('domains.provision-ssl');
 
     Route::get('/pixels', [\App\Http\Controllers\PixelController::class, 'index'])->name('pixels.index');
     Route::post('/pixels', [\App\Http\Controllers\PixelController::class, 'store'])->name('pixels.store');
@@ -94,6 +96,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/domains', [\App\Http\Controllers\Admin\DomainController::class, 'store'])->name('admin.domains.store');
     Route::put('/domains/{id}', [\App\Http\Controllers\Admin\DomainController::class, 'update'])->name('admin.domains.update');
     Route::delete('/domains/{id}', [\App\Http\Controllers\Admin\DomainController::class, 'destroy'])->name('admin.domains.destroy');
+    Route::post('/domains/{id}/verify-dns', [\App\Http\Controllers\Admin\DomainController::class, 'verifyDns'])->name('admin.domains.verify-dns');
+    Route::post('/domains/{id}/provision-ssl', [\App\Http\Controllers\Admin\DomainController::class, 'provisionSsl'])->name('admin.domains.provision-ssl');
     Route::get('/settings/{tab?}', [AdminController::class, 'settings'])->name('admin.settings');
     Route::get('/plans', [\App\Http\Controllers\Admin\PlanController::class, 'index'])->name('admin.plans');
     Route::post('/plans', [\App\Http\Controllers\Admin\PlanController::class, 'store'])->name('admin.plans.store');

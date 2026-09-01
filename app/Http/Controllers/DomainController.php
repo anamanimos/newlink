@@ -74,4 +74,43 @@ class DomainController extends Controller
 
         return back()->with('success', 'Domain deleted successfully.');
     }
+
+    public function verifyDns($id)
+    {
+        $domain = Domain::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        $result = \App\Services\DomainSslService::verifyDns($domain->host);
+
+        $domain->dns_status = $result['verified'] ? 'verified' : 'failed';
+        $domain->last_dns_check_at = now();
+        $domain->save();
+
+        return response()->json([
+            'success' => $result['verified'],
+            'message' => $result['message'],
+            'server_ip' => $result['server_ip'],
+            'resolved_ips' => $result['resolved_ips'],
+            'dns_status' => $domain->dns_status,
+        ]);
+    }
+
+    public function provisionSsl($id)
+    {
+        $domain = Domain::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        $result = \App\Services\DomainSslService::provisionSsl($domain->host);
+
+        if ($result['success']) {
+            $domain->ssl_status = 'active';
+            $domain->scheme = 'https://';
+            $domain->is_enabled = 1;
+        } else {
+            $domain->ssl_status = 'failed';
+        }
+        $domain->save();
+
+        return response()->json([
+            'success' => $result['success'],
+            'message' => $result['message'],
+            'ssl_status' => $domain->ssl_status,
+        ]);
+    }
 }
