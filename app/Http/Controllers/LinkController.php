@@ -339,7 +339,8 @@ class LinkController extends Controller
         $request->validate([
             'ids' => 'required|array',
             'ids.*' => 'integer|exists:links,id',
-            'action' => 'required|string|in:delete,enable,disable'
+            'action' => 'required|string|in:delete,enable,disable,move_domain,change_domain',
+            'target_domain_id' => 'nullable|integer'
         ]);
 
         $ids = $request->ids;
@@ -348,16 +349,62 @@ class LinkController extends Controller
 
         // Target only links belonging to the authenticated user
         $links = Link::where('user_id', $userId)->whereIn('id', $ids);
+        $count = $links->count();
 
         if ($action === 'delete') {
             $links->delete();
-            $message = 'Tautan terpilih berhasil dihapus!';
+            $message = "Berhasil menghapus {$count} tautan terpilih!";
         } elseif ($action === 'enable') {
             $links->update(['is_enabled' => 1]);
-            $message = 'Tautan terpilih berhasil diaktifkan!';
+            $message = "Berhasil mengaktifkan {$count} tautan terpilih!";
         } elseif ($action === 'disable') {
             $links->update(['is_enabled' => 0]);
-            $message = 'Tautan terpilih berhasil dinonaktifkan!';
+            $message = "Berhasil menonaktifkan {$count} tautan terpilih!";
+        } elseif ($action === 'move_domain' || $action === 'change_domain') {
+            $targetDomainId = $request->input('target_domain_id');
+            $targetDomainId = ($targetDomainId === '' || $targetDomainId === null || $targetDomainId == '0') ? 0 : (int)$targetDomainId;
+
+            $targetDomainHost = 'Default Domain (' . parse_url(url('/'), PHP_URL_HOST) . ')';
+            if ($targetDomainId > 0) {
+                $domainModel = \App\Models\Domain::where('id', $targetDomainId)
+                    ->where(function($q) use ($userId) {
+                        $q->where('user_id', $userId)->orWhere(function($sq) {
+                            $sq->where('type', 1)->where('is_enabled', 1);
+                        });
+                    })->first();
+
+                if (!$domainModel) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Domain tujuan tidak ditemukan atau tidak memiliki akses.'
+                    ], 422);
+                }
+                $targetDomainHost = $domainModel->host;
+            }
+
+            // Check slug collisions on target domain
+            $linksToMove = Link::where('user_id', $userId)->whereIn('id', $ids)->get();
+            $slugs = $linksToMove->pluck('url')->toArray();
+
+            $conflictQuery = Link::whereNotIn('id', $ids)->whereIn('url', $slugs);
+            if ($targetDomainId === 0) {
+                $conflictQuery->where(function($q) {
+                    $q->whereNull('domain_id')->orWhere('domain_id', 0);
+                });
+            } else {
+                $conflictQuery->where('domain_id', $targetDomainId);
+            }
+            $conflicts = $conflictQuery->pluck('url')->toArray();
+
+            if (!empty($conflicts)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal memindahkan domain: Terdapat slug/alias yang bentrok pada domain tujuan: /' . implode(', /', $conflicts)
+                ], 422);
+            }
+
+            Link::where('user_id', $userId)->whereIn('id', $ids)->update(['domain_id' => $targetDomainId]);
+            $message = "Berhasil memindahkan {$count} tautan ke domain {$targetDomainHost}!";
         }
 
         return response()->json([

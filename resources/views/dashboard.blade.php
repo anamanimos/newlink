@@ -284,18 +284,21 @@
             <div class="d-flex align-items-center gap-2">
                 <span class="fs-7 fw-bold text-gray-800 d-flex align-items-center gap-2">
                     <i class="ki-outline ki-check fs-4 text-primary"></i>
-                    <span id="selectedCount" class="badge badge-primary fs-8 fw-bolder">0</span> item selected
+                    <span id="selectedCount" class="badge badge-primary fs-8 fw-bolder">0</span> item terpilih
                 </span>
             </div>
             <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn btn-sm btn-primary fw-bold" id="btn_user_bulk_move_domain">
+                    <i class="ki-outline ki-geolocation fs-5 me-1"></i> Pindah Domain
+                </button>
                 <button type="button" class="btn btn-sm btn-light-success fw-bold bulk-btn" data-action="enable">
-                    <i class="ki-outline ki-check-circle fs-5 me-1"></i> Enable
+                    <i class="ki-outline ki-check-circle fs-5 me-1"></i> Aktifkan
                 </button>
                 <button type="button" class="btn btn-sm btn-light-secondary fw-bold bulk-btn" data-action="disable">
-                    <i class="ki-outline ki-cross-circle fs-5 me-1"></i> Disable
+                    <i class="ki-outline ki-cross-circle fs-5 me-1"></i> Nonaktifkan
                 </button>
                 <button type="button" class="btn btn-sm btn-light-danger fw-bold bulk-btn" data-action="delete">
-                    <i class="ki-outline ki-trash fs-5 me-1"></i> Delete
+                    <i class="ki-outline ki-trash fs-5 me-1"></i> Hapus
                 </button>
             </div>
         </div>
@@ -509,6 +512,57 @@
     @csrf
     @method('DELETE')
 </form>
+
+<!-- Modal Bulk Move Domain (User Panel) -->
+<div class="modal fade" id="modal_bulk_move_domain_user" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mw-500px">
+        <div class="modal-content rounded-3 shadow-lg border-0">
+            <form id="userBulkMoveDomainForm">
+                @csrf
+                <div class="modal-header pb-0 border-0 justify-content-between">
+                    <h4 class="fw-bolder text-gray-900 mb-0 d-flex align-items-center gap-2">
+                        <i class="ki-outline ki-geolocation fs-2 text-primary"></i>
+                        Pindah Domain Masal
+                    </h4>
+                    <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                        <i class="ki-outline ki-cross fs-1"></i>
+                    </div>
+                </div>
+
+                <div class="modal-body py-4 px-6">
+                    <div class="p-3 bg-light-primary rounded-3 border border-primary border-dashed mb-4">
+                        <div class="d-flex align-items-center gap-2 text-primary fw-bold fs-7">
+                            <i class="ki-outline ki-information-2 fs-4 text-primary"></i>
+                            Memindahkan <span id="user_modal_bulk_move_count" class="fw-bolder fs-6 px-1 badge badge-primary">0</span> tautan terpilih ke domain baru.
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fs-7 fw-semibold text-gray-900 required">Pilih Domain Tujuan</label>
+                        <select name="target_domain_id" id="user_bulk_target_domain_id" class="form-select form-select-solid form-select-sm" required>
+                            <option value="0">Default Domain ({{ parse_url(url('/'), PHP_URL_HOST) }})</option>
+                            @if(isset($domains))
+                                @foreach($domains as $domain)
+                                    <option value="{{ $domain->id }}">
+                                        {{ $domain->host }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                        <div class="text-muted fs-8 mt-1">Seluruh tautan yang dipilih akan dialihkan ke domain ini.</div>
+                    </div>
+                </div>
+
+                <div class="modal-footer pt-0 border-0 px-6 pb-6">
+                    <button type="button" class="btn btn-light btn-sm fw-semibold" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-sm fw-bold d-flex align-items-center gap-1" id="btn_user_submit_bulk_move">
+                        <i class="ki-outline ki-check fs-6"></i> Pindahkan Sekarang
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <!-- Select2 Assets -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -965,6 +1019,78 @@
                 }
             });
         });
+
+        // User Bulk Move Domain trigger
+        $(document).on('click', '#btn_user_bulk_move_domain', function(e) {
+            e.preventDefault();
+            const checkedBoxes = $('.link-checkbox:checked');
+            const ids = checkedBoxes.map(function() { return $(this).val(); }).get();
+
+            if (ids.length === 0) return;
+
+            $('#user_modal_bulk_move_count').text(ids.length);
+            const modalEl = document.getElementById('modal_bulk_move_domain_user');
+            if (modalEl) {
+                const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                modal.show();
+            }
+        });
+
+        // User Bulk Move Domain Form Submit
+        const userBulkMoveDomainForm = document.getElementById('userBulkMoveDomainForm');
+        if (userBulkMoveDomainForm) {
+            userBulkMoveDomainForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const checkedBoxes = $('.link-checkbox:checked');
+                const ids = checkedBoxes.map(function() { return $(this).val(); }).get();
+                const targetDomainId = document.getElementById('user_bulk_target_domain_id').value;
+                const submitBtn = document.getElementById('btn_user_submit_bulk_move');
+
+                if (ids.length === 0) {
+                    showSwal('error', 'Pilih minimal satu tautan.', false);
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Memindahkan...';
+
+                fetch('/link/bulk-action', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'move_domain',
+                        ids: ids,
+                        target_domain_id: targetDomainId
+                    })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="ki-outline ki-check fs-6"></i> Pindahkan Sekarang';
+
+                    if (res.success) {
+                        const modalEl = document.getElementById('modal_bulk_move_domain_user');
+                        if (modalEl) {
+                            const modal = bootstrap.Modal.getInstance(modalEl);
+                            if (modal) modal.hide();
+                        }
+                        showSwal('success', res.message, true);
+                        applyFilters();
+                    } else {
+                        showSwal('error', res.message || 'Gagal memindahkan domain.', false);
+                    }
+                })
+                .catch(err => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="ki-outline ki-check fs-6"></i> Pindahkan Sekarang';
+                    showSwal('error', 'Terjadi kesalahan koneksi.', false);
+                });
+            });
+        }
 
         // AJAX Table Load and Filter Engine
         window.loadTable = function(url) {

@@ -353,11 +353,15 @@ class AdminController extends Controller
             $linksToMove = Link::whereIn('id', $ids)->get();
             $slugs = $linksToMove->pluck('url')->toArray();
 
-            $conflicts = Link::where('domain_id', $targetDomainId)
-                ->whereNotIn('id', $ids)
-                ->whereIn('url', $slugs)
-                ->pluck('url')
-                ->toArray();
+            $conflictQuery = Link::whereNotIn('id', $ids)->whereIn('url', $slugs);
+            if ($targetDomainId === 0) {
+                $conflictQuery->where(function($q) {
+                    $q->whereNull('domain_id')->orWhere('domain_id', 0);
+                });
+            } else {
+                $conflictQuery->where('domain_id', $targetDomainId);
+            }
+            $conflicts = $conflictQuery->pluck('url')->toArray();
 
             if (!empty($conflicts)) {
                 return response()->json([
