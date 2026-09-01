@@ -150,7 +150,9 @@ class DashboardController extends Controller
             $search = $request->get('search');
             $linksQuery->where(function($q) use ($search) {
                 $q->where('url', 'like', "%{$search}%")
-                  ->orWhere('location_url', 'like', "%{$search}%");
+                  ->orWhere('location_url', 'like', "%{$search}%")
+                  ->orWhere('settings->title', 'like', "%{$search}%")
+                  ->orWhere('settings->name', 'like', "%{$search}%");
             });
         }
 

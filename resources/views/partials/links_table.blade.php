@@ -148,13 +148,13 @@
                             </div>
                         </td>
 
-                        <!-- Link with Symbol/Avatar -->
+                        <!-- Link with Symbol/Avatar & Title -->
                         <td>
                             <div class="d-flex align-items-center">
-                                <div class="symbol symbol-40px symbol-circle me-4">
+                                <div class="symbol symbol-40px symbol-circle me-3 flex-shrink-0">
                                     @if($link->type == 'biolink')
                                         <span class="symbol-label bg-light-primary">
-                                            <i class="ki-outline ki-abstract-26 fs-2 text-primary"></i>
+                                            <i class="ki-outline ki-profile-user fs-2 text-primary"></i>
                                         </span>
                                     @elseif($link->type == 'warotator')
                                         <span class="symbol-label bg-light-success">
@@ -162,17 +162,22 @@
                                         </span>
                                     @else
                                         <span class="symbol-label bg-light-info">
-                                            <i class="ki-outline ki-disconnect fs-2 text-info"></i>
+                                            <i class="ki-outline ki-link fs-2 text-info"></i>
                                         </span>
                                     @endif
                                 </div>
                                 <div class="d-flex flex-column">
-                                    <a href="{{ $detailRoute }}" class="text-gray-800 text-hover-primary fs-6 fw-bold mb-1">
-                                        {{ $link->url }}
+                                    <!-- Primary: Judul Link -->
+                                    <a href="{{ $detailRoute }}" class="text-gray-900 text-hover-primary fs-6 fw-bold mb-1 text-truncate" style="max-width: 250px;" title="{{ $link->display_title }}">
+                                        {{ $link->display_title }}
                                     </a>
-                                    <a href="{{ $fullShortenedUrl }}" target="_blank" class="text-muted text-hover-primary fs-7 text-truncate d-inline-block" style="max-width: 250px;">
-                                        {{ $fullShortenedUrl }}
-                                    </a>
+                                    <!-- Secondary: Slug & Live link -->
+                                    <div class="d-flex align-items-center gap-1">
+                                        <span class="badge badge-light-secondary text-gray-700 fs-8 fw-semibold">/{{ $link->url }}</span>
+                                        <a href="{{ $fullShortenedUrl }}" target="_blank" class="text-muted text-hover-primary fs-8 text-truncate d-inline-block" style="max-width: 180px;" title="{{ $fullShortenedUrl }}">
+                                            {{ $fullShortenedUrl }}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </td>
@@ -181,6 +186,8 @@
                         <td>
                             @if($link->type == 'warotator')
                                 <span class="badge badge-light-success fs-8">WA Rotator</span>
+                            @elseif($link->type == 'biolink')
+                                <span class="badge badge-light-primary fs-8">Bio Link Page</span>
                             @else
                                 <span class="text-gray-600 fs-7 d-block text-truncate" style="max-width: 200px;" title="{{ $link->location_url }}">
                                     {{ $link->location_url }}
@@ -257,6 +264,7 @@
                                                 </form>
                                                 <a class="dropdown-item rounded-2 py-2 fs-7 d-flex align-items-center gap-2 btn-edit-link" href="#"
                                                    data-id="{{ $link->id }}"
+                                                   data-title="{{ $link->custom_title ?? $link->display_title }}"
                                                    data-type="{{ $link->type }}"
                                                    data-url="{{ $link->url }}"
                                                    data-location="{{ $link->location_url }}"
@@ -272,6 +280,7 @@
                                                 </a>
                                                 <a class="dropdown-item rounded-2 py-2 fs-7 d-flex align-items-center gap-2 btn-edit-link" href="#"
                                                    data-id="{{ $link->id }}"
+                                                   data-title="{{ $link->custom_title ?? $link->display_title }}"
                                                    data-type="{{ $link->type }}"
                                                    data-url="{{ $link->url }}"
                                                    data-location="{{ $link->location_url }}"
@@ -284,6 +293,7 @@
                                             @else
                                                 <a class="dropdown-item rounded-2 py-2 fs-7 d-flex align-items-center gap-2 btn-edit-link" href="#"
                                                    data-id="{{ $link->id }}"
+                                                   data-title="{{ $link->custom_title ?? $link->display_title }}"
                                                    data-type="{{ $link->type }}"
                                                    data-url="{{ $link->url }}"
                                                    data-location="{{ $link->location_url }}"

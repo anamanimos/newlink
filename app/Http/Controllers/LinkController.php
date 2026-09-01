@@ -17,6 +17,7 @@ class LinkController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'title' => 'nullable|string|max:255',
             'type' => 'nullable|string|in:link,biolink,qrcode,card',
             'location_url' => 'required_if:type,link|nullable|url|max:2048',
             'url' => 'nullable|string|alpha_dash|max:256',
@@ -41,6 +42,11 @@ class LinkController extends Controller
             }
         }
 
+        $settings = [];
+        if ($request->filled('title')) {
+            $settings['title'] = $request->title;
+        }
+
         $link = Link::create([
             'user_id' => $user->id,
             'project_id' => $request->project_id,
@@ -50,6 +56,7 @@ class LinkController extends Controller
             'location_url' => $request->location_url,
             'clicks' => 0,
             'is_enabled' => 1,
+            'settings' => $settings,
         ]);
 
         if ($type === 'biolink') {
@@ -67,6 +74,7 @@ class LinkController extends Controller
         $link = Link::where('user_id', Auth::id())->findOrFail($id);
 
         $rules = [
+            'title' => 'nullable|string|max:255',
             'url' => 'required|string|alpha_dash|max:256',
             'project_id' => 'nullable|integer',
             'domain_id' => 'nullable|integer',
@@ -92,11 +100,17 @@ class LinkController extends Controller
             return back()->withErrors(['url' => 'Alias URL ini sudah digunakan oleh link lain.'])->withInput();
         }
 
+        $settings = $link->settings ?? [];
+        if ($request->has('title')) {
+            $settings['title'] = $request->input('title');
+        }
+
         $link->update([
             'project_id' => $request->project_id,
             'domain_id' => $request->domain_id ?? 0,
             'url' => $request->url,
             'location_url' => $link->type === 'link' ? $request->location_url : $link->location_url,
+            'settings' => $settings,
         ]);
 
         if ($request->ajax() || $request->wantsJson()) {

@@ -320,6 +320,13 @@
             <form action="{{ route('links.store') }}" method="POST">
                 @csrf
                 <div class="modal-body py-6 px-lg-8">
+                    <!-- Judul Tautan / Title -->
+                    <div class="fv-row mb-5">
+                        <label class="form-label fs-6 fw-semibold text-gray-900">Judul Tautan (Opsional)</label>
+                        <input type="text" name="title" class="form-control form-control-solid" placeholder="Contoh: Promo Diskon 50%, My Bio Link..." value="{{ old('title') }}" />
+                        <div class="form-text text-muted fs-8">Nama judul untuk memudahkan identifikasi tautan Anda.</div>
+                    </div>
+
                     <!-- Destination URL -->
                     <div class="fv-row mb-5">
                         <label class="form-label fs-6 fw-semibold text-gray-900 required">Target URL</label>
@@ -387,6 +394,13 @@
                 @csrf
                 <input type="hidden" name="type" value="biolink">
                 <div class="modal-body py-6 px-lg-8">
+                    <!-- Judul Biolink -->
+                    <div class="fv-row mb-5">
+                        <label class="form-label fs-6 fw-semibold text-gray-900">Judul Biolink (Opsional)</label>
+                        <input type="text" name="title" class="form-control form-control-solid" placeholder="Contoh: Official Profile, Brand Bio..." value="{{ old('title') }}" />
+                        <div class="form-text text-muted fs-8">Nama judul untuk halaman biolink ini.</div>
+                    </div>
+
                     <!-- Custom Domain -->
                     <div class="fv-row mb-5">
                         <label class="form-label fs-6 fw-semibold text-gray-900">Domain</label>
@@ -433,6 +447,12 @@
                 @csrf
                 @method('PUT')
                 <div class="modal-body py-6 px-lg-8">
+                    <!-- Judul Tautan / Title -->
+                    <div class="fv-row mb-5">
+                        <label class="form-label fs-6 fw-semibold text-gray-900">Judul Tautan (Title)</label>
+                        <input type="text" name="title" id="edit_title" class="form-control form-control-solid" placeholder="Judul / nama tautan..." />
+                    </div>
+
                     <!-- Destination URL -->
                     <div class="fv-row mb-5" id="edit_location_wrapper">
                         <label class="form-label fs-6 fw-semibold text-gray-900 required">Target URL</label>
@@ -687,6 +707,7 @@
             const id = btn.attr('data-id');
             const type = btn.attr('data-type') || 'link';
             const url = btn.attr('data-url');
+            const title = btn.attr('data-title') || '';
             const location = btn.attr('data-location') || '';
             const project = btn.attr('data-project');
             const domain = btn.attr('data-domain');
@@ -695,6 +716,8 @@
             document.getElementById('editLinkForm').action = `/link/${id}`;
             
             // Populate inputs
+            const editTitleEl = document.getElementById('edit_title');
+            if (editTitleEl) editTitleEl.value = title;
             document.getElementById('edit_location_url').value = location;
             document.getElementById('edit_url').value = url;
             

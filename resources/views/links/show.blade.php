@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Link Analytics: ' . $link->url)
+@section('title', 'Link Analytics: ' . $link->display_title)
 
 @section('content')
 <div class="d-flex flex-stack mb-6">
@@ -9,9 +9,10 @@
             <i class="ki-outline ki-arrow-left fs-2"></i>
         </a>
         <h1 class="page-heading d-flex text-gray-900 fw-bolder fs-3 my-0">
-            Link: {{ $link->url }}
+            {{ $link->display_title }}
         </h1>
-        <span class="badge badge-light-primary fw-semibold fs-8 px-2 py-1 ms-2">Analytics</span>
+        <span class="badge badge-light-secondary text-gray-700 fs-8 fw-semibold ms-2">/{{ $link->url }}</span>
+        <span class="badge badge-light-primary fw-semibold fs-8 px-2 py-1 ms-1">Analytics</span>
     </div>
 
     <!-- Filter Date range & Navigation actions -->
@@ -42,12 +43,18 @@
                     @php
                         $fullUrl = $link->domain_id && $link->domain ? $link->domain->scheme . $link->domain->host . '/' . $link->url : url('/') . '/' . $link->url;
                     @endphp
-                    <a href="{{ $fullUrl }}" target="_blank" class="fw-bolder text-gray-900 text-hover-primary fs-5">
-                        {{ preg_replace('#^https?://#', '', $fullUrl) }}
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="fw-bolder text-gray-900 fs-5">{{ $link->display_title }}</span>
+                        <span class="badge badge-light-secondary text-gray-700 fs-8 fw-semibold">/{{ $link->url }}</span>
+                    </div>
+                    <a href="{{ $fullUrl }}" target="_blank" class="text-primary text-hover-underline fs-7 mt-1">
+                        {{ $fullUrl }}
                     </a>
-                    <a href="{{ $link->location_url }}" target="_blank" class="text-muted fs-7 mt-1 text-truncate" style="max-width: 500px;">
-                        {{ $link->location_url }}
-                    </a>
+                    @if($link->location_url)
+                        <a href="{{ $link->location_url }}" target="_blank" class="text-muted fs-8 text-truncate" style="max-width: 500px;" title="{{ $link->location_url }}">
+                            Target: {{ $link->location_url }}
+                        </a>
+                    @endif
                 </div>
             </div>
             <div class="d-flex align-items-center gap-6">
