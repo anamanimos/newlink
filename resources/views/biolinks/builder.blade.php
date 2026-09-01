@@ -73,14 +73,12 @@
             <i class="ki-outline ki-arrow-left fs-2"></i>
         </a>
         <h1 class="page-heading d-flex text-gray-900 fw-bolder fs-3 my-0">
-            Biolink Builder: {{ $link->url }}
+            Biolink Builder: {{ $link->display_title }}
         </h1>
-        <span class="badge badge-light-primary fw-semibold fs-8 px-2 py-1 ms-2">Biolink Page</span>
+        <span class="badge badge-light-secondary text-gray-700 fs-8 fw-semibold ms-2">/{{ $link->url }}</span>
+        <span class="badge badge-light-primary fw-semibold fs-8 px-2 py-1 ms-1">Biolink Page</span>
     </div>
     <div class="d-flex align-items-center gap-2">
-        <button type="button" class="btn btn-sm btn-light-secondary fw-bold d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#editBiolinkUrlModal">
-            <i class="ki-outline ki-setting-2 fs-4"></i> Pengaturan Link
-        </button>
         <form action="{{ route('biolinks.duplicate', $link->id) }}" method="POST" class="d-inline" data-confirm="Duplikat Biolink ini beserta seluruh blok kontennya?" data-confirm-title="Duplikat Biolink" data-confirm-btn="Ya, Duplikat!">
             @csrf
             <button type="submit" class="btn btn-sm btn-light-info fw-bold d-inline-flex align-items-center gap-2">
@@ -722,6 +720,13 @@
                         <form action="{{ route('links.update', $link->id) }}" method="POST" class="ajax-form">
                             @csrf
                             @method('PUT')
+
+                            <!-- Judul Tautan / Biolink Title -->
+                            <div class="mb-5">
+                                <label class="form-label fs-7 fw-semibold text-gray-900">Judul Tautan / Biolink</label>
+                                <input type="text" name="title" class="form-control form-control-solid form-control-sm" placeholder="Contoh: TikTok Shop, Instagram Official..." value="{{ $link->custom_title ?? $link->display_title }}">
+                                <div class="text-muted fs-8 mt-1">Nama judul untuk mengidentifikasi tautan ini pada dashboard dan daftar link.</div>
+                            </div>
 
                             <!-- Custom Domain -->
                             <div class="mb-5">

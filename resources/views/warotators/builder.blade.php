@@ -61,9 +61,10 @@
             <i class="ki-outline ki-arrow-left fs-2"></i>
         </a>
         <h1 class="page-heading d-flex text-gray-900 fw-bolder fs-3 my-0">
-            WA Rotator Builder: {{ $link->url }}
+            WA Rotator Builder: {{ $link->display_title }}
         </h1>
-        <span class="badge badge-light-primary fw-semibold fs-8 px-2 py-1 ms-2">WhatsApp Rotator</span>
+        <span class="badge badge-light-secondary text-gray-700 fs-8 fw-semibold ms-2">/{{ $link->url }}</span>
+        <span class="badge badge-light-primary fw-semibold fs-8 px-2 py-1 ms-1">WhatsApp Rotator</span>
     </div>
     <div>
         <a href="{{ $fullUrl }}" target="_blank" class="btn btn-sm btn-light-primary fw-bold d-inline-flex align-items-center gap-2">
