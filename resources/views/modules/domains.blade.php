@@ -320,8 +320,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 button.innerHTML = origHtml;
 
                 var badgeEl = document.getElementById('dns-badge-' + domainId);
+                var sslBadgeEl = document.getElementById('ssl-badge-' + domainId);
+                var statusEl = document.getElementById('domain-status-badge-' + domainId);
+
                 if (data.success) {
                     badgeEl.innerHTML = '<span class="badge badge-light-success fw-bold fs-8"><i class="ki-outline ki-check-circle fs-8 text-success me-1"></i> Terverifikasi</span>';
+                    if (data.ssl_status === 'active' && sslBadgeEl) {
+                        sslBadgeEl.innerHTML = '<span class="badge badge-light-success fw-bold fs-8"><i class="ki-outline ki-shield-tick fs-8 text-success me-1"></i> HTTPS Aktif 🔒</span>';
+                    }
+                    if (statusEl) {
+                        statusEl.innerHTML = '<span class="badge badge-light-success fw-bold fs-8">Aktif</span>';
+                    }
                     Swal.fire({
                         text: data.message,
                         icon: "success",

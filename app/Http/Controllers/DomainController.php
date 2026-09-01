@@ -111,14 +111,23 @@ class DomainController extends Controller
 
         $domain->dns_status = $result['verified'] ? 'verified' : 'failed';
         $domain->last_dns_check_at = now();
+
+        if ($result['verified'] && ($result['is_cloudflare'] ?? false)) {
+            $domain->ssl_status = 'active';
+            $domain->scheme = 'https://';
+            $domain->is_enabled = 1;
+        }
+
         $domain->save();
 
         return response()->json([
             'success' => $result['verified'],
+            'is_cloudflare' => $result['is_cloudflare'] ?? false,
             'message' => $result['message'],
             'server_ip' => $result['server_ip'],
             'resolved_ips' => $result['resolved_ips'],
             'dns_status' => $domain->dns_status,
+            'ssl_status' => $domain->ssl_status,
         ]);
     }
 

@@ -12,6 +12,16 @@ use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Http\Request;
 
+// Domain Ping Verification Endpoint
+Route::get('/_system/domain-ping', function () {
+    return response()->json([
+        'status' => 'ok',
+        'app' => 'newlink',
+        'server_ip' => \App\Services\DomainSslService::getServerIp(),
+        'timestamp' => time()
+    ]);
+});
+
 // Guest Routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');

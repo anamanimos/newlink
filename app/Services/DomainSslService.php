@@ -93,15 +93,98 @@ class DomainSslService
         }
 
         $isMatch = in_array($serverIp, $resolvedIps);
+        $isCloudflare = false;
+
+        // Check if any resolved IP belongs to Cloudflare
+        foreach ($resolvedIps as $ip) {
+            if (self::isCloudflareIp($ip)) {
+                $isCloudflare = true;
+                break;
+            }
+        }
+
+        // If not directly matched by IP, test if traffic routes to this application (e.g. via Cloudflare Proxy / CDN)
+        if (!$isMatch) {
+            $pingSuccess = self::testAppPing($host);
+            if ($pingSuccess) {
+                $isMatch = true;
+            }
+        }
+
+        if ($isMatch) {
+            $msg = $isCloudflare 
+                ? "DNS domain terverifikasi aktif mengarah ke server ini via Cloudflare Proxy (Proxy & SSL Cloudflare Aktif)." 
+                : "DNS A Record domain telah terverifikasi mengarah langsung ke server ini ({$serverIp}).";
+        } else {
+            if ($isCloudflare) {
+                $msg = "Domain terdeteksi menggunakan Cloudflare Proxy (" . implode(', ', $resolvedIps) . "), namun belum meneruskan traffic ke aplikasi di server ini. Pastikan di Cloudflare: A Record diarahkan ke IP {$serverIp}, dan menu SSL/TLS disetel ke mode 'Full'.";
+            } else {
+                $msg = "DNS domain belum mengarah ke server ini ({$serverIp}). Saat ini masih mengarah ke: " . (implode(', ', $resolvedIps) ?: 'Tidak ditemukan / DNS belum disetel') . ". Silakan arahkan A Record ke {$serverIp} di DNS / Cloudflare Anda.";
+            }
+        }
 
         return [
             'verified' => $isMatch,
+            'is_cloudflare' => $isCloudflare,
             'server_ip' => $serverIp,
             'resolved_ips' => $resolvedIps,
-            'message' => $isMatch 
-                ? "DNS A Record domain telah terverifikasi mengarah ke server ini ({$serverIp})."
-                : "DNS domain belum mengarah ke server ini ({$serverIp}). Saat ini masih mengarah ke: " . (implode(', ', $resolvedIps) ?: 'Tidak ditemukan / DNS belum disetel') . ". Silakan arahkan A Record ke {$serverIp} di Cloudflare/DNS Anda."
+            'message' => $msg
         ];
+    }
+
+    /**
+     * Test if a domain routes to this application by calling the internal ping endpoint
+     */
+    private static function testAppPing(string $host): bool
+    {
+        $schemes = ['https://', 'http://'];
+        foreach ($schemes as $scheme) {
+            try {
+                $url = "{$scheme}{$host}/_system/domain-ping";
+                $context = stream_context_create([
+                    'http' => [
+                        'timeout' => 4,
+                        'follow_location' => 1,
+                        'max_redirects' => 3,
+                        'ignore_errors' => true,
+                    ],
+                    'ssl' => [
+                        'verify_peer' => false,
+                        'verify_peer_name' => false,
+                    ]
+                ]);
+                $content = @file_get_contents($url, false, $context);
+                if ($content) {
+                    $json = @json_decode($content, true);
+                    if (isset($json['status']) && $json['status'] === 'ok' && isset($json['app']) && $json['app'] === 'newlink') {
+                        return true;
+                    }
+                }
+            } catch (\Exception $e) {
+                // continue to next scheme
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if an IP address belongs to Cloudflare Proxy network
+     */
+    public static function isCloudflareIp(string $ip): bool
+    {
+        $cfPrefixes = [
+            '104.16.', '104.17.', '104.18.', '104.19.', '104.20.', '104.21.', '104.22.', '104.23.', '104.24.', '104.25.', '104.26.', '104.27.', '104.28.', '104.29.', '104.30.', '104.31.',
+            '172.64.', '172.65.', '172.66.', '172.67.', '172.68.', '172.69.', '172.70.', '172.71.',
+            '108.162.', '190.93.', '188.114.', '197.234.', '198.41.', '162.158.', '173.245.'
+        ];
+
+        foreach ($cfPrefixes as $prefix) {
+            if (str_starts_with($ip, $prefix)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
