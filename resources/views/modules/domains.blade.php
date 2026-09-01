@@ -34,9 +34,12 @@
                 </div>
                 <div>
                     <h4 class="text-gray-900 fw-bolder fs-6 mb-1">Panduan Arahkan DNS Domain Anda</h4>
-                    <p class="text-gray-700 fs-7 mb-0">
+                    <p class="text-gray-700 fs-7 mb-1">
                         Buat <strong>A Record</strong> di penyedia DNS / Cloudflare Anda dan arahkan ke IP server:
                     </p>
+                    <span class="badge badge-light-info fw-semibold fs-8 py-1 px-2">
+                        <i class="ki-outline ki-time fs-8 text-info me-1"></i> Perubahan DNS / Cloudflare membutuhkan waktu propagasi 2 - 15 menit.
+                    </span>
                 </div>
             </div>
             <div class="d-flex align-items-center gap-2 bg-white px-4 py-2 rounded-3 border">
@@ -367,7 +370,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         statusEl.innerHTML = '<span class="badge badge-light-success fw-bold fs-8">Aktif</span>';
                     }
                     Swal.fire({
-                        text: data.message,
+                        html: data.message,
                         icon: "success",
                         buttonsStyling: false,
                         confirmButtonText: "OK",
@@ -376,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     badgeEl.innerHTML = '<span class="badge badge-light-warning fw-bold fs-8"><i class="ki-outline ki-information fs-8 text-warning me-1"></i> Belum Mengarah</span>';
                     Swal.fire({
-                        text: data.message,
+                        html: data.message,
                         icon: "warning",
                         buttonsStyling: false,
                         confirmButtonText: "Mengerti",

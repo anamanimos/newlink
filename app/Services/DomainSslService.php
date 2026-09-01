@@ -117,9 +117,28 @@ class DomainSslService
                 : "DNS A Record domain telah terverifikasi mengarah langsung ke server ini ({$serverIp}).";
         } else {
             if ($isCloudflare) {
-                $msg = "Domain terdeteksi menggunakan Cloudflare Proxy (" . implode(', ', $resolvedIps) . "), namun belum meneruskan traffic ke aplikasi di server ini. Pastikan di Cloudflare: A Record diarahkan ke IP {$serverIp}, dan menu SSL/TLS disetel ke mode 'Full'.";
+                $msg = "<div class='text-start fs-7'>"
+                     . "<p class='mb-2'>Domain terdeteksi menggunakan <strong>Cloudflare Proxy</strong> (<code>" . implode(', ', $resolvedIps) . "</code>), namun server belum dapat memverifikasi respons aplikasi dari domain ini.</p>"
+                     . "<div class='p-3 bg-light-warning rounded-3 border border-warning my-3'>"
+                     . "<div class='fw-bolder text-gray-900 mb-1'><i class='ki-outline ki-time fs-6 text-warning me-1'></i> Waktu Tunggu Propagasi:</div>"
+                     . "<div class='text-gray-700 fs-8 mb-2'>Perubahan DNS di Cloudflare membutuhkan waktu propagasi <strong>2 hingga 15 menit</strong>. Harap tunggu beberapa menit sebelum klik <em>Cek DNS</em> kembali.</div>"
+                     . "<div class='separator separator-dashed my-2'></div>"
+                     . "<div class='fw-bolder text-gray-900 mb-1'>Panduan Pengaturan di Cloudflare:</div>"
+                     . "<ol class='ps-4 mb-0 text-gray-700 fs-8'>"
+                     . "<li>Pastikan <strong>A Record</strong> diarahkan ke IP <code>{$serverIp}</code>.</li>"
+                     . "<li>Buka menu <strong>SSL/TLS</strong> di Cloudflare & ubah mode enkripsi ke <strong>Full</strong> atau <strong>Full (Strict)</strong>.</li>"
+                     . "<li><em>(Solusi Instan)</em> Ubah status Proxy menjadi <strong>DNS Only (Awan Abu-abu)</strong> agar verifikasi langsung terhubung ke server tanpa filter proxy.</li>"
+                     . "</ol>"
+                     . "</div>"
+                     . "</div>";
             } else {
-                $msg = "DNS domain belum mengarah ke server ini ({$serverIp}). Saat ini masih mengarah ke: " . (implode(', ', $resolvedIps) ?: 'Tidak ditemukan / DNS belum disetel') . ". Silakan arahkan A Record ke {$serverIp} di DNS / Cloudflare Anda.";
+                $msg = "<div class='text-start fs-7'>"
+                     . "<p class='mb-2'>DNS domain belum mengarah ke server ini (<code>{$serverIp}</code>). Saat ini masih mengarah ke: <code>" . (implode(', ', $resolvedIps) ?: 'Belum terdeteksi') . "</code>.</p>"
+                     . "<div class='p-3 bg-light-info rounded-3 border border-info my-3'>"
+                     . "<div class='fw-bolder text-gray-900 mb-1'><i class='ki-outline ki-time fs-6 text-info me-1'></i> Informasi Waktu Propagasi:</div>"
+                     . "<div class='text-gray-700 fs-8'>Jika Anda baru saja memperbarui DNS/A Record, proses propagasi global umumnya membutuhkan waktu <strong>5 hingga 30 menit</strong>. Silakan tunggu beberapa menit dan lakukan cek ulang.</div>"
+                     . "</div>"
+                     . "</div>";
             }
         }
 
@@ -141,11 +160,12 @@ class DomainSslService
         foreach ($schemes as $scheme) {
             try {
                 $url = "{$scheme}{$host}/_system/domain-ping";
-                $response = \Illuminate\Support\Facades\Http::timeout(5)
+                $response = \Illuminate\Support\Facades\Http::timeout(6)
                     ->withoutVerifying()
+                    ->withOptions(['verify' => false, 'allow_redirects' => true])
                     ->withHeaders([
                         'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                        'Accept' => 'application/json'
+                        'Accept' => 'application/json, text/plain, */*'
                     ])
                     ->get($url);
 
