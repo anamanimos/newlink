@@ -28,6 +28,12 @@ class DomainController extends Controller
         $currentDomainsCount = Domain::where('user_id', $user->id)->count();
         
         if ($domainLimit !== -1 && $currentDomainsCount >= $domainLimit) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Anda telah mencapai batas maksimum custom domain pada paket Anda.'
+                ], 422);
+            }
             return back()->with('error', 'You have reached your plan limit for custom domains.');
         }
 
@@ -37,7 +43,7 @@ class DomainController extends Controller
             'custom_not_found_url' => 'nullable|url|max:256',
         ]);
 
-        Domain::create([
+        $domain = Domain::create([
             'user_id' => $user->id,
             'scheme' => 'https://',
             'host' => strtolower(trim($request->host)),
@@ -46,6 +52,14 @@ class DomainController extends Controller
             'type' => 0, // 0 = Custom Domain
             'is_enabled' => 0, // Pending admin approval by default
         ]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Custom Domain berhasil dihubungkan. Menunggu persetujuan / verifikasi.',
+                'data' => $domain
+            ]);
+        }
 
         return back()->with('success', 'Domain added successfully. Waiting for admin approval.');
     }
@@ -64,13 +78,28 @@ class DomainController extends Controller
             'custom_not_found_url' => $request->custom_not_found_url,
         ]);
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Pengaturan domain berhasil diperbarui.',
+                'data' => $domain
+            ]);
+        }
+
         return back()->with('success', 'Domain updated successfully.');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $domain = Domain::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
         $domain->delete();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Domain berhasil dihapus.'
+            ]);
+        }
 
         return back()->with('success', 'Domain deleted successfully.');
     }

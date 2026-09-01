@@ -16,24 +16,6 @@
     </div>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success d-flex align-items-center p-4 mb-6 rounded-3 shadow-sm">
-        <i class="ki-outline ki-check-circle fs-2hx text-success me-4"></i>
-        <div class="d-flex flex-column">
-            <span class="fs-7 text-gray-900 fw-semibold">{{ session('success') }}</span>
-        </div>
-    </div>
-@endif
-
-@if(session('error'))
-    <div class="alert alert-danger d-flex align-items-center p-4 mb-6 rounded-3 shadow-sm">
-        <i class="ki-outline ki-information fs-2hx text-danger me-4"></i>
-        <div class="d-flex flex-column">
-            <span class="fs-7 text-gray-900 fw-semibold">{{ session('error') }}</span>
-        </div>
-    </div>
-@endif
-
 <!-- Top Stats Grid (4 Cards) -->
 <div class="row g-5 g-xl-8 mb-8">
     <!-- Total Plans -->
@@ -163,7 +145,7 @@
                                     @if($plan->slug !== 'free')
                                         <li><hr class="dropdown-divider my-1"></li>
                                         <li>
-                                            <form action="{{ route('admin.plans.destroy', $plan->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus paket {{ $plan->name }}? Seluruh pengguna pada paket ini akan otomatis dialihkan ke Free Plan.')">
+                                            <form class="ajax-delete-form" data-confirm-message="Apakah Anda yakin ingin menghapus paket {{ $plan->name }}? Seluruh pengguna pada paket ini akan otomatis dialihkan ke Free Plan." action="{{ route('admin.plans.destroy', $plan->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="dropdown-item py-2 px-4 text-danger">
@@ -366,7 +348,7 @@
                                         @if($plan->slug !== 'free')
                                             <li><hr class="dropdown-divider my-1"></li>
                                             <li>
-                                                <form action="{{ route('admin.plans.destroy', $plan->id) }}" method="POST" onsubmit="return confirm('Hapus paket {{ $plan->name }}?')">
+                                                <form class="ajax-delete-form" data-confirm-message="Apakah Anda yakin ingin menghapus paket {{ $plan->name }}? Seluruh pengguna pada paket ini akan dialihkan ke Free Plan." action="{{ route('admin.plans.destroy', $plan->id) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="dropdown-item py-2 px-4 text-danger">
@@ -398,7 +380,7 @@
                     <i class="ki-outline ki-cross fs-2"></i>
                 </div>
             </div>
-            <form method="POST" action="{{ route('admin.plans.store') }}">
+            <form class="ajax-form" method="POST" action="{{ route('admin.plans.store') }}">
                 @csrf
                 <div class="modal-body py-6 px-lg-8">
                     <div class="row g-5">
@@ -574,7 +556,7 @@
                         <i class="ki-outline ki-cross fs-2"></i>
                     </div>
                 </div>
-                <form method="POST" action="{{ route('admin.plans.update', $plan->id) }}">
+                <form class="ajax-form" method="POST" action="{{ route('admin.plans.update', $plan->id) }}">
                     @csrf
                     @method('PUT')
                     <div class="modal-body py-6 px-lg-8">

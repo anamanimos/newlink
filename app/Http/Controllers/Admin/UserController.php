@@ -79,7 +79,7 @@ class UserController extends Controller
             'plan_expiration_date' => 'nullable|date',
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -90,6 +90,14 @@ class UserController extends Controller
             'email_verified_at' => now(),
             'timezone' => config('app.timezone', 'Asia/Jakarta'),
         ]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Pengguna ' . $user->name . ' berhasil dibuat!',
+                'data' => $user
+            ]);
+        }
 
         return back()->with('success', 'User berhasil dibuat!');
     }
@@ -123,17 +131,38 @@ class UserController extends Controller
 
         $user->update($data);
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Pengguna ' . $user->name . ' berhasil diperbarui!',
+                'data' => $user
+            ]);
+        }
+
         return back()->with('success', 'User berhasil diperbarui!');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         if (Auth::id() == $id) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Anda tidak dapat menghapus akun Anda sendiri!'
+                ], 422);
+            }
             return back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri!');
         }
 
         $user = User::findOrFail($id);
         $user->delete();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Pengguna berhasil dihapus!'
+            ]);
+        }
 
         return back()->with('success', 'User berhasil dihapus!');
     }

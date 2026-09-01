@@ -22,7 +22,7 @@ class DomainController extends Controller
             'custom_not_found_url' => 'nullable|url|max:256',
         ]);
 
-        Domain::create([
+        $domain = Domain::create([
             'user_id' => null, // System domains don't belong to a specific user
             'scheme' => 'https://',
             'host' => strtolower(trim($request->host)),
@@ -31,6 +31,14 @@ class DomainController extends Controller
             'type' => 1, // 1 = System Domain
             'is_enabled' => 1, // System domains are active by default
         ]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'System Domain berhasil ditambahkan.',
+                'data' => $domain
+            ]);
+        }
 
         return back()->with('success', 'System Domain added successfully.');
     }
@@ -51,13 +59,28 @@ class DomainController extends Controller
             'custom_not_found_url' => $request->custom_not_found_url,
         ]);
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Domain berhasil diperbarui.',
+                'data' => $domain
+            ]);
+        }
+
         return back()->with('success', 'Domain updated successfully.');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $domain = Domain::findOrFail($id);
         $domain->delete();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Domain berhasil dihapus.'
+            ]);
+        }
 
         return back()->with('success', 'Domain deleted successfully.');
     }

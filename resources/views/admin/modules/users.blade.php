@@ -63,24 +63,6 @@
     </div>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success d-flex align-items-center p-4 mb-6 rounded-3 shadow-sm">
-        <i class="ki-outline ki-check-circle fs-2hx text-success me-4"></i>
-        <div class="d-flex flex-column">
-            <span class="fs-7 text-gray-900 fw-semibold">{{ session('success') }}</span>
-        </div>
-    </div>
-@endif
-
-@if(session('error'))
-    <div class="alert alert-danger d-flex align-items-center p-4 mb-6 rounded-3 shadow-sm">
-        <i class="ki-outline ki-information fs-2hx text-danger me-4"></i>
-        <div class="d-flex flex-column">
-            <span class="fs-7 text-gray-900 fw-semibold">{{ session('error') }}</span>
-        </div>
-    </div>
-@endif
-
 <!-- Users Table Card -->
 <div class="card card-flush shadow-sm border-0 mb-6">
     
@@ -288,7 +270,7 @@
                                         </li>
                                         @if(auth()->id() !== $user->id)
                                             <li class="menu-item px-3">
-                                                <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="w-100" onsubmit="return confirm('Apakah Anda yakin ingin menghapus user ini beserta seluruh datanya?');">
+                                                <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="w-100 ajax-delete-form" data-confirm-message="Apakah Anda yakin ingin menghapus user {{ $user->name }} beserta seluruh datanya?">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="dropdown-item menu-link px-3 bg-transparent border-0 text-start w-100 text-danger">
@@ -314,7 +296,7 @@
                                             <i class="ki-outline ki-cross fs-2"></i>
                                         </div>
                                     </div>
-                                    <form action="{{ route('admin.users.update', $user->id) }}" method="POST">
+                                    <form class="ajax-form" action="{{ route('admin.users.update', $user->id) }}" method="POST">
                                         @csrf
                                         @method('PUT')
                                         <div class="modal-body py-6 px-lg-8">
@@ -408,7 +390,7 @@
                     <i class="ki-outline ki-cross fs-2"></i>
                 </div>
             </div>
-            <form action="{{ route('admin.users.store') }}" method="POST">
+            <form class="ajax-form" action="{{ route('admin.users.store') }}" method="POST">
                 @csrf
                 <div class="modal-body py-6 px-lg-8">
                     <div class="row g-5">

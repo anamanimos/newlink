@@ -358,34 +358,6 @@
                         <!-- Content -->
                         <div id="kt_app_content" class="app-content flex-column-fluid py-3 py-lg-6">
                             <div id="kt_app_content_container" class="app-container container-fluid px-lg-10">
-                                
-                                <!-- Global Flash Messages / Alerts -->
-                                @if(session('success'))
-                                    <div class="alert alert-success d-flex align-items-center p-4 mb-6 rounded-3">
-                                        <i class="ki-outline ki-check-circle fs-2hx text-success me-4"></i>
-                                        <div class="d-flex flex-column">
-                                            <h5 class="mb-1 text-success fw-bold">Success</h5>
-                                            <span class="fs-7 text-gray-800">{{ session('success') }}</span>
-                                        </div>
-                                        <button type="button" class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto" data-bs-dismiss="alert">
-                                            <i class="ki-outline ki-cross fs-1 text-success"></i>
-                                        </button>
-                                    </div>
-                                @endif
-
-                                @if(session('error'))
-                                    <div class="alert alert-danger d-flex align-items-center p-4 mb-6 rounded-3">
-                                        <i class="ki-outline ki-cross-circle fs-2hx text-danger me-4"></i>
-                                        <div class="d-flex flex-column">
-                                            <h5 class="mb-1 text-danger fw-bold">Error</h5>
-                                            <span class="fs-7 text-gray-800">{{ session('error') }}</span>
-                                        </div>
-                                        <button type="button" class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto" data-bs-dismiss="alert">
-                                            <i class="ki-outline ki-cross fs-1 text-danger"></i>
-                                        </button>
-                                    </div>
-                                @endif
-
                                 @yield('content')
                             </div>
                         </div>
@@ -416,6 +388,204 @@
     <script>var hostUrl = "{{ asset('assets/') }}/";</script>
     <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
     <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
+
+    <!-- Global SweetAlert2 & AJAX Form Handler -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 1. Session Flash Messages via SweetAlert2
+            @if(session('success'))
+                Swal.fire({
+                    text: @json(session('success')),
+                    icon: "success",
+                    buttonsStyling: false,
+                    confirmButtonText: "OK",
+                    customClass: {
+                        confirmButton: "btn btn-primary btn-sm"
+                    }
+                });
+            @endif
+
+            @if(session('error'))
+                Swal.fire({
+                    text: @json(session('error')),
+                    icon: "error",
+                    buttonsStyling: false,
+                    confirmButtonText: "OK",
+                    customClass: {
+                        confirmButton: "btn btn-danger btn-sm"
+                    }
+                });
+            @endif
+
+            // 2. Global AJAX Form Submitter for forms with .ajax-form or [data-ajax="true"]
+            document.addEventListener('submit', function (e) {
+                var form = e.target;
+                if (!form || (!form.classList.contains('ajax-form') && form.dataset.ajax !== 'true')) {
+                    return;
+                }
+
+                e.preventDefault();
+
+                var submitBtn = form.querySelector('button[type="submit"]');
+                var origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Menyimpan...';
+                }
+
+                var formData = new FormData(form);
+                var url = form.action || window.location.href;
+                var method = (form.method || 'POST').toUpperCase();
+                var csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';
+
+                fetch(url, {
+                    method: method,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                })
+                .then(function(res) {
+                    return res.json().then(function(data) {
+                        return { status: res.status, ok: res.ok, data: data };
+                    });
+                })
+                .then(function(response) {
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = origBtnHtml;
+                    }
+
+                    if (response.ok && response.data.success !== false) {
+                        // Close any modal that contains this form
+                        var modalEl = form.closest('.modal');
+                        if (modalEl && typeof bootstrap !== 'undefined') {
+                            var modalInstance = bootstrap.Modal.getInstance(modalEl);
+                            if (modalInstance) modalInstance.hide();
+                        }
+
+                        Swal.fire({
+                            text: response.data.message || "Data berhasil disimpan.",
+                            icon: "success",
+                            buttonsStyling: false,
+                            confirmButtonText: "OK",
+                            customClass: {
+                                confirmButton: "btn btn-primary btn-sm"
+                            }
+                        }).then(function() {
+                            if (response.data.redirect) {
+                                window.location.href = response.data.redirect;
+                            } else {
+                                window.location.reload();
+                            }
+                        });
+                    } else {
+                        var errMsg = response.data.message || "Terjadi kesalahan saat memproses data.";
+                        if (response.data.errors) {
+                            var errList = [];
+                            for (var k in response.data.errors) {
+                                errList.push(response.data.errors[k].join(', '));
+                            }
+                            errMsg = errList.join('\n');
+                        }
+
+                        Swal.fire({
+                            text: errMsg,
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "OK",
+                            customClass: {
+                                confirmButton: "btn btn-danger btn-sm"
+                            }
+                        });
+                    }
+                })
+                .catch(function(err) {
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = origBtnHtml;
+                    }
+                    Swal.fire({
+                        text: "Koneksi gagal atau terjadi error pada server: " + err.message,
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "OK",
+                        customClass: {
+                            confirmButton: "btn btn-danger btn-sm"
+                        }
+                    });
+                });
+            });
+
+            // 3. Global AJAX Delete Confirmation for .ajax-delete-form or [data-ajax-delete]
+            document.addEventListener('submit', function (e) {
+                var form = e.target;
+                if (!form || (!form.classList.contains('ajax-delete-form') && form.dataset.ajaxDelete !== 'true')) {
+                    return;
+                }
+
+                e.preventDefault();
+
+                Swal.fire({
+                    text: form.dataset.confirmMessage || "Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonText: "Ya, Hapus!",
+                    cancelButtonText: "Batal",
+                    customClass: {
+                        confirmButton: "btn btn-danger btn-sm",
+                        cancelButton: "btn btn-light btn-sm"
+                    }
+                }).then(function (result) {
+                    if (result.isConfirmed) {
+                        var formData = new FormData(form);
+                        var url = form.action || window.location.href;
+                        var method = (form.method || 'POST').toUpperCase();
+                        var csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';
+
+                        fetch(url, {
+                            method: method,
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: formData
+                        })
+                        .then(function (res) { return res.json(); })
+                        .then(function (data) {
+                            Swal.fire({
+                                text: data.message || "Data berhasil dihapus.",
+                                icon: "success",
+                                buttonsStyling: false,
+                                confirmButtonText: "OK",
+                                customClass: {
+                                    confirmButton: "btn btn-primary btn-sm"
+                                }
+                            }).then(function () {
+                                window.location.reload();
+                            });
+                        })
+                        .catch(function (err) {
+                            Swal.fire({
+                                text: "Gagal menghapus data: " + err.message,
+                                icon: "error",
+                                buttonsStyling: false,
+                                confirmButtonText: "OK",
+                                customClass: {
+                                    confirmButton: "btn btn-danger btn-sm"
+                                }
+                            });
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 
     @stack('scripts')
     @yield('scripts')

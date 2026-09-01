@@ -13,28 +13,6 @@
     </div>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success d-flex align-items-center p-4 mb-6 rounded-3 shadow-sm">
-        <i class="ki-outline ki-check-circle fs-2hx text-success me-4"></i>
-        <div class="d-flex flex-column">
-            <span class="fs-7 text-gray-900 fw-semibold">{{ session('success') }}</span>
-        </div>
-    </div>
-@endif
-
-@if($errors->any())
-    <div class="alert alert-danger d-flex align-items-center p-4 mb-6 rounded-3 shadow-sm">
-        <i class="ki-outline ki-cross-circle fs-2hx text-danger me-4"></i>
-        <div class="d-flex flex-column">
-            <ul class="mb-0 ps-3">
-                @foreach($errors->all() as $error)
-                    <li class="fs-7 text-gray-900 fw-semibold">{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    </div>
-@endif
-
 <div class="row g-6 g-xl-9">
     <!-- Left Navigation Column -->
     <div class="col-12 col-lg-4 col-xl-3">
@@ -90,7 +68,7 @@
     <div class="col-12 col-lg-8 col-xl-9">
         <div class="card card-flush shadow-sm border-0 mb-6">
             <div class="card-body p-6 p-lg-8">
-                <form method="POST" action="{{ route('admin.settings.update', $tab) }}" enctype="multipart/form-data">
+                <form class="ajax-form" method="POST" action="{{ route('admin.settings.update', $tab) }}" enctype="multipart/form-data">
                     @csrf
                     
                     @if(view()->exists('admin.modules.settings_tabs.' . $tab))

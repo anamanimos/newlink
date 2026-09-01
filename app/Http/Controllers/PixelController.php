@@ -48,12 +48,20 @@ class PixelController extends Controller
             'pixel' => 'required|string|max:64',
         ]);
 
-        Pixel::create([
+        $pixel = Pixel::create([
             'user_id' => Auth::id(),
             'name' => $request->name,
             'type' => $request->type,
             'pixel' => trim($request->pixel),
         ]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Tracking Pixel berhasil ditambahkan!',
+                'data' => $pixel
+            ]);
+        }
 
         return back()->with('success', 'Tracking Pixel berhasil ditambahkan!');
     }
@@ -74,13 +82,28 @@ class PixelController extends Controller
             'pixel' => trim($request->pixel),
         ]);
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Tracking Pixel berhasil diperbarui!',
+                'data' => $pixel
+            ]);
+        }
+
         return back()->with('success', 'Tracking Pixel berhasil diperbarui!');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $pixel = Pixel::where('user_id', Auth::id())->findOrFail($id);
         $pixel->delete();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Tracking Pixel berhasil dihapus!'
+            ]);
+        }
 
         return back()->with('success', 'Tracking Pixel berhasil dihapus!');
     }

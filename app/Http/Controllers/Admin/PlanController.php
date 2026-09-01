@@ -70,7 +70,7 @@ class PlanController extends Controller
 
         $nextOrder = (Plan::max('order') ?? 0) + 1;
 
-        Plan::create([
+        $plan = Plan::create([
             'name' => $request->name,
             'slug' => $slug,
             'description' => $request->description,
@@ -84,6 +84,14 @@ class PlanController extends Controller
             'order' => $nextOrder,
             'is_enabled' => $request->has('is_enabled') ? 1 : 0,
         ]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Paket langganan ' . $plan->name . ' berhasil dibuat.',
+                'data' => $plan
+            ]);
+        }
 
         return redirect()->route('admin.plans')->with('success', 'Paket langganan baru berhasil dibuat.');
     }
@@ -128,14 +136,28 @@ class PlanController extends Controller
             'is_enabled' => $request->has('is_enabled') ? 1 : 0,
         ]);
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Paket ' . $plan->name . ' berhasil diperbarui.',
+                'data' => $plan
+            ]);
+        }
+
         return redirect()->route('admin.plans')->with('success', 'Paket ' . $plan->name . ' berhasil diperbarui.');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $plan = Plan::findOrFail($id);
 
         if ($plan->slug === 'free') {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Paket Free adalah paket bawaan sistem dan tidak dapat dihapus.'
+                ], 422);
+            }
             return redirect()->route('admin.plans')->with('error', 'Paket Free adalah paket bawaan sistem dan tidak dapat dihapus.');
         }
 
@@ -143,6 +165,13 @@ class PlanController extends Controller
         User::where('plan_id', $plan->slug)->update(['plan_id' => 'free']);
 
         $plan->delete();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Paket berhasil dihapus dan pengguna terkait telah dialihkan ke Free Plan.'
+            ]);
+        }
 
         return redirect()->route('admin.plans')->with('success', 'Paket berhasil dihapus dan pengguna terkait telah dialihkan ke Free Plan.');
     }

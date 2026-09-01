@@ -16,15 +16,6 @@
     </div>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success d-flex align-items-center p-4 mb-6 rounded-3 shadow-sm">
-        <i class="ki-outline ki-check-circle fs-2hx text-success me-4"></i>
-        <div class="d-flex flex-column">
-            <span class="fs-7 text-gray-900 fw-semibold">{{ session('success') }}</span>
-        </div>
-    </div>
-@endif
-
 <div class="row g-6 g-xl-9">
     <!-- Left Column: 3 Columns Statistics & Guide -->
     <div class="col-12 col-lg-4 col-xl-3">
@@ -169,54 +160,54 @@
                                         <button class="btn btn-sm btn-icon btn-light-primary me-1" data-bs-toggle="modal" data-bs-target="#editPixelModal{{ $pixel->id }}" title="Edit Pixel">
                                             <i class="ki-outline ki-pencil fs-5"></i>
                                         </button>
-                                        <form action="{{ route('pixels.destroy', $pixel->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tracking pixel ini?');">
+                                        <form action="{{ route('pixels.destroy', $pixel->id) }}" method="POST" class="d-inline ajax-delete-form" data-confirm-message="Apakah Anda yakin ingin menghapus tracking pixel {{ $pixel->name }}?">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-icon btn-light-danger" title="Delete Pixel">
+                                            <button type="submit" class="btn btn-icon btn-sm btn-light-danger" title="Hapus Pixel">
                                                 <i class="ki-outline ki-trash fs-5"></i>
                                             </button>
                                         </form>
                                     </td>
                                 </tr>
 
-                                <!-- Edit Modal -->
+                                <!-- Edit Pixel Modal -->
                                 <div class="modal fade" id="editPixelModal{{ $pixel->id }}" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content rounded-3 border-0 shadow-lg">
                                             <div class="modal-header pb-0 border-0 justify-content-between">
-                                                <h3 class="modal-title fw-bold text-gray-900">
-                                                    <i class="ki-outline ki-pencil fs-3 text-primary me-2"></i> Edit Tracking Pixel
-                                                </h3>
+                                                <h3 class="modal-title fw-bold text-gray-900">Edit Tracking Pixel</h3>
                                                 <div class="btn btn-sm btn-icon btn-active-light-primary" data-bs-dismiss="modal">
                                                     <i class="ki-outline ki-cross fs-2"></i>
                                                 </div>
                                             </div>
-                                            <form action="{{ route('pixels.update', $pixel->id) }}" method="POST">
+                                            <form class="ajax-form" action="{{ route('pixels.update', $pixel->id) }}" method="POST">
                                                 @csrf
                                                 @method('PUT')
                                                 <div class="modal-body py-6 px-lg-8">
                                                     <div class="fv-row mb-5">
-                                                        <label class="form-label fs-7 fw-semibold text-gray-900 required">Platform Provider</label>
+                                                        <label class="form-label fs-7 fw-semibold text-gray-900 required">Nama Pixel</label>
+                                                        <input type="text" name="name" class="form-control form-control-solid form-control-sm" value="{{ $pixel->name }}" required />
+                                                    </div>
+
+                                                    <div class="fv-row mb-5">
+                                                        <label class="form-label fs-7 fw-semibold text-gray-900 required">Platform</label>
                                                         <select name="type" class="form-select form-select-solid form-select-sm" required>
-                                                            @foreach($supportedPlatforms as $pKey => $pData)
-                                                                <option value="{{ $pKey }}" {{ $pixel->type == $pKey ? 'selected' : '' }}>
-                                                                    {{ $pData['name'] }}
+                                                            @foreach($supportedPlatforms as $typeKey => $platform)
+                                                                <option value="{{ $typeKey }}" {{ $pixel->type === $typeKey ? 'selected' : '' }}>
+                                                                    {{ $platform['name'] }}
                                                                 </option>
                                                             @endforeach
                                                         </select>
                                                     </div>
-                                                    <div class="fv-row mb-5">
-                                                        <label class="form-label fs-7 fw-semibold text-gray-900 required">Pixel Name</label>
-                                                        <input type="text" name="name" class="form-control form-control-solid form-control-sm" value="{{ $pixel->name }}" required placeholder="e.g. Main Facebook Pixel" />
-                                                    </div>
+
                                                     <div class="fv-row mb-2">
-                                                        <label class="form-label fs-7 fw-semibold text-gray-900 required">Pixel / Tag ID</label>
-                                                        <input type="text" name="pixel" class="form-control form-control-solid form-control-sm font-monospace" value="{{ $pixel->pixel }}" required placeholder="Enter pixel ID" />
+                                                        <label class="form-label fs-7 fw-semibold text-gray-900 required">Pixel ID / Tag ID</label>
+                                                        <input type="text" name="pixel" class="form-control form-control-solid form-control-sm font-monospace" value="{{ $pixel->pixel }}" required />
                                                     </div>
                                                 </div>
-                                                <div class="modal-footer border-0 pt-0 px-lg-8 pb-6">
-                                                    <button type="button" class="btn btn-sm btn-light fw-bold" data-bs-dismiss="modal">Cancel</button>
-                                                    <button type="submit" class="btn btn-sm btn-primary fw-bold">Save Changes</button>
+                                                <div class="modal-footer border-0 pt-0 px-lg-8 pb-6 justify-content-between">
+                                                    <button type="button" class="btn btn-light btn-sm fw-bold" data-bs-dismiss="modal">Batal</button>
+                                                    <button type="submit" class="btn btn-primary btn-sm fw-bold">Simpan Perubahan</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -224,14 +215,6 @@
                                 </div>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="text-center py-12 text-muted">
-                                        <div class="symbol symbol-65px symbol-circle bg-light-primary mb-4 d-inline-flex align-items-center justify-content-center">
-                                            <i class="ki-outline ki-radar fs-2x text-primary"></i>
-                                        </div>
-                                        <h5 class="fs-6 fw-bold text-gray-800 mb-1">No tracking pixels found</h5>
-                                        <p class="fs-7 text-muted mb-5">Connect Facebook, Google, or TikTok pixels to retarget visitors and track ad events.</p>
-                                        <button class="btn btn-sm btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#createPixelModal">
-                                            <i class="ki-outline ki-plus fs-4 me-1"></i> Add Your First Pixel
                                         </button>
                                     </td>
                                 </tr>
@@ -265,7 +248,7 @@
                     <i class="ki-outline ki-cross fs-2"></i>
                 </div>
             </div>
-            <form action="{{ route('pixels.store') }}" method="POST">
+            <form class="ajax-form" action="{{ route('pixels.store') }}" method="POST">
                 @csrf
                 <div class="modal-body py-6 px-lg-8">
                     <div class="fv-row mb-5">

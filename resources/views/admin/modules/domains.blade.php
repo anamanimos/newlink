@@ -13,28 +13,6 @@
     </button>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success d-flex align-items-center p-4 mb-6 rounded-3 shadow-sm">
-        <i class="ki-outline ki-check-circle fs-2hx text-success me-4"></i>
-        <div class="d-flex flex-column">
-            <span class="fs-7 text-gray-900 fw-semibold">{{ session('success') }}</span>
-        </div>
-    </div>
-@endif
-
-@if($errors->any())
-    <div class="alert alert-danger d-flex align-items-center p-4 mb-6 rounded-3 shadow-sm">
-        <i class="ki-outline ki-cross-circle fs-2hx text-danger me-4"></i>
-        <div class="d-flex flex-column">
-            <ul class="mb-0 ps-3">
-                @foreach($errors->all() as $error)
-                    <li class="fs-7 text-gray-900 fw-semibold">{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    </div>
-@endif
-
 @php
     $serverIp = \App\Services\DomainSslService::getServerIp();
 @endphp
@@ -184,7 +162,7 @@
                                             <i class="ki-outline ki-cross fs-1"></i>
                                         </div>
                                     </div>
-                                    <form action="{{ route('admin.domains.update', $domain->id) }}" method="POST">
+                                    <form class="ajax-form" action="{{ route('admin.domains.update', $domain->id) }}" method="POST">
                                         @csrf
                                         @method('PUT')
                                         <div class="modal-body py-6 px-lg-8">
@@ -231,7 +209,7 @@
                                         <i class="ki-outline ki-information-5 fs-4x text-danger mb-3"></i>
                                         <h4 class="fw-bold text-gray-900 mb-2">Hapus Domain?</h4>
                                         <p class="text-gray-600 fs-7 mb-5">Apakah Anda yakin ingin menghapus domain <strong>{{ $domain->host }}</strong>?</p>
-                                        <form action="{{ route('admin.domains.destroy', $domain->id) }}" method="POST">
+                                        <form class="ajax-delete-form" action="{{ route('admin.domains.destroy', $domain->id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <div class="d-flex gap-2">
@@ -267,7 +245,7 @@
                     <i class="ki-outline ki-cross fs-1"></i>
                 </div>
             </div>
-            <form action="{{ route('admin.domains.store') }}" method="POST">
+            <form class="ajax-form" action="{{ route('admin.domains.store') }}" method="POST">
                 @csrf
                 <div class="modal-body py-6 px-lg-8">
                     <div class="fv-row mb-5">
@@ -314,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '{{ csrf_token() }}';
 
-    // AJAX Check DNS
+    // AJAX Check DNS with SweetAlert2
     document.querySelectorAll('.btn-check-dns').forEach(function (btn) {
         btn.addEventListener('click', function () {
             var domainId = this.dataset.id;
@@ -330,7 +308,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
                 }
             })
             .then(function(res) { return res.json(); })
@@ -341,21 +320,39 @@ document.addEventListener('DOMContentLoaded', function () {
                 var badgeEl = document.getElementById('dns-badge-' + domainId);
                 if (data.success) {
                     badgeEl.innerHTML = '<span class="badge badge-light-success fw-bold fs-8"><i class="ki-outline ki-check-circle fs-8 text-success me-1"></i> Terverifikasi</span>';
-                    alert('✅ Sukses: ' + data.message);
+                    Swal.fire({
+                        text: data.message,
+                        icon: "success",
+                        buttonsStyling: false,
+                        confirmButtonText: "OK",
+                        customClass: { confirmButton: "btn btn-primary btn-sm" }
+                    });
                 } else {
                     badgeEl.innerHTML = '<span class="badge badge-light-warning fw-bold fs-8"><i class="ki-outline ki-information fs-8 text-warning me-1"></i> Belum Mengarah</span>';
-                    alert('⚠️ ' + data.message);
+                    Swal.fire({
+                        text: data.message,
+                        icon: "warning",
+                        buttonsStyling: false,
+                        confirmButtonText: "Mengerti",
+                        customClass: { confirmButton: "btn btn-warning btn-sm" }
+                    });
                 }
             })
             .catch(function(err) {
                 button.disabled = false;
                 button.innerHTML = origHtml;
-                alert('Gagal memeriksa DNS: ' + err.message);
+                Swal.fire({
+                    text: 'Gagal memeriksa DNS: ' + err.message,
+                    icon: "error",
+                    buttonsStyling: false,
+                    confirmButtonText: "Tutup",
+                    customClass: { confirmButton: "btn btn-danger btn-sm" }
+                });
             });
         });
     });
 
-    // AJAX Provision SSL
+    // AJAX Provision SSL with SweetAlert2
     document.querySelectorAll('.btn-provision-ssl').forEach(function (btn) {
         btn.addEventListener('click', function () {
             var domainId = this.dataset.id;
@@ -363,42 +360,72 @@ document.addEventListener('DOMContentLoaded', function () {
             var origHtml = this.innerHTML;
             var button = this;
 
-            if (!confirm('Jalankan proses penerbitan sertifikat SSL (HTTPS) otomatis untuk domain ini?')) {
-                return;
-            }
-
-            button.disabled = true;
-            button.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Memasang SSL...';
-
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json'
+            Swal.fire({
+                text: 'Jalankan proses penerbitan sertifikat SSL (HTTPS Let\'s Encrypt) otomatis untuk domain ini?',
+                icon: 'question',
+                showCancelButton: true,
+                buttonsStyling: false,
+                confirmButtonText: 'Ya, Pasang SSL',
+                cancelButtonText: 'Batal',
+                customClass: {
+                    confirmButton: 'btn btn-primary btn-sm',
+                    cancelButton: 'btn btn-light btn-sm'
                 }
-            })
-            .then(function(res) { return res.json(); })
-            .then(function(data) {
-                button.disabled = false;
-                button.innerHTML = origHtml;
+            }).then(function (result) {
+                if (!result.isConfirmed) return;
 
-                var badgeEl = document.getElementById('ssl-badge-' + domainId);
-                var statusEl = document.getElementById('domain-status-badge-' + domainId);
+                button.disabled = true;
+                button.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Memasang SSL...';
 
-                if (data.success) {
-                    badgeEl.innerHTML = '<span class="badge badge-light-success fw-bold fs-8"><i class="ki-outline ki-shield-tick fs-8 text-success me-1"></i> HTTPS Aktif 🔒</span>';
-                    if (statusEl) statusEl.innerHTML = '<span class="badge badge-light-success fw-bold fs-8">Aktif</span>';
-                    alert('🔒 ' + data.message);
-                } else {
-                    badgeEl.innerHTML = '<span class="badge badge-light-danger fw-bold fs-8"><i class="ki-outline ki-shield-cross fs-8 text-danger me-1"></i> SSL Gagal</span>';
-                    alert('❌ ' + data.message);
-                }
-            })
-            .catch(function(err) {
-                button.disabled = false;
-                button.innerHTML = origHtml;
-                alert('Gagal memasang SSL: ' + err.message);
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    button.disabled = false;
+                    button.innerHTML = origHtml;
+
+                    var badgeEl = document.getElementById('ssl-badge-' + domainId);
+                    var statusEl = document.getElementById('domain-status-badge-' + domainId);
+
+                    if (data.success) {
+                        badgeEl.innerHTML = '<span class="badge badge-light-success fw-bold fs-8"><i class="ki-outline ki-shield-tick fs-8 text-success me-1"></i> HTTPS Aktif 🔒</span>';
+                        if (statusEl) statusEl.innerHTML = '<span class="badge badge-light-success fw-bold fs-8">Aktif</span>';
+                        Swal.fire({
+                            text: data.message,
+                            icon: "success",
+                            buttonsStyling: false,
+                            confirmButtonText: "OK",
+                            customClass: { confirmButton: "btn btn-primary btn-sm" }
+                        });
+                    } else {
+                        badgeEl.innerHTML = '<span class="badge badge-light-danger fw-bold fs-8"><i class="ki-outline ki-shield-cross fs-8 text-danger me-1"></i> SSL Gagal</span>';
+                        Swal.fire({
+                            text: data.message,
+                            icon: "error",
+                            buttonsStyling: false,
+                            confirmButtonText: "Tutup",
+                            customClass: { confirmButton: "btn btn-danger btn-sm" }
+                        });
+                    }
+                })
+                .catch(function(err) {
+                    button.disabled = false;
+                    button.innerHTML = origHtml;
+                    Swal.fire({
+                        text: 'Gagal memasang SSL: ' + err.message,
+                        icon: "error",
+                        buttonsStyling: false,
+                        confirmButtonText: "Tutup",
+                        customClass: { confirmButton: "btn btn-danger btn-sm" }
+                    });
+                });
             });
         });
     });

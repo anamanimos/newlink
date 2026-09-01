@@ -134,6 +134,13 @@ class AdminController extends Controller
             \App\Models\Setting::set($tab, $data);
         }
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => ucfirst(str_replace('-', ' ', $tab)) . ' settings berhasil diperbarui.'
+            ]);
+        }
+
         return back()->with('success', ucfirst(str_replace('-', ' ', $tab)) . ' settings updated successfully.');
     }
 
