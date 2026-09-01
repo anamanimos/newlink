@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', 'WhatsApp Link Generator')
 
@@ -141,12 +141,12 @@
                     <div>
                         <span class="fs-8 text-muted d-block mb-2 fw-semibold">Gunakan Tautan Ini Di Platform NewLink:</span>
                         <div class="d-flex gap-2">
-                            <a id="btnCreateShortlink" href="{{ route('links.index') }}" class="btn btn-light-info btn-xs fw-semibold flex-grow-1">
+                            <button type="button" id="btnCreateShortlink" class="btn btn-light-info btn-xs fw-semibold flex-grow-1">
                                 <i class="ki-outline ki-disconnect fs-7 me-1"></i> Buat Short Link
-                            </a>
-                            <a href="{{ route('warotators.create') }}" class="btn btn-light-success btn-xs fw-semibold flex-grow-1">
+                            </button>
+                            <button type="button" id="btnCreateWaRotator" class="btn btn-light-success btn-xs fw-semibold flex-grow-1">
                                 <i class="ki-outline ki-whatsapp fs-7 me-1"></i> Buat WA Rotator
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -172,6 +172,79 @@
                     </p>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Create Shortlink for WA -->
+<div class="modal fade" id="createShortlinkModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-3 border-0 shadow-lg">
+            <div class="modal-header pb-0 border-0 justify-content-between">
+                <h3 class="modal-title fw-bold text-gray-900">
+                    <i class="ki-outline ki-disconnect fs-2 text-primary me-2"></i> Buat Short Link WhatsApp
+                </h3>
+                <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                    <i class="ki-outline ki-cross fs-1"></i>
+                </div>
+            </div>
+            <form action="{{ route('links.store') }}" method="POST" class="ajax-form">
+                @csrf
+                <div class="modal-body py-6 px-lg-8">
+                    <!-- Destination URL -->
+                    <div class="fv-row mb-5">
+                        <label class="form-label fs-7 fw-semibold text-gray-900 required">Target URL WhatsApp</label>
+                        <div class="position-relative">
+                            <i class="ki-outline ki-whatsapp fs-3 position-absolute ms-4 top-50 translate-middle-y text-success"></i>
+                            <input type="url" name="location_url" id="shortlinkLocationUrl" class="form-control form-control-solid ps-12" required readonly />
+                        </div>
+                    </div>
+
+                    <!-- Custom Domain -->
+                    <div class="fv-row mb-5">
+                        <label class="form-label fs-7 fw-semibold text-gray-900">Domain</label>
+                        <select name="domain_id" id="shortlink_domain_id" class="form-select form-select-solid">
+                            <option value="0" selected>Default Domain ({{ parse_url(url('/'), PHP_URL_HOST) }})</option>
+                            @if(isset($domains))
+                                @foreach($domains as $domain)
+                                    <option value="{{ $domain->id }}">{{ $domain->host }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+
+                    <!-- Custom Alias Path -->
+                    <div class="fv-row mb-5">
+                        <label class="form-label fs-7 fw-semibold text-gray-900">Custom Alias (Opsional)</label>
+                        <div class="input-group input-group-solid">
+                            <span class="input-group-text text-gray-600 fw-bold fs-8" id="shortlink_domain_prefix">
+                                {{ parse_url(url('/'), PHP_URL_HOST) }}/
+                            </span>
+                            <input type="text" name="url" id="shortlink_url" class="form-control form-control-solid" placeholder="contoh: order-wa, cs-1" />
+                        </div>
+                        <div class="form-text text-muted fs-8">Kosongkan jika ingin generate alias acak otomatis.</div>
+                    </div>
+
+                    <!-- Project -->
+                    <div class="fv-row mb-2">
+                        <label class="form-label fs-7 fw-semibold text-gray-900">Project</label>
+                        <select name="project_id" class="form-select form-select-solid">
+                            <option value="" selected>Tanpa Project</option>
+                            @if(isset($projects))
+                                @foreach($projects as $project)
+                                    <option value="{{ $project->id }}">{{ $project->name }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0 px-lg-8 pb-6">
+                    <button type="button" class="btn btn-light btn-sm fw-bold" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-sm fw-bold">
+                        <i class="ki-outline ki-check-circle fs-4 me-1"></i> Simpan Short Link
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -283,6 +356,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 a.click();
                 document.body.removeChild(a);
             });
+    });
+
+    // 1. Interactive "Buat Short Link" Modal Handler
+    document.getElementById('btnCreateShortlink').addEventListener('click', function() {
+        if (!urlOutput.value) {
+            Swal.fire({ text: 'Masukkan nomor WhatsApp terlebih dahulu!', icon: 'warning', confirmButtonText: 'OK', buttonsStyling: false, customClass: { confirmButton: 'btn btn-primary btn-sm' } });
+            return;
+        }
+
+        document.getElementById('shortlinkLocationUrl').value = urlOutput.value;
+        const modal = new bootstrap.Modal(document.getElementById('createShortlinkModal'));
+        modal.show();
+    });
+
+    // 2. Interactive "Buat WA Rotator" Handler
+    document.getElementById('btnCreateWaRotator').addEventListener('click', function() {
+        const prefix = prefixSelect.value;
+        const rawPhone = phoneInput.value.trim();
+        const message = msgInput.value;
+
+        if (!rawPhone) {
+            Swal.fire({ text: 'Masukkan nomor WhatsApp terlebih dahulu!', icon: 'warning', confirmButtonText: 'OK', buttonsStyling: false, customClass: { confirmButton: 'btn btn-primary btn-sm' } });
+            return;
+        }
+
+        const formattedPhone = cleanPhoneNumber(rawPhone, prefix);
+        const targetUrl = '{{ route("warotators.create") }}?number=' + encodeURIComponent(formattedPhone) + '&template=' + encodeURIComponent(message);
+        window.location.href = targetUrl;
     });
 
     // Initial trigger

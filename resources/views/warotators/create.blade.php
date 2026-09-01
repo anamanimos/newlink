@@ -95,7 +95,7 @@
                         <!-- Numbers -->
                         <div class="col-md-6">
                             <label class="form-label fs-6 fw-semibold text-gray-900 required">WhatsApp Numbers (Rotated)</label>
-                            <textarea name="numbers" class="form-control form-control-solid" rows="3" required placeholder="One per line or comma-separated&#10;628123456789&#10;628987654321">{{ old('numbers') }}</textarea>
+                            <textarea name="numbers" class="form-control form-control-solid" rows="3" required placeholder="One per line or comma-separated&#10;628123456789&#10;628987654321">{{ old('numbers', request('number')) }}</textarea>
                             <div class="form-text text-muted fs-8">Use international format without + (628xxxxxxxx). Distributed round-robin.</div>
                             @error('numbers')
                                 <div class="text-danger fs-8 mt-1">{{ $message }}</div>
@@ -105,7 +105,7 @@
                         <!-- Message Template -->
                         <div class="col-md-6">
                             <label class="form-label fs-6 fw-semibold text-gray-900 required">Message Template</label>
-                            <textarea name="template" class="form-control form-control-solid" rows="3" required placeholder="Hello admin, my name is [nama]...">{{ old('template', 'Halo admin, nama saya [nama] dari [kota]. Nomor saya [nomor]. Pesan: [pesan]') }}</textarea>
+                            <textarea name="template" class="form-control form-control-solid" rows="3" required placeholder="Hello admin, my name is [nama]...">{{ old('template', request('template', 'Halo admin, nama saya [nama] dari [kota]. Nomor saya [nomor]. Pesan: [pesan]')) }}</textarea>
                             <div class="form-text text-muted fs-8">Placeholders: <code>[nama]</code> <code>[kota]</code> <code>[nomor]</code> <code>[pesan]</code></div>
                             @error('template')
                                 <div class="text-danger fs-8 mt-1">{{ $message }}</div>

@@ -132,7 +132,13 @@ class ToolController extends Controller
      */
     public function whatsappLinkGenerator()
     {
-        return view('tools.whatsapp_link_generator');
+        $domains = \App\Models\Domain::where('user_id', Auth::id())
+            ->orWhere(function($q) {
+                $q->where('type', 1)->where('is_enabled', 1);
+            })->get();
+        $projects = \App\Models\Project::where('user_id', Auth::id())->get();
+
+        return view('tools.whatsapp_link_generator', compact('domains', 'projects'));
     }
 
     /**
