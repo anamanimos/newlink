@@ -181,7 +181,7 @@
                                         <button class="btn btn-sm btn-icon btn-light-primary me-1" data-bs-toggle="modal" data-bs-target="#editProjectModal{{ $project->id }}" title="Edit Project">
                                             <i class="ki-outline ki-pencil fs-5"></i>
                                         </button>
-                                        <form action="{{ route('projects.destroy', $project->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus project ini?');">
+                                        <form action="{{ route('projects.destroy', $project->id) }}" method="POST" class="d-inline" data-confirm="Apakah Anda yakin ingin menghapus project ini?" data-confirm-title="Hapus Project" data-confirm-btn="Ya, Hapus!">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-icon btn-light-danger" title="Delete Project">

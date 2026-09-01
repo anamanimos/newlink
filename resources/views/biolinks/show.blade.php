@@ -64,7 +64,7 @@
                     @endif
                 </div>
                 <div class="d-flex align-items-center gap-2 ms-2">
-                    <form action="{{ route('biolinks.duplicate', $link->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Duplikat Biolink ini beserta seluruh blok kontennya?')">
+                    <form action="{{ route('biolinks.duplicate', $link->id) }}" method="POST" class="d-inline" data-confirm="Duplikat Biolink ini beserta seluruh blok kontennya?" data-confirm-title="Duplikat Biolink" data-confirm-btn="Ya, Duplikat!">
                         @csrf
                         <button type="submit" class="btn btn-sm btn-light-info fw-bold d-inline-flex align-items-center gap-1.5" title="Duplikat Biolink">
                             <i class="ki-outline ki-copy fs-4"></i> Duplikat

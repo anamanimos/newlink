@@ -78,7 +78,7 @@
         <span class="badge badge-light-primary fw-semibold fs-8 px-2 py-1 ms-2">Biolink Page</span>
     </div>
     <div class="d-flex align-items-center gap-2">
-        <form action="{{ route('biolinks.duplicate', $link->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Duplikat Biolink ini beserta seluruh blok kontennya?')">
+        <form action="{{ route('biolinks.duplicate', $link->id) }}" method="POST" class="d-inline" data-confirm="Duplikat Biolink ini beserta seluruh blok kontennya?" data-confirm-title="Duplikat Biolink" data-confirm-btn="Ya, Duplikat!">
             @csrf
             <button type="submit" class="btn btn-sm btn-light-info fw-bold d-inline-flex align-items-center gap-2">
                 <i class="ki-outline ki-copy fs-4"></i> Duplikat Biolink
@@ -216,7 +216,7 @@
                                             @endif
 
                                             <!-- Delete Button -->
-                                            <form action="{{ route('biolinks.blocks.destroy', [$link->id, $block->id]) }}" method="POST" onsubmit="return confirm('Hapus blok ini?')">
+                                            <form action="{{ route('biolinks.blocks.destroy', [$link->id, $block->id]) }}" method="POST" class="d-inline delete-block-form" data-confirm="Apakah Anda yakin ingin menghapus blok ini?" data-confirm-title="Hapus Blok" data-confirm-btn="Ya, Hapus!">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-icon btn-sm btn-light-danger" title="Hapus Blok">
@@ -872,7 +872,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             refreshBuilderUI(response.message || 'Urutan berhasil disimpan!');
                         },
                         error: function() {
-                            alert('Gagal memperbarui urutan blok.');
+                            if (window.showSwalToast) {
+                                showSwalToast('Gagal memperbarui urutan blok.', 'error');
+                            } else {
+                                Swal.fire({ text: 'Gagal memperbarui urutan blok.', icon: 'error', buttonsStyling: false, confirmButtonText: 'OK', customClass: { confirmButton: 'btn btn-danger btn-sm' } });
+                            }
                         }
                     });
                 }
@@ -976,7 +980,11 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             error: function() {
                 $(`.block-toggle-switch[data-id="${blockId}"]`).prop('checked', !isChecked);
-                alert('Gagal memperbarui status aktif/nonaktif blok.');
+                if (window.showSwalToast) {
+                    showSwalToast('Gagal memperbarui status aktif/nonaktif blok.', 'error');
+                } else {
+                    Swal.fire({ text: 'Gagal memperbarui status aktif/nonaktif blok.', icon: 'error', buttonsStyling: false, confirmButtonText: 'OK', customClass: { confirmButton: 'btn btn-danger btn-sm' } });
+                }
             }
         });
     });
@@ -1155,7 +1163,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleFileSelect(file, type) {
         if (!file || !file.type.match(/^image\//)) {
-            alert('Silakan pilih file gambar yang valid.');
+            Swal.fire({
+                text: 'Silakan pilih file gambar yang valid.',
+                icon: 'warning',
+                buttonsStyling: false,
+                confirmButtonText: 'OK',
+                customClass: { confirmButton: 'btn btn-primary btn-sm' }
+            });
             return;
         }
 
@@ -1239,7 +1253,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     }, 1200);
                 },
                 error: function() {
-                    alert('Gagal mengunggah foto. Silakan coba lagi.');
+                    Swal.fire({
+                        text: 'Gagal mengunggah foto. Silakan coba lagi.',
+                        icon: 'error',
+                        buttonsStyling: false,
+                        confirmButtonText: 'OK',
+                        customClass: { confirmButton: 'btn btn-danger btn-sm' }
+                    });
                     cropAndSaveBtn.disabled = false;
                     cropAndSaveBtn.textContent = 'Potong & Simpan';
                 }

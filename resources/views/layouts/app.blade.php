@@ -533,7 +533,109 @@
                 });
             });
 
-            // 3. Global AJAX Delete Confirmation for .ajax-delete-form or [data-ajax-delete]
+            // 3. Global SweetAlert Helpers
+            window.showSwalToast = function(message, icon = 'success') {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+                Toast.fire({
+                    icon: icon,
+                    title: message
+                });
+            };
+
+            window.showSwalConfirm = function(title, text, confirmBtn = 'Ya, Lanjutkan!', cancelBtn = 'Batal', icon = 'question') {
+                return Swal.fire({
+                    title: title,
+                    text: text,
+                    icon: icon,
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonText: confirmBtn,
+                    cancelButtonText: cancelBtn,
+                    customClass: {
+                        confirmButton: (icon === 'warning' || icon === 'danger') ? "btn btn-danger btn-sm" : "btn btn-primary btn-sm",
+                        cancelButton: "btn btn-light btn-sm ms-2"
+                    }
+                });
+            };
+
+            // 4. Global Confirmation Interceptor for forms with [data-confirm] or [data-confirm-message]
+            document.addEventListener('submit', function (e) {
+                var form = e.target;
+                if (!form) return;
+                
+                var confirmMsg = form.dataset.confirm || form.dataset.confirmMessage || form.getAttribute('data-confirm-text');
+                if (confirmMsg && !form.dataset.confirmed) {
+                    e.preventDefault();
+                    var title = form.dataset.confirmTitle || "Konfirmasi";
+                    var confirmBtn = form.dataset.confirmBtn || "Ya, Lanjutkan!";
+                    var isDanger = form.dataset.confirmType === 'danger' || form.action.includes('destroy') || form.action.includes('delete') || form.querySelector('button.btn-danger');
+
+                    Swal.fire({
+                        title: title,
+                        text: confirmMsg,
+                        icon: isDanger ? "warning" : "question",
+                        showCancelButton: true,
+                        buttonsStyling: false,
+                        confirmButtonText: confirmBtn,
+                        cancelButtonText: "Batal",
+                        customClass: {
+                            confirmButton: isDanger ? "btn btn-danger btn-sm" : "btn btn-primary btn-sm",
+                            cancelButton: "btn btn-light btn-sm ms-2"
+                        }
+                    }).then(function (result) {
+                        if (result.isConfirmed) {
+                            form.dataset.confirmed = "true";
+                            form.submit();
+                        }
+                    });
+                }
+            }, true);
+
+            // 5. Global Confirmation Interceptor for links / buttons with [data-confirm]
+            document.addEventListener('click', function (e) {
+                var target = e.target.closest('[data-confirm], [data-confirm-message], [data-confirm-text]');
+                if (!target) return;
+                if (target.tagName === 'BUTTON' && target.type === 'submit' && target.form) {
+                    return; // Handled by submit event
+                }
+                if (target.tagName === 'A' && target.href && target.href !== '#' && !target.dataset.confirmed) {
+                    e.preventDefault();
+                    var confirmMsg = target.dataset.confirm || target.dataset.confirmMessage || target.getAttribute('data-confirm-text');
+                    var title = target.dataset.confirmTitle || "Konfirmasi";
+                    var isDanger = target.classList.contains('btn-danger') || target.classList.contains('text-danger');
+
+                    Swal.fire({
+                        title: title,
+                        text: confirmMsg,
+                        icon: isDanger ? "warning" : "question",
+                        showCancelButton: true,
+                        buttonsStyling: false,
+                        confirmButtonText: "Ya, Lanjutkan!",
+                        cancelButtonText: "Batal",
+                        customClass: {
+                            confirmButton: isDanger ? "btn btn-danger btn-sm" : "btn btn-primary btn-sm",
+                            cancelButton: "btn btn-light btn-sm ms-2"
+                        }
+                    }).then(function (result) {
+                        if (result.isConfirmed) {
+                            target.dataset.confirmed = "true";
+                            window.location.href = target.href;
+                        }
+                    });
+                }
+            }, true);
+
+            // 6. Global AJAX Delete Confirmation for .ajax-delete-form or [data-ajax-delete]
             document.addEventListener('submit', function (e) {
                 var form = e.target;
                 if (!form || (!form.classList.contains('ajax-delete-form') && form.dataset.ajaxDelete !== 'true')) {
@@ -543,6 +645,7 @@
                 e.preventDefault();
 
                 Swal.fire({
+                    title: form.dataset.confirmTitle || "Konfirmasi Hapus",
                     text: form.dataset.confirmMessage || "Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.",
                     icon: "warning",
                     showCancelButton: true,
@@ -551,7 +654,7 @@
                     cancelButtonText: "Batal",
                     customClass: {
                         confirmButton: "btn btn-danger btn-sm",
-                        cancelButton: "btn btn-light btn-sm"
+                        cancelButton: "btn btn-light btn-sm ms-2"
                     }
                 }).then(function (result) {
                     if (result.isConfirmed) {

@@ -586,11 +586,12 @@
                 success: function(res) {
                     submitBtn.prop('disabled', false).text(origText);
                     if (res.success) {
-                        // Toast success notification
-                        if (window.showSwal) {
+                        if (window.showSwalToast) {
+                            window.showSwalToast(res.message, 'success');
+                        } else if (window.showSwal) {
                             window.showSwal('success', res.message, true);
                         } else {
-                            alert(res.message);
+                            Swal.fire({ text: res.message, icon: 'success', buttonsStyling: false, confirmButtonText: 'OK', customClass: { confirmButton: 'btn btn-primary btn-sm' } });
                         }
                         
                         // Force live preview frame refresh
@@ -601,12 +602,12 @@
                             croppedAvatarBlob = null;
                         }
                     } else {
-                        alert(res.message || 'Gagal menyimpan pengaturan.');
+                        Swal.fire({ text: res.message || 'Gagal menyimpan pengaturan.', icon: 'error', buttonsStyling: false, confirmButtonText: 'OK', customClass: { confirmButton: 'btn btn-danger btn-sm' } });
                     }
                 },
                 error: function(xhr) {
                     submitBtn.prop('disabled', false).text(origText);
-                    alert('Gagal mengirim data. Silakan coba lagi.');
+                    Swal.fire({ text: 'Gagal mengirim data. Silakan coba lagi.', icon: 'error', buttonsStyling: false, confirmButtonText: 'OK', customClass: { confirmButton: 'btn btn-danger btn-sm' } });
                 }
             });
         });
