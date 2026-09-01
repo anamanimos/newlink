@@ -141,27 +141,27 @@ class DomainSslService
         foreach ($schemes as $scheme) {
             try {
                 $url = "{$scheme}{$host}/_system/domain-ping";
-                $context = stream_context_create([
-                    'http' => [
-                        'timeout' => 4,
-                        'follow_location' => 1,
-                        'max_redirects' => 3,
-                        'ignore_errors' => true,
-                    ],
-                    'ssl' => [
-                        'verify_peer' => false,
-                        'verify_peer_name' => false,
-                    ]
+                $response = \Illuminate\Support\Facades\Http::timeout(5)
+                    ->withoutVerifying()
+                    ->withHeaders([
+                        'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                        'Accept' => 'application/json'
+                    ])
+                    ->get($url);
+
+                \Illuminate\Support\Facades\Log::info("Domain ping check for {$url}", [
+                    'status' => $response->status(),
+                    'body' => substr($response->body(), 0, 200)
                 ]);
-                $content = @file_get_contents($url, false, $context);
-                if ($content) {
-                    $json = @json_decode($content, true);
+
+                if ($response->successful()) {
+                    $json = $response->json();
                     if (isset($json['status']) && $json['status'] === 'ok' && isset($json['app']) && $json['app'] === 'newlink') {
                         return true;
                     }
                 }
             } catch (\Exception $e) {
-                // continue to next scheme
+                \Illuminate\Support\Facades\Log::warning("Domain ping exception for {$scheme}{$host}: " . $e->getMessage());
             }
         }
         return false;
