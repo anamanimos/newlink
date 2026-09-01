@@ -77,7 +77,13 @@
         </h1>
         <span class="badge badge-light-primary fw-semibold fs-8 px-2 py-1 ms-2">Biolink Page</span>
     </div>
-    <div>
+    <div class="d-flex align-items-center gap-2">
+        <form action="{{ route('biolinks.duplicate', $link->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Duplikat Biolink ini beserta seluruh blok kontennya?')">
+            @csrf
+            <button type="submit" class="btn btn-sm btn-light-info fw-bold d-inline-flex align-items-center gap-2">
+                <i class="ki-outline ki-copy fs-4"></i> Duplikat Biolink
+            </button>
+        </form>
         <a href="{{ $fullUrl }}" target="_blank" class="btn btn-sm btn-light-primary fw-bold d-inline-flex align-items-center gap-2">
             <i class="ki-outline ki-exit-right-corner fs-4"></i> Lihat Halaman
         </a>

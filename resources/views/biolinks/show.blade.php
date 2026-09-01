@@ -50,7 +50,7 @@
                     </a>
                 </div>
             </div>
-            <div class="d-flex align-items-center gap-6">
+            <div class="d-flex align-items-center gap-4">
                 <div class="d-flex flex-column">
                     <span class="text-muted fs-8">Created On</span>
                     <span class="fw-bold text-gray-800 fs-7">{{ $link->created_at->format('d M Y') }}</span>
@@ -62,6 +62,17 @@
                     @else
                         <span class="badge badge-light-secondary fw-bold fs-8">Disabled</span>
                     @endif
+                </div>
+                <div class="d-flex align-items-center gap-2 ms-2">
+                    <form action="{{ route('biolinks.duplicate', $link->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Duplikat Biolink ini beserta seluruh blok kontennya?')">
+                        @csrf
+                        <button type="submit" class="btn btn-sm btn-light-info fw-bold d-inline-flex align-items-center gap-1.5" title="Duplikat Biolink">
+                            <i class="ki-outline ki-copy fs-4"></i> Duplikat
+                        </button>
+                    </form>
+                    <a href="{{ route('biolinks.builder', $link->id) }}" class="btn btn-sm btn-light-primary fw-bold d-inline-flex align-items-center gap-1.5">
+                        <i class="ki-outline ki-pencil fs-4"></i> Edit Biolink
+                    </a>
                 </div>
             </div>
         </div>

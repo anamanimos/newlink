@@ -249,6 +249,12 @@
                                                 <a class="dropdown-item rounded-2 py-2 fs-7 d-flex align-items-center gap-2" href="{{ route('biolinks.builder', $link->id) }}">
                                                     <i class="ki-outline ki-pencil fs-5 text-success"></i> Edit Biolink
                                                 </a>
+                                                <form action="{{ route('biolinks.duplicate', $link->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Duplikat Biolink ini beserta seluruh blok kontennya?')">
+                                                    @csrf
+                                                    <button type="submit" class="dropdown-item rounded-2 py-2 fs-7 d-flex align-items-center gap-2 text-gray-800 border-0 bg-transparent w-100">
+                                                        <i class="ki-outline ki-copy fs-5 text-info"></i> Duplicate
+                                                    </button>
+                                                </form>
                                                 <a class="dropdown-item rounded-2 py-2 fs-7 d-flex align-items-center gap-2 btn-edit-link" href="#"
                                                    data-id="{{ $link->id }}"
                                                    data-type="{{ $link->type }}"

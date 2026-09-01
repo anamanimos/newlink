@@ -288,4 +288,64 @@ class BiolinkController extends Controller
             'message' => 'Status blok berhasil diperbarui!'
         ]);
     }
+
+    /**
+     * Duplicate a Biolink along with all its blocks and settings.
+     */
+    public function duplicate(Request $request, $id)
+    {
+        $original = Link::where('user_id', Auth::id())->where('type', 'biolink')->findOrFail($id);
+
+        // Generate a new unique slug / URL
+        $baseSlug = $original->url . '-copy';
+        $newSlug = $baseSlug;
+        $counter = 1;
+        while (Link::where('url', $newSlug)->where('domain_id', $original->domain_id)->exists()) {
+            $newSlug = $baseSlug . '-' . $counter;
+            $counter++;
+        }
+
+        // Clone settings
+        $newSettings = $original->settings ?? [];
+        if (isset($newSettings['title'])) {
+            $newSettings['title'] = $newSettings['title'] . ' (Copy)';
+        }
+
+        // Create cloned Link
+        $cloned = Link::create([
+            'user_id' => Auth::id(),
+            'domain_id' => $original->domain_id,
+            'project_id' => $original->project_id,
+            'type' => 'biolink',
+            'url' => $newSlug,
+            'location_url' => $original->location_url,
+            'settings' => $newSettings,
+            'pixels' => $original->pixels,
+            'is_enabled' => 1,
+            'clicks' => 0
+        ]);
+
+        // Duplicate all BiolinkBlocks
+        foreach ($original->biolinkBlocks as $block) {
+            $cloned->biolinkBlocks()->create([
+                'user_id' => Auth::id(),
+                'type' => $block->type,
+                'location_url' => $block->location_url,
+                'settings' => $block->settings,
+                'order' => $block->order,
+                'is_enabled' => $block->is_enabled,
+                'clicks' => 0
+            ]);
+        }
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Biolink berhasil diduplikat!',
+                'redirect' => route('biolinks.builder', $cloned->id)
+            ]);
+        }
+
+        return redirect()->route('biolinks.builder', $cloned->id)->with('success', 'Biolink berhasil diduplikat!');
+    }
 }

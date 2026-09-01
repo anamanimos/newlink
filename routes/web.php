@@ -59,6 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/biolink/{id}/blocks/reorder', [BiolinkController::class, 'reorderBlocks'])->name('biolinks.blocks.reorder');
     Route::get('/biolink/block/{id}/analytics', [BiolinkController::class, 'blockAnalytics'])->name('biolinks.blocks.analytics');
     Route::get('/biolink/{id}/export-leads', [BiolinkController::class, 'exportLeads'])->name('biolinks.leads.export');
+    Route::post('/biolink/{id}/duplicate', [BiolinkController::class, 'duplicate'])->name('biolinks.duplicate');
 
     Route::get('/warotator', [DashboardController::class, 'index'])->defaults('type', 'warotator')->name('warotators.index');
     Route::get('/warotator/create', [\App\Http\Controllers\WaRotatorController::class, 'create'])->name('warotators.create');
