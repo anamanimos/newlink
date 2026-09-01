@@ -230,8 +230,9 @@
         <!-- Profile Title & Verified Badge -->
         <h1 class="profile-title">
             <span class="profile-title-text">{{ $link->settings['title'] ?? 'My Biolink' }}</span>
-            <svg class="verified-badge-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="{{ $verifiedBadgeColor }}" style="display: {{ $hasVerifiedBadge ? 'inline-block' : 'none' }}; flex-shrink: 0; margin-left: 4px; vertical-align: middle;" title="Verified Profile">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            <svg class="verified-badge-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" style="color: {{ $verifiedBadgeColor }}; display: {{ $hasVerifiedBadge ? 'inline-block' : 'none' }}; vertical-align: middle; margin-left: 5px; flex-shrink: 0;" title="Verified Profile">
+                <path fill="currentColor" fill-rule="evenodd" d="M10.586 2.1a2 2 0 0 1 2.7-.116l.128.117L15.314 4H18a2 2 0 0 1 1.994 1.85L20 6v2.686l1.9 1.9a2 2 0 0 1 .116 2.701l-.117.127-1.9 1.9V18a2 2 0 0 1-1.85 1.995L18 20h-2.685l-1.9 1.9a2 2 0 0 1-2.701.116l-.127-.116-1.9-1.9H6a2 2 0 0 1-1.995-1.85L4 18v-2.686l-1.9-1.9a2 2 0 0 1-.116-2.701l.116-.127 1.9-1.9V6a2 2 0 0 1 1.85-1.994L6 4h2.686z" opacity=".25"></path>
+                <path fill="currentColor" fill-rule="evenodd" d="m15.079 8.983-4.244 4.244-1.768-1.768a1 1 0 1 0-1.414 1.415l2.404 2.404a1.1 1.1 0 0 0 1.556 0l4.88-4.881a1 1 0 0 0-1.414-1.414"></path>
             </svg>
         </h1>
 
