@@ -97,6 +97,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::put('/domains/{id}', [\App\Http\Controllers\Admin\DomainController::class, 'update'])->name('admin.domains.update');
     Route::delete('/domains/{id}', [\App\Http\Controllers\Admin\DomainController::class, 'destroy'])->name('admin.domains.destroy');
     Route::post('/domains/{id}/verify-dns', [\App\Http\Controllers\Admin\DomainController::class, 'verifyDns'])->name('admin.domains.verify-dns');
+    Route::post('/domains/{id}/provision-ssl', [\App\Http\Controllers\Admin\DomainController::class, 'provisionSsl'])->name('admin.domains.provision-ssl');
     Route::get('/settings/{tab?}', [AdminController::class, 'settings'])->name('admin.settings');
     Route::post('/settings/{tab?}', [AdminController::class, 'updateSettings'])->name('admin.settings.update');
     Route::get('/plans', [\App\Http\Controllers\Admin\PlanController::class, 'index'])->name('admin.plans');
