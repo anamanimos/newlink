@@ -357,7 +357,7 @@
                             
                             <div class="mb-4">
                                 <label class="form-label fs-7 fw-semibold text-gray-900 required">Nama / Judul Halaman</label>
-                                <input type="text" name="title" class="form-control form-control-solid form-control-sm" placeholder="Nama Anda" value="{{ $link->settings['title'] ?? '' }}" required>
+                                <input type="text" name="title" class="form-control form-control-solid form-control-sm" placeholder="Nama Anda" value="{{ $link->settings['title'] ?? 'My Biolink' }}" required>
                             </div>
                             
                             <div class="mb-4">
@@ -405,7 +405,7 @@
                             @csrf
                             @method('PUT')
                             
-                            <input type="hidden" name="title" value="{{ $link->settings['title'] ?? '' }}">
+                            <input type="hidden" name="title" value="{{ $link->settings['title'] ?? 'My Biolink' }}">
                             <input type="hidden" name="description" value="{{ $link->settings['description'] ?? '' }}">
 
                             <!-- Presets Section -->
@@ -1176,7 +1176,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 2. Title & Description text sync
                 const pTitleText = iframeDoc.querySelector('.profile-title-text');
                 if (pTitleText && titleVal !== undefined) {
-                    pTitleText.textContent = titleVal;
+                    pTitleText.textContent = (titleVal && titleVal.trim() !== '') ? titleVal : 'My Biolink';
                 }
                 const pDesc = iframeDoc.querySelector('.profile-desc');
                 if (pDesc && descVal !== undefined) {
