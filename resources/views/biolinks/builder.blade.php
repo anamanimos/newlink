@@ -4,7 +4,11 @@
 
 @section('content')
 @php
+    $previewUrl = route('biolinks.preview', $link->id);
     $fullUrl = $link->domain_id && $link->domain ? $link->domain->scheme . $link->domain->host . '/' . $link->url : url('/') . '/' . $link->url;
+    if (request()->isSecure() && str_starts_with($fullUrl, 'http://')) {
+        $fullUrl = preg_replace('#^http://#', 'https://', $fullUrl);
+    }
 @endphp
 
 <!-- CSS for Cropper.js -->
@@ -604,7 +608,7 @@
                     <div class="mockup-container position-relative shadow-2xl overflow-hidden" style="width: 375px; height: 720px; border-radius: 36px; border: 12px solid #111827; background: #000; flex-shrink:0;">
                         <!-- Camera Notch -->
                         <div class="position-absolute start-50 translate-middle-x" style="top: 0; width: 120px; height: 20px; background: #111827; border-radius: 0 0 12px 12px; z-index: 5;"></div>
-                        <iframe src="{{ $fullUrl }}" class="w-100 h-100 border-0 bg-white" style="border-radius: 24px;"></iframe>
+                        <iframe src="{{ $previewUrl }}" class="w-100 h-100 border-0 bg-white" style="border-radius: 24px;"></iframe>
                     </div>
                 </div>
             </div>
@@ -617,7 +621,7 @@
         <div class="mockup-container position-relative shadow-2xl overflow-hidden" style="width: 360px; height: 720px; border-radius: 36px; border: 12px solid #111827; background: #000; flex-shrink: 0; position: sticky; top: 115px; z-index: 10;">
             <!-- Camera Notch -->
             <div class="position-absolute start-50 translate-middle-x" style="top: 0; width: 120px; height: 20px; background: #111827; border-radius: 0 0 12px 12px; z-index: 5;"></div>
-            <iframe src="{{ $fullUrl }}" class="w-100 h-100 border-0 bg-white" style="border-radius: 24px;"></iframe>
+            <iframe src="{{ $previewUrl }}" class="w-100 h-100 border-0 bg-white" style="border-radius: 24px;"></iframe>
         </div>
     </div>
 </div>

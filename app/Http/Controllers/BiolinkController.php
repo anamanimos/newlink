@@ -17,6 +17,14 @@ class BiolinkController extends Controller
         return view('biolinks.builder', compact('link', 'blocks'));
     }
 
+    public function preview($id)
+    {
+        $link = Link::where('user_id', Auth::id())->where('type', 'biolink')->findOrFail($id);
+        $blocks = $link->biolinkBlocks()->where('is_enabled', 1)->orderBy('order')->get();
+
+        return view('biolinks.public', compact('link', 'blocks'));
+    }
+
     public function updateSettings(Request $request, $id)
     {
         $link = Link::where('user_id', Auth::id())->where('type', 'biolink')->findOrFail($id);

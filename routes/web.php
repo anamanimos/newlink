@@ -50,6 +50,7 @@ Route::middleware('auth')->group(function () {
     
     // Biolink Builder Routes
     Route::get('/biolink/{id}/builder', [BiolinkController::class, 'builder'])->name('biolinks.builder');
+    Route::get('/biolink/{id}/preview', [BiolinkController::class, 'preview'])->name('biolinks.preview');
     Route::put('/biolink/{id}/settings', [BiolinkController::class, 'updateSettings'])->name('biolinks.settings.update');
     Route::post('/biolink/{id}/blocks', [BiolinkController::class, 'storeBlock'])->name('biolinks.blocks.store');
     Route::put('/biolink/{id}/blocks/{blockId}', [BiolinkController::class, 'updateBlock'])->name('biolinks.blocks.update');
@@ -64,6 +65,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/warotator', [\App\Http\Controllers\WaRotatorController::class, 'store'])->name('warotators.store');
     Route::get('/warotator/{id}', [LinkController::class, 'show'])->name('warotators.show');
     Route::get('/warotator/{id}/builder', [\App\Http\Controllers\WaRotatorController::class, 'builder'])->name('warotators.builder');
+    Route::get('/warotator/{id}/preview', [\App\Http\Controllers\WaRotatorController::class, 'preview'])->name('warotators.preview');
     Route::put('/warotator/{id}/settings', [\App\Http\Controllers\WaRotatorController::class, 'updateSettings'])->name('warotators.settings.update');
     Route::get('/warotator/{id}/export-leads', [\App\Http\Controllers\WaRotatorController::class, 'exportLeads'])->name('warotators.leads.export');
 

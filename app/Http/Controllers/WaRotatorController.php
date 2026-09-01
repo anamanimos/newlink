@@ -94,6 +94,12 @@ class WaRotatorController extends Controller
         return view('warotators.builder', compact('link', 'projects', 'domains'));
     }
 
+    public function preview($id)
+    {
+        $link = Link::where('user_id', Auth::id())->where('type', 'warotator')->findOrFail($id);
+        return view('warotators.public', compact('link'));
+    }
+
     /**
      * Update WhatsApp Rotator settings.
      */

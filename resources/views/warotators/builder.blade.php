@@ -49,7 +49,11 @@
 </style>
 <!-- Page Header (Full Width) -->
 @php
+    $previewUrl = route('warotators.preview', $link->id);
     $fullUrl = $link->domain_id && $link->domain ? $link->domain->scheme . $link->domain->host . '/' . $link->url : url('/') . '/' . $link->url;
+    if (request()->isSecure() && str_starts_with($fullUrl, 'http://')) {
+        $fullUrl = preg_replace('#^http://#', 'https://', $fullUrl);
+    }
 @endphp
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-6">
     <div class="d-flex align-items-center gap-2">
@@ -352,11 +356,13 @@
             
             <!-- Iframe Loading spinner -->
             <div class="iframe-spinner position-absolute top-50 start-50 translate-middle text-primary d-none">
-                <div class="spinner-border" role="status"></div>
+                <div class="spinner-border spinner-border-sm" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
             </div>
             
             <!-- Real-time landing page frame -->
-            <iframe id="livePreviewFrame" src="{{ $fullUrl }}" class="w-100 h-100 border-0 bg-white" style="border-radius: 24px;"></iframe>
+            <iframe id="livePreviewFrame" src="{{ $previewUrl }}" class="w-100 h-100 border-0 bg-white" style="border-radius: 24px;"></iframe>
         </div>
     </div>
 </div>
