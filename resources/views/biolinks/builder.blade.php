@@ -78,10 +78,13 @@
         <span class="badge badge-light-primary fw-semibold fs-8 px-2 py-1 ms-2">Biolink Page</span>
     </div>
     <div class="d-flex align-items-center gap-2">
+        <button type="button" class="btn btn-sm btn-light-secondary fw-bold d-inline-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#editBiolinkUrlModal">
+            <i class="ki-outline ki-setting-2 fs-4"></i> Pengaturan Link
+        </button>
         <form action="{{ route('biolinks.duplicate', $link->id) }}" method="POST" class="d-inline" data-confirm="Duplikat Biolink ini beserta seluruh blok kontennya?" data-confirm-title="Duplikat Biolink" data-confirm-btn="Ya, Duplikat!">
             @csrf
             <button type="submit" class="btn btn-sm btn-light-info fw-bold d-inline-flex align-items-center gap-2">
-                <i class="ki-outline ki-copy fs-4"></i> Duplikat Biolink
+                <i class="ki-outline ki-copy fs-4"></i> Duplikat
             </button>
         </form>
         <a href="{{ $fullUrl }}" target="_blank" class="btn btn-sm btn-light-primary fw-bold d-inline-flex align-items-center gap-2">
@@ -109,6 +112,11 @@
             <li class="nav-item" role="presentation">
                 <a class="nav-link text-active-primary py-3 d-flex align-items-center gap-2" id="styling-tab" data-bs-toggle="tab" href="#styling-pane" role="tab">
                     <i class="ki-outline ki-color-swatch fs-4"></i> Styling
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link text-active-primary py-3 d-flex align-items-center gap-2" id="link-settings-tab" data-bs-toggle="tab" href="#link-settings-pane" role="tab">
+                    <i class="ki-outline ki-setting-2 fs-4"></i> Pengaturan Link
                 </a>
             </li>
             <li class="nav-item d-md-none" role="presentation">
@@ -702,6 +710,70 @@
                 </div>
             </div>
 
+            <!-- TAB 4: Pengaturan Link & URL -->
+            <div class="tab-pane fade" id="link-settings-pane" role="tabpanel" aria-labelledby="link-settings-tab">
+                <div class="card card-flush shadow-sm border-0 mb-6">
+                    <div class="card-header pt-5">
+                        <h3 class="card-title fw-bold text-gray-900 fs-5">
+                            <i class="ki-outline ki-setting-2 fs-3 text-primary me-2"></i> Pengaturan Tautan & Domain
+                        </h3>
+                    </div>
+                    <div class="card-body pt-2 pb-6">
+                        <form action="{{ route('links.update', $link->id) }}" method="POST" class="ajax-form">
+                            @csrf
+                            @method('PUT')
+
+                            <!-- Custom Domain -->
+                            <div class="mb-5">
+                                <label class="form-label fs-7 fw-semibold text-gray-900">Domain Utama</label>
+                                <select name="domain_id" id="biolink_domain_select" class="form-select form-select-solid form-select-sm">
+                                    <option value="0" data-host="{{ parse_url(url('/'), PHP_URL_HOST) }}" {{ empty($link->domain_id) ? 'selected' : '' }}>Default Domain ({{ parse_url(url('/'), PHP_URL_HOST) }})</option>
+                                    @if(isset($domains))
+                                        @foreach($domains as $domain)
+                                            <option value="{{ $domain->id }}" data-host="{{ $domain->host }}" {{ $link->domain_id == $domain->id ? 'selected' : '' }}>
+                                                {{ $domain->host }}
+                                            </option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                                <div class="text-muted fs-8 mt-1">Pilih domain kustom yang terhubung ke biolink Anda.</div>
+                            </div>
+
+                            <!-- Custom Alias / URL Slug -->
+                            <div class="mb-5">
+                                <label class="form-label fs-7 fw-semibold text-gray-900 required">Custom Alias (URL Path)</label>
+                                <div class="input-group input-group-solid">
+                                    <span class="input-group-text text-gray-600 fw-bold fs-7" id="biolink_domain_prefix">
+                                        {{ $link->domain_id && $link->domain ? $link->domain->host : parse_url(url('/'), PHP_URL_HOST) }}/
+                                    </span>
+                                    <input type="text" name="url" id="biolink_alias_input" class="form-control form-control-solid form-control-sm" placeholder="nama-link" value="{{ $link->url }}" required>
+                                </div>
+                                <div class="text-muted fs-8 mt-1">Hanya boleh berisi huruf, angka, tanda strip (-), dan garis bawah (_).</div>
+                            </div>
+
+                            <!-- Project -->
+                            <div class="mb-6">
+                                <label class="form-label fs-7 fw-semibold text-gray-900">Project / Kategori</label>
+                                <select name="project_id" class="form-select form-select-solid form-select-sm">
+                                    <option value="">Tanpa Project</option>
+                                    @if(isset($projects))
+                                        @foreach($projects as $project)
+                                            <option value="{{ $project->id }}" {{ $link->project_id == $project->id ? 'selected' : '' }}>
+                                                {{ $project->name }}
+                                            </option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary btn-sm fw-bold">Simpan Pengaturan Link</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
             <!-- TAB 4: Pratinjau (Mobile Only) -->
             <div class="tab-pane fade d-md-none" id="preview-pane" role="tabpanel" aria-labelledby="preview-tab">
                 <div class="d-flex justify-content-center">
@@ -794,6 +866,74 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light btn-sm fw-semibold" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary btn-sm fw-bold">Tambah Teks</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Edit Link / URL Settings -->
+<div class="modal fade" id="editBiolinkUrlModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-3 shadow-lg border-0">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">
+                    <i class="ki-outline ki-setting-2 fs-3 text-primary me-2"></i> Pengaturan Tautan & Domain
+                </h5>
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal">
+                    <i class="ki-outline ki-cross fs-2"></i>
+                </div>
+            </div>
+            <form action="{{ route('links.update', $link->id) }}" method="POST" class="ajax-form">
+                @csrf
+                @method('PUT')
+                <div class="modal-body py-4">
+                    <!-- Custom Domain -->
+                    <div class="mb-4">
+                        <label class="form-label fs-7 fw-semibold text-gray-900">Domain Utama</label>
+                        <select name="domain_id" id="modal_biolink_domain_select" class="form-select form-select-solid form-select-sm">
+                            <option value="0" data-host="{{ parse_url(url('/'), PHP_URL_HOST) }}" {{ empty($link->domain_id) ? 'selected' : '' }}>Default Domain ({{ parse_url(url('/'), PHP_URL_HOST) }})</option>
+                            @if(isset($domains))
+                                @foreach($domains as $domain)
+                                    <option value="{{ $domain->id }}" data-host="{{ $domain->host }}" {{ $link->domain_id == $domain->id ? 'selected' : '' }}>
+                                        {{ $domain->host }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                        <div class="text-muted fs-8 mt-1">Pilih domain kustom yang terhubung ke biolink Anda.</div>
+                    </div>
+
+                    <!-- Custom Alias / URL Slug -->
+                    <div class="mb-4">
+                        <label class="form-label fs-7 fw-semibold text-gray-900 required">Custom Alias (URL Path)</label>
+                        <div class="input-group input-group-solid">
+                            <span class="input-group-text text-gray-600 fw-bold fs-7" id="modal_biolink_domain_prefix">
+                                {{ $link->domain_id && $link->domain ? $link->domain->host : parse_url(url('/'), PHP_URL_HOST) }}/
+                            </span>
+                            <input type="text" name="url" id="modal_biolink_alias_input" class="form-control form-control-solid form-control-sm" placeholder="nama-link" value="{{ $link->url }}" required>
+                        </div>
+                        <div class="text-muted fs-8 mt-1">Hanya boleh berisi huruf, angka, tanda strip (-), dan garis bawah (_).</div>
+                    </div>
+
+                    <!-- Project -->
+                    <div class="mb-2">
+                        <label class="form-label fs-7 fw-semibold text-gray-900">Project / Kategori</label>
+                        <select name="project_id" class="form-select form-select-solid form-select-sm">
+                            <option value="">Tanpa Project</option>
+                            @if(isset($projects))
+                                @foreach($projects as $project)
+                                    <option value="{{ $project->id }}" {{ $link->project_id == $project->id ? 'selected' : '' }}>
+                                        {{ $project->name }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light btn-sm fw-semibold" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-sm fw-bold">Simpan Pengaturan</button>
                 </div>
             </form>
         </div>
@@ -1421,6 +1561,29 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle initial preview iframe load sync
     $('iframe').on('load', function() {
         syncStylingToPreview();
+    });
+
+    // Sync Domain Prefix when user selects a different domain
+    $(document).on('change', '#biolink_domain_select', function() {
+        const host = $(this).find('option:selected').data('host') || '{{ parse_url(url('/'), PHP_URL_HOST) }}';
+        $('#biolink_domain_prefix').text(host + '/');
+        $('#modal_biolink_domain_select').val($(this).val());
+        $('#modal_biolink_domain_prefix').text(host + '/');
+    });
+
+    $(document).on('change', '#modal_biolink_domain_select', function() {
+        const host = $(this).find('option:selected').data('host') || '{{ parse_url(url('/'), PHP_URL_HOST) }}';
+        $('#modal_biolink_domain_prefix').text(host + '/');
+        $('#biolink_domain_select').val($(this).val());
+        $('#biolink_domain_prefix').text(host + '/');
+    });
+
+    // Sync alias input between tab and modal
+    $(document).on('input', '#biolink_alias_input', function() {
+        $('#modal_biolink_alias_input').val($(this).val());
+    });
+    $(document).on('input', '#modal_biolink_alias_input', function() {
+        $('#biolink_alias_input').val($(this).val());
     });
 
     // Also run sync after slight delay on page load

@@ -13,8 +13,10 @@ class BiolinkController extends Controller
     {
         $link = Link::where('user_id', Auth::id())->where('type', 'biolink')->findOrFail($id);
         $blocks = $link->biolinkBlocks;
+        $domains = \App\Models\Domain::where('user_id', Auth::id())->orWhere('is_global', 1)->get();
+        $projects = \App\Models\Project::where('user_id', Auth::id())->get();
 
-        return view('biolinks.builder', compact('link', 'blocks'));
+        return view('biolinks.builder', compact('link', 'blocks', 'domains', 'projects'));
     }
 
     public function preview($id)

@@ -83,6 +83,12 @@ class LinkController extends Controller
         // Check if alias is taken by another link
         $domainId = $request->domain_id ?? 0;
         if (Link::where('url', $request->url)->where('domain_id', $domainId)->where('id', '!=', $id)->exists()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Alias URL ini sudah digunakan oleh tautan lain.'
+                ], 422);
+            }
             return back()->withErrors(['url' => 'Alias URL ini sudah digunakan oleh link lain.'])->withInput();
         }
 
@@ -93,7 +99,15 @@ class LinkController extends Controller
             'location_url' => $link->type === 'link' ? $request->location_url : $link->location_url,
         ]);
 
-        return back()->with('success', 'Tautan pendek berhasil diperbarui!');
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Pengaturan tautan berhasil diperbarui!',
+                'redirect' => $link->type === 'biolink' ? route('biolinks.builder', $link->id) : null
+            ]);
+        }
+
+        return back()->with('success', 'Tautan berhasil diperbarui!');
     }
 
     /**
