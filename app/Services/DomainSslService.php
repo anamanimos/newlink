@@ -94,36 +94,14 @@ class DomainSslService
 
         $isMatch = in_array($serverIp, $resolvedIps);
 
-        // If Cloudflare Proxy is used, also verify if domain resolves to Cloudflare or target
-        if (!$isMatch && !empty($resolvedIps)) {
-            // Check if domain is accessible via HTTP
-            $isMatch = self::testHttpReachable($host);
-        }
-
         return [
             'verified' => $isMatch,
             'server_ip' => $serverIp,
             'resolved_ips' => $resolvedIps,
             'message' => $isMatch 
-                ? "DNS domain telah mengarah ke server ({$serverIp})."
-                : "DNS domain belum mengarah ke server ({$serverIp}). Terdeteksi: " . (implode(', ', $resolvedIps) ?: 'Tidak ditemukan')
+                ? "DNS A Record domain telah terverifikasi mengarah ke server ini ({$serverIp})."
+                : "DNS domain belum mengarah ke server ini ({$serverIp}). Saat ini masih mengarah ke: " . (implode(', ', $resolvedIps) ?: 'Tidak ditemukan / DNS belum disetel') . ". Silakan arahkan A Record ke {$serverIp} di Cloudflare/DNS Anda."
         ];
-    }
-
-    /**
-     * Test if the host reaches our application via HTTP
-     */
-    private static function testHttpReachable(string $host): bool
-    {
-        $context = stream_context_create([
-            'http' => [
-                'timeout' => 3,
-                'method' => 'HEAD',
-                'follow_location' => 0,
-            ]
-        ]);
-        $headers = @get_headers("http://{$host}", true, $context);
-        return $headers !== false;
     }
 
     /**
