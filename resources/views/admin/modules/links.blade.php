@@ -10,10 +10,55 @@
     </div>
 </div>
 
+@php
+    // Extract selected multi-filters
+    $selectedTypes = array_values(array_filter((array) request('types', request('type'))));
+    $selectedDomains = array_values(array_filter((array) request('domain_ids', request('domain_id')), fn($v) => $v !== null && $v !== ''));
+    $selectedUsers = array_values(array_filter((array) request('user_ids', request('user_id'))));
+    $selectedStatuses = array_values(array_filter((array) request('statuses', request('status'))));
+    $selectedVerified = array_values(array_filter((array) request('verified_statuses', request('verified'))));
+
+    $activeFilterCount = count($selectedTypes)
+        + count($selectedDomains)
+        + count($selectedUsers)
+        + count($selectedStatuses)
+        + count($selectedVerified)
+        + (request('sort') && request('sort') !== 'latest' ? 1 : 0);
+
+    // Helper to generate remove URL for individual filter
+    function makeFilterRemoveUrl($key, $valToRemove = null) {
+        $queryParams = request()->query();
+        unset($queryParams['page']);
+
+        if ($valToRemove === null) {
+            unset($queryParams[$key]);
+            if ($key === 'type') unset($queryParams['types']);
+            if ($key === 'domain_id') unset($queryParams['domain_ids']);
+            if ($key === 'user_id') unset($queryParams['user_ids']);
+            if ($key === 'status') unset($queryParams['statuses']);
+            if ($key === 'verified') unset($queryParams['verified_statuses']);
+        } else {
+            foreach ([$key, $key . 's', $key . '_ids', $key . '_statuses'] as $k) {
+                if (isset($queryParams[$k])) {
+                    if (is_array($queryParams[$k])) {
+                        $queryParams[$k] = array_values(array_filter($queryParams[$k], fn($v) => (string)$v !== (string)$valToRemove));
+                        if (empty($queryParams[$k])) unset($queryParams[$k]);
+                    } else {
+                        if ((string)$queryParams[$k] === (string)$valToRemove) {
+                            unset($queryParams[$k]);
+                        }
+                    }
+                }
+            }
+        }
+        return route('admin.links', $queryParams);
+    }
+@endphp
+
 <!-- Statistics Cards -->
 <div class="row g-4 mb-6">
     <div class="col-6 col-md-4 col-xl">
-        <a href="{{ route('admin.links') }}" class="card card-flush shadow-sm border-0 h-100 text-hover-primary {{ !request('type') ? 'border-primary border-2' : '' }}">
+        <a href="{{ route('admin.links') }}" class="card card-flush shadow-sm border-0 h-100 text-hover-primary {{ empty($selectedTypes) ? 'border-primary border-2' : '' }}">
             <div class="card-body p-4 d-flex align-items-center gap-3">
                 <div class="symbol symbol-40px symbol-circle bg-light-primary">
                     <span class="symbol-label"><i class="ki-outline ki-abstract-26 fs-2 text-primary"></i></span>
@@ -26,7 +71,7 @@
         </a>
     </div>
     <div class="col-6 col-md-4 col-xl">
-        <a href="{{ request()->fullUrlWithQuery(['type' => 'biolink']) }}" class="card card-flush shadow-sm border-0 h-100 text-hover-primary {{ request('type') === 'biolink' ? 'border-primary border-2' : '' }}">
+        <a href="{{ route('admin.links', array_merge(request()->except(['page']), ['types' => ['biolink']])) }}" class="card card-flush shadow-sm border-0 h-100 text-hover-primary {{ in_array('biolink', $selectedTypes) ? 'border-primary border-2' : '' }}">
             <div class="card-body p-4 d-flex align-items-center gap-3">
                 <div class="symbol symbol-40px symbol-circle bg-light-info">
                     <span class="symbol-label"><i class="ki-outline ki-profile-user fs-2 text-info"></i></span>
@@ -39,7 +84,7 @@
         </a>
     </div>
     <div class="col-6 col-md-4 col-xl">
-        <a href="{{ request()->fullUrlWithQuery(['type' => 'link']) }}" class="card card-flush shadow-sm border-0 h-100 text-hover-primary {{ request('type') === 'link' ? 'border-primary border-2' : '' }}">
+        <a href="{{ route('admin.links', array_merge(request()->except(['page']), ['types' => ['link']])) }}" class="card card-flush shadow-sm border-0 h-100 text-hover-primary {{ in_array('link', $selectedTypes) ? 'border-primary border-2' : '' }}">
             <div class="card-body p-4 d-flex align-items-center gap-3">
                 <div class="symbol symbol-40px symbol-circle bg-light-success">
                     <span class="symbol-label"><i class="ki-outline ki-link fs-2 text-success"></i></span>
@@ -52,7 +97,7 @@
         </a>
     </div>
     <div class="col-6 col-md-4 col-xl">
-        <a href="{{ request()->fullUrlWithQuery(['type' => 'warotator']) }}" class="card card-flush shadow-sm border-0 h-100 text-hover-primary {{ request('type') === 'warotator' ? 'border-primary border-2' : '' }}">
+        <a href="{{ route('admin.links', array_merge(request()->except(['page']), ['types' => ['warotator']])) }}" class="card card-flush shadow-sm border-0 h-100 text-hover-primary {{ in_array('warotator', $selectedTypes) ? 'border-primary border-2' : '' }}">
             <div class="card-body p-4 d-flex align-items-center gap-3">
                 <div class="symbol symbol-40px symbol-circle bg-light-warning">
                     <span class="symbol-label"><i class="ki-outline ki-whatsapp fs-2 text-warning"></i></span>
@@ -65,7 +110,7 @@
         </a>
     </div>
     <div class="col-6 col-md-4 col-xl">
-        <a href="{{ request()->fullUrlWithQuery(['type' => 'qrcode']) }}" class="card card-flush shadow-sm border-0 h-100 text-hover-primary {{ request('type') === 'qrcode' ? 'border-primary border-2' : '' }}">
+        <a href="{{ route('admin.links', array_merge(request()->except(['page']), ['types' => ['qrcode']])) }}" class="card card-flush shadow-sm border-0 h-100 text-hover-primary {{ in_array('qrcode', $selectedTypes) ? 'border-primary border-2' : '' }}">
             <div class="card-body p-4 d-flex align-items-center gap-3">
                 <div class="symbol symbol-40px symbol-circle bg-light-danger">
                     <span class="symbol-label"><i class="ki-outline ki-scan-barcode fs-2 text-danger"></i></span>
@@ -94,16 +139,6 @@
                 </select>
             </div>
 
-            @php
-                $activeFilterCount = 0;
-                if (request('type')) $activeFilterCount++;
-                if (request('domain_id') !== null && request('domain_id') !== '') $activeFilterCount++;
-                if (request('user_id')) $activeFilterCount++;
-                if (request('status')) $activeFilterCount++;
-                if (request('verified')) $activeFilterCount++;
-                if (request('sort') && request('sort') !== 'latest') $activeFilterCount++;
-            @endphp
-
             <button type="button" class="btn btn-sm btn-light-primary fw-bold d-flex align-items-center gap-2" id="btn_open_filter_modal" data-bs-toggle="modal" data-bs-target="#modal_filter_links">
                 <i class="ki-outline ki-filter fs-4"></i>
                 Filter
@@ -123,9 +158,13 @@
         <!-- Right: Search Form on the far right -->
         <div class="d-flex align-items-center gap-2 ms-auto">
             <form method="GET" action="{{ route('admin.links') }}" id="searchForm" class="d-flex align-items-center">
-                <!-- Keep existing query params except search & page -->
+                <!-- Keep existing query params including arrays except search & page -->
                 @foreach(request()->except(['search', 'page']) as $k => $v)
-                    @if($v !== null && $v !== '')
+                    @if(is_array($v))
+                        @foreach($v as $subV)
+                            <input type="hidden" name="{{ $k }}[]" value="{{ $subV }}" />
+                        @endforeach
+                    @elseif($v !== null && $v !== '')
                         <input type="hidden" name="{{ $k }}" value="{{ $v }}" />
                     @endif
                 @endforeach
@@ -143,59 +182,59 @@
         $activePills = [];
         if (request('search')) {
             $activePills[] = [
-                'param' => 'search',
-                'label' => 'Kata Kunci: "' . request('search') . '"'
+                'label' => 'Kata Kunci: "' . request('search') . '"',
+                'url' => makeFilterRemoveUrl('search')
             ];
         }
-        if (request('type')) {
-            $typeNames = [
-                'biolink' => 'Bio Link',
-                'link' => 'Short Link',
-                'warotator' => 'WA Rotator',
-                'qrcode' => 'QR Code'
-            ];
+
+        $typeNames = [
+            'biolink' => 'Bio Link',
+            'link' => 'Short Link',
+            'warotator' => 'WA Rotator',
+            'qrcode' => 'QR Code'
+        ];
+        foreach ($selectedTypes as $typeVal) {
             $activePills[] = [
-                'param' => 'type',
-                'label' => 'Tipe: ' . ($typeNames[request('type')] ?? request('type'))
+                'label' => 'Tipe: ' . ($typeNames[$typeVal] ?? $typeVal),
+                'url' => makeFilterRemoveUrl('types', $typeVal)
             ];
         }
-        if (request('domain_id') !== null && request('domain_id') !== '') {
-            if (request('domain_id') === '0' || request('domain_id') === 'default') {
-                $activePills[] = [
-                    'param' => 'domain_id',
-                    'label' => 'Domain: Domain Utama (Default)'
-                ];
+
+        foreach ($selectedDomains as $domId) {
+            if ($domId === '0' || $domId === 'default') {
+                $domLabel = 'Domain Utama (Default)';
             } else {
-                $domObj = $domains->firstWhere('id', request('domain_id'));
-                if ($domObj) {
-                    $activePills[] = [
-                        'param' => 'domain_id',
-                        'label' => 'Domain: ' . $domObj->host
-                    ];
-                }
+                $domObj = $domains->firstWhere('id', $domId);
+                $domLabel = $domObj ? $domObj->host : 'Domain #' . $domId;
             }
-        }
-        if (request('user_id')) {
-            $usrObj = $users->firstWhere('id', request('user_id'));
-            if ($usrObj) {
-                $activePills[] = [
-                    'param' => 'user_id',
-                    'label' => 'User: ' . $usrObj->name
-                ];
-            }
-        }
-        if (request('status')) {
             $activePills[] = [
-                'param' => 'status',
-                'label' => 'Status: ' . (request('status') === 'active' || request('status') === '1' ? 'Aktif' : 'Nonaktif')
+                'label' => 'Domain: ' . $domLabel,
+                'url' => makeFilterRemoveUrl('domain_ids', $domId)
             ];
         }
-        if (request('verified')) {
+
+        foreach ($selectedUsers as $usrId) {
+            $usrObj = $users->firstWhere('id', $usrId);
             $activePills[] = [
-                'param' => 'verified',
-                'label' => 'Verifikasi: ' . (request('verified') === 'yes' || request('verified') === '1' ? 'Terverifikasi' : 'Belum')
+                'label' => 'User: ' . ($usrObj ? $usrObj->name : '#' . $usrId),
+                'url' => makeFilterRemoveUrl('user_ids', $usrId)
             ];
         }
+
+        foreach ($selectedStatuses as $stVal) {
+            $activePills[] = [
+                'label' => 'Status: ' . ($stVal === 'active' || $stVal === '1' ? 'Aktif' : 'Nonaktif'),
+                'url' => makeFilterRemoveUrl('statuses', $stVal)
+            ];
+        }
+
+        foreach ($selectedVerified as $vrVal) {
+            $activePills[] = [
+                'label' => 'Verifikasi: ' . ($vrVal === 'yes' || $vrVal === '1' ? 'Terverifikasi' : 'Belum'),
+                'url' => makeFilterRemoveUrl('verified_statuses', $vrVal)
+            ];
+        }
+
         if (request('sort') && request('sort') !== 'latest') {
             $sortNames = [
                 'oldest' => 'Terlama',
@@ -205,8 +244,8 @@
                 'url_desc' => 'Slug Z-A'
             ];
             $activePills[] = [
-                'param' => 'sort',
-                'label' => 'Urutan: ' . ($sortNames[request('sort')] ?? request('sort'))
+                'label' => 'Urutan: ' . ($sortNames[request('sort')] ?? request('sort')),
+                'url' => makeFilterRemoveUrl('sort')
             ];
         }
     @endphp
@@ -217,11 +256,11 @@
                 <a href="{{ route('admin.links') }}" class="btn btn-xs btn-danger fw-bold py-1 px-3 d-flex align-items-center gap-1">
                     <i class="ki-outline ki-trash fs-8"></i> Reset Filter
                 </a>
-                <span class="text-muted fs-8 fw-semibold ms-2">Filter Aktif:</span>
+                <span class="text-muted fs-8 fw-semibold ms-2">Filter Aktif ({{ count($activePills) }}):</span>
                 @foreach($activePills as $pill)
                     <span class="badge badge-white text-gray-800 border shadow-xs d-inline-flex align-items-center gap-1 py-1 px-2 fs-8">
                         {{ $pill['label'] }}
-                        <a href="{{ request()->fullUrlWithQuery([$pill['param'] => null, 'page' => null]) }}" class="text-hover-danger text-muted ms-1" title="Hapus Filter">
+                        <a href="{{ $pill['url'] }}" class="text-hover-danger text-muted ms-1" title="Hapus Filter">
                             <i class="ki-outline ki-cross fs-8"></i>
                         </a>
                     </span>
@@ -438,9 +477,9 @@
     </div>
 </div>
 
-<!-- Modal Multi-Filter Links -->
+<!-- Modal Multi-Filter Links (All Filters Support Multi-Select) -->
 <div class="modal fade" id="modal_filter_links" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered mw-500px">
+    <div class="modal-dialog modal-dialog-centered mw-600px">
         <div class="modal-content">
             <form method="GET" action="{{ route('admin.links') }}" id="filterModalForm">
                 @if(request('search'))
@@ -448,67 +487,97 @@
                 @endif
 
                 <div class="modal-header pb-0 border-0 justify-content-between">
-                    <h2 class="fw-bold fs-4 mb-0">Filter Tautan & Sumber Daya</h2>
+                    <div>
+                        <h2 class="fw-bold fs-4 mb-0">Multi-Filter Tautan & Sumber Daya</h2>
+                        <span class="text-muted fs-8">Pilih satu atau beberapa kriteria filter di bawah</span>
+                    </div>
                     <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
                         <i class="ki-outline ki-cross fs-2"></i>
                     </div>
                 </div>
 
                 <div class="modal-body py-5 px-lg-8">
-                    <!-- Tipe Resource -->
+                    <!-- 1. Tipe Resource (Multi-Select Checkboxes) -->
                     <div class="fv-row mb-5">
-                        <label class="fs-7 fw-semibold mb-2">Tipe Resource</label>
-                        <select name="type" class="form-select form-select-solid form-select-sm">
-                            <option value="">Semua Tipe Resource</option>
-                            <option value="biolink" {{ request('type') === 'biolink' ? 'selected' : '' }}>Bio Link (Halaman Profil)</option>
-                            <option value="link" {{ request('type') === 'link' ? 'selected' : '' }}>Short Link (Pemendek Tautan)</option>
-                            <option value="warotator" {{ request('type') === 'warotator' ? 'selected' : '' }}>WhatsApp Rotator</option>
-                            <option value="qrcode" {{ request('type') === 'qrcode' ? 'selected' : '' }}>QR Code Link</option>
-                        </select>
+                        <label class="fs-7 fw-bolder mb-2 d-block">Tipe Resource (Multi-Pilih):</label>
+                        <div class="row g-2">
+                            <div class="col-6 col-sm-3">
+                                <label class="btn btn-outline btn-outline-dashed btn-active-light-primary d-flex align-items-center gap-2 p-2 w-100 {{ in_array('biolink', $selectedTypes) ? 'active bg-light-primary border-primary' : '' }}">
+                                    <input type="checkbox" name="types[]" value="biolink" class="form-check-input form-check-input-sm" {{ in_array('biolink', $selectedTypes) ? 'checked' : '' }} />
+                                    <span class="fs-8 fw-semibold">Bio Link</span>
+                                </label>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <label class="btn btn-outline btn-outline-dashed btn-active-light-success d-flex align-items-center gap-2 p-2 w-100 {{ in_array('link', $selectedTypes) ? 'active bg-light-success border-success' : '' }}">
+                                    <input type="checkbox" name="types[]" value="link" class="form-check-input form-check-input-sm" {{ in_array('link', $selectedTypes) ? 'checked' : '' }} />
+                                    <span class="fs-8 fw-semibold">Short Link</span>
+                                </label>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <label class="btn btn-outline btn-outline-dashed btn-active-light-warning d-flex align-items-center gap-2 p-2 w-100 {{ in_array('warotator', $selectedTypes) ? 'active bg-light-warning border-warning' : '' }}">
+                                    <input type="checkbox" name="types[]" value="warotator" class="form-check-input form-check-input-sm" {{ in_array('warotator', $selectedTypes) ? 'checked' : '' }} />
+                                    <span class="fs-8 fw-semibold">WA Rotator</span>
+                                </label>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <label class="btn btn-outline btn-outline-dashed btn-active-light-danger d-flex align-items-center gap-2 p-2 w-100 {{ in_array('qrcode', $selectedTypes) ? 'active bg-light-danger border-danger' : '' }}">
+                                    <input type="checkbox" name="types[]" value="qrcode" class="form-check-input form-check-input-sm" {{ in_array('qrcode', $selectedTypes) ? 'checked' : '' }} />
+                                    <span class="fs-8 fw-semibold">QR Code</span>
+                                </label>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Domain -->
+                    <!-- 2. Domain Terhubung (Multi-Select) -->
                     <div class="fv-row mb-5">
-                        <label class="fs-7 fw-semibold mb-2">Domain Terhubung</label>
-                        <select name="domain_id" class="form-select form-select-solid form-select-sm">
-                            <option value="">Semua Domain</option>
-                            <option value="0" {{ request('domain_id') === '0' || request('domain_id') === 'default' ? 'selected' : '' }}>Domain Utama Platform (Default)</option>
+                        <label class="fs-7 fw-bolder mb-2 d-block">Domain Terhubung (Multi-Pilih):</label>
+                        <select name="domain_ids[]" id="filter_domain_ids" class="form-select form-select-solid form-select-sm" data-control="select2" data-placeholder="Pilih satu atau beberapa domain..." data-close-on-select="false" multiple="multiple" data-dropdown-parent="#modal_filter_links">
+                            <option value="0" {{ in_array('0', $selectedDomains) ? 'selected' : '' }}>Domain Utama Platform (Default)</option>
                             @foreach($domains as $dom)
-                                <option value="{{ $dom->id }}" {{ request('domain_id') == $dom->id ? 'selected' : '' }}>{{ $dom->host }} ({{ $dom->type == 1 ? 'System' : 'Custom' }})</option>
+                                <option value="{{ $dom->id }}" {{ in_array((string)$dom->id, $selectedDomains) ? 'selected' : '' }}>{{ $dom->host }} ({{ $dom->type == 1 ? 'System' : 'Custom' }})</option>
                             @endforeach
                         </select>
                     </div>
 
-                    <!-- Pemilik / Pengguna -->
+                    <!-- 3. Pemilik / Pengguna (Multi-Select) -->
                     <div class="fv-row mb-5">
-                        <label class="fs-7 fw-semibold mb-2">Pemilik / Pengguna</label>
-                        <select name="user_id" class="form-select form-select-solid form-select-sm">
-                            <option value="">Semua Pengguna</option>
+                        <label class="fs-7 fw-bolder mb-2 d-block">Pemilik / Pengguna (Multi-Pilih):</label>
+                        <select name="user_ids[]" id="filter_user_ids" class="form-select form-select-solid form-select-sm" data-control="select2" data-placeholder="Pilih satu atau beberapa pengguna..." data-close-on-select="false" multiple="multiple" data-dropdown-parent="#modal_filter_links">
                             @foreach($users as $usr)
-                                <option value="{{ $usr->id }}" {{ request('user_id') == $usr->id ? 'selected' : '' }}>{{ $usr->name }} ({{ $usr->email }})</option>
+                                <option value="{{ $usr->id }}" {{ in_array((string)$usr->id, $selectedUsers) ? 'selected' : '' }}>{{ $usr->name }} ({{ $usr->email }})</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div class="row g-4 mb-5">
-                        <!-- Status -->
+                        <!-- 4. Status Link (Multi-Select) -->
                         <div class="col-6">
-                            <label class="fs-7 fw-semibold mb-2">Status Link</label>
-                            <select name="status" class="form-select form-select-solid form-select-sm">
-                                <option value="">Semua Status</option>
-                                <option value="active" {{ request('status') === 'active' || request('status') === '1' ? 'selected' : '' }}>Aktif</option>
-                                <option value="inactive" {{ request('status') === 'inactive' || request('status') === '0' ? 'selected' : '' }}>Nonaktif</option>
-                            </select>
+                            <label class="fs-7 fw-bolder mb-2 d-block">Status Link (Multi-Pilih):</label>
+                            <div class="d-flex flex-column gap-2">
+                                <label class="btn btn-outline btn-outline-dashed btn-active-light-success d-flex align-items-center gap-2 p-2 w-100 {{ in_array('active', $selectedStatuses) || in_array('1', $selectedStatuses) ? 'active bg-light-success border-success' : '' }}">
+                                    <input type="checkbox" name="statuses[]" value="active" class="form-check-input form-check-input-sm" {{ in_array('active', $selectedStatuses) || in_array('1', $selectedStatuses) ? 'checked' : '' }} />
+                                    <span class="fs-8 fw-semibold">Aktif</span>
+                                </label>
+                                <label class="btn btn-outline btn-outline-dashed btn-active-light-danger d-flex align-items-center gap-2 p-2 w-100 {{ in_array('inactive', $selectedStatuses) || in_array('0', $selectedStatuses) ? 'active bg-light-danger border-danger' : '' }}">
+                                    <input type="checkbox" name="statuses[]" value="inactive" class="form-check-input form-check-input-sm" {{ in_array('inactive', $selectedStatuses) || in_array('0', $selectedStatuses) ? 'checked' : '' }} />
+                                    <span class="fs-8 fw-semibold">Nonaktif</span>
+                                </label>
+                            </div>
                         </div>
 
-                        <!-- Verifikasi -->
+                        <!-- 5. Status Verifikasi (Multi-Select) -->
                         <div class="col-6">
-                            <label class="fs-7 fw-semibold mb-2">Verifikasi</label>
-                            <select name="verified" class="form-select form-select-solid form-select-sm">
-                                <option value="">Semua</option>
-                                <option value="yes" {{ request('verified') === 'yes' || request('verified') === '1' ? 'selected' : '' }}>Terverifikasi</option>
-                                <option value="no" {{ request('verified') === 'no' || request('verified') === '0' ? 'selected' : '' }}>Belum</option>
-                            </select>
+                            <label class="fs-7 fw-bolder mb-2 d-block">Verifikasi (Multi-Pilih):</label>
+                            <div class="d-flex flex-column gap-2">
+                                <label class="btn btn-outline btn-outline-dashed btn-active-light-primary d-flex align-items-center gap-2 p-2 w-100 {{ in_array('yes', $selectedVerified) || in_array('1', $selectedVerified) ? 'active bg-light-primary border-primary' : '' }}">
+                                    <input type="checkbox" name="verified_statuses[]" value="yes" class="form-check-input form-check-input-sm" {{ in_array('yes', $selectedVerified) || in_array('1', $selectedVerified) ? 'checked' : '' }} />
+                                    <span class="fs-8 fw-semibold">Terverifikasi</span>
+                                </label>
+                                <label class="btn btn-outline btn-outline-dashed btn-active-light-secondary d-flex align-items-center gap-2 p-2 w-100 {{ in_array('no', $selectedVerified) || in_array('0', $selectedVerified) ? 'active bg-light-secondary border-secondary' : '' }}">
+                                    <input type="checkbox" name="verified_statuses[]" value="no" class="form-check-input form-check-input-sm" {{ in_array('no', $selectedVerified) || in_array('0', $selectedVerified) ? 'checked' : '' }} />
+                                    <span class="fs-8 fw-semibold">Belum Verifikasi</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
 
@@ -540,7 +609,7 @@
                 </div>
 
                 <div class="modal-footer justify-content-between pt-0 border-0">
-                    <a href="{{ route('admin.links') }}" class="btn btn-sm btn-light">Reset Filter</a>
+                    <a href="{{ route('admin.links') }}" class="btn btn-sm btn-light">Reset Semua</a>
                     <div class="d-flex gap-2">
                         <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">Tutup</button>
                         <button type="submit" class="btn btn-sm btn-primary fw-bold">Terapkan Filter</button>
@@ -572,7 +641,31 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Filter Form Submit (Clean empty values)
+    // Toggle active state styling on checkbox label clicks inside modal
+    document.querySelectorAll('#modal_filter_links label.btn input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', function() {
+            const parentLabel = this.closest('label');
+            if (!parentLabel) return;
+            if (this.checked) {
+                parentLabel.classList.add('active');
+            } else {
+                parentLabel.classList.remove('active');
+            }
+        });
+    });
+
+    // Re-initialize Select2 inside modal when shown
+    const modalFilterEl = document.getElementById('modal_filter_links');
+    if (modalFilterEl && typeof $ !== 'undefined' && $.fn.select2) {
+        modalFilterEl.addEventListener('shown.bs.modal', function() {
+            $('#filter_domain_ids, #filter_user_ids').select2({
+                dropdownParent: $('#modal_filter_links'),
+                width: '100%'
+            });
+        });
+    }
+
+    // Clean submission of multi-filter form
     const filterModalForm = document.getElementById('filterModalForm');
     if (filterModalForm) {
         filterModalForm.addEventListener('submit', function(e) {

@@ -165,41 +165,62 @@ class AdminController extends Controller
             });
         }
 
-        // Type Filter (biolink, link, warotator, qrcode, etc.)
-        if ($request->filled('type')) {
-            $query->where('type', $request->type);
+        // Multi-Type Filter (types[] or type)
+        $rawTypes = $request->input('types', $request->input('type'));
+        $types = array_values(array_filter((array) $rawTypes));
+        if (!empty($types)) {
+            $query->whereIn('type', $types);
         }
 
-        // Domain Filter
-        if ($request->filled('domain_id')) {
-            if ($request->domain_id === '0' || $request->domain_id === 'default') {
-                $query->where(function($q) {
+        // Multi-Domain Filter (domain_ids[] or domain_id)
+        $rawDomainIds = $request->input('domain_ids', $request->input('domain_id'));
+        $domainIds = array_values(array_filter((array) $rawDomainIds, fn($v) => $v !== null && $v !== ''));
+        if (!empty($domainIds)) {
+            $hasDefault = in_array('0', $domainIds) || in_array('default', $domainIds);
+            $numericIds = array_values(array_filter($domainIds, fn($id) => is_numeric($id) && (int)$id > 0));
+            $query->where(function($q) use ($hasDefault, $numericIds) {
+                if ($hasDefault && !empty($numericIds)) {
+                    $q->where(function($sq) {
+                        $sq->whereNull('domain_id')->orWhere('domain_id', 0);
+                    })->orWhereIn('domain_id', $numericIds);
+                } elseif ($hasDefault) {
                     $q->whereNull('domain_id')->orWhere('domain_id', 0);
-                });
-            } else {
-                $query->where('domain_id', $request->domain_id);
+                } else {
+                    $q->whereIn('domain_id', $numericIds);
+                }
+            });
+        }
+
+        // Multi-User Filter (user_ids[] or user_id)
+        $rawUserIds = $request->input('user_ids', $request->input('user_id'));
+        $userIds = array_values(array_filter((array) $rawUserIds));
+        if (!empty($userIds)) {
+            $query->whereIn('user_id', $userIds);
+        }
+
+        // Multi-Status Filter (statuses[] or status)
+        $rawStatuses = $request->input('statuses', $request->input('status'));
+        $statuses = array_values(array_filter((array) $rawStatuses));
+        if (!empty($statuses)) {
+            $statusBools = [];
+            foreach ($statuses as $st) {
+                if ($st === 'active' || $st === '1') $statusBools[] = 1;
+                if ($st === 'inactive' || $st === '0') $statusBools[] = 0;
+            }
+            if (!empty($statusBools)) {
+                $query->whereIn('is_enabled', $statusBools);
             }
         }
 
-        // User / Owner Filter
-        if ($request->filled('user_id')) {
-            $query->where('user_id', $request->user_id);
-        }
-
-        // Status Filter (Active / Inactive)
-        if ($request->filled('status')) {
-            if ($request->status === 'active' || $request->status === '1') {
-                $query->where('is_enabled', 1);
-            } elseif ($request->status === 'inactive' || $request->status === '0') {
-                $query->where('is_enabled', 0);
-            }
-        }
-
-        // Verified Filter (Verified / Unverified)
-        if ($request->filled('verified')) {
-            if ($request->verified === 'yes' || $request->verified === '1') {
+        // Multi-Verified Filter (verified_statuses[] or verified)
+        $rawVerified = $request->input('verified_statuses', $request->input('verified'));
+        $verified = array_values(array_filter((array) $rawVerified));
+        if (!empty($verified)) {
+            $hasYes = in_array('yes', $verified) || in_array('1', $verified);
+            $hasNo = in_array('no', $verified) || in_array('0', $verified);
+            if ($hasYes && !$hasNo) {
                 $query->where('is_verified', 1);
-            } elseif ($request->verified === 'no' || $request->verified === '0') {
+            } elseif ($hasNo && !$hasYes) {
                 $query->where(function($q) {
                     $q->where('is_verified', 0)->orWhereNull('is_verified');
                 });
