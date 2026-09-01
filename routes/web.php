@@ -129,6 +129,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/statistics/{type?}', [\App\Http\Controllers\Admin\StatisticsController::class, 'index'])->name('admin.statistics');
     Route::get('/links', [AdminController::class, 'links'])->name('admin.links');
     Route::post('/links/{id}/toggle-verify', [AdminController::class, 'toggleVerify'])->name('admin.links.toggle-verify');
+    Route::post('/links/{id}/toggle-status', [AdminController::class, 'toggleStatusLink'])->name('admin.links.toggle-status');
+    Route::delete('/links/{id}', [AdminController::class, 'destroyLink'])->name('admin.links.destroy');
     Route::get('/sync-legacy/check', [\App\Http\Controllers\Admin\SyncController::class, 'checkConnection'])->name('admin.sync.check');
     Route::post('/sync-legacy/step', [\App\Http\Controllers\Admin\SyncController::class, 'processStep'])->name('admin.sync.step');
 });

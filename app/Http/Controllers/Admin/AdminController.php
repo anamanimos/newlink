@@ -145,27 +145,112 @@ class AdminController extends Controller
     }
 
     /**
-     * Show the links administration page.
+     * Show the links administration page with multi-filter & type support.
      */
     public function links(Request $request)
     {
-        $query = Link::with('user');
+        $query = Link::with(['user', 'domain', 'project'])
+            ->withCount('biolinkBlocks');
 
+        // Search Filter (Slug, Destination URL, User Name, User Email)
         if ($request->filled('search')) {
-            $search = $request->search;
+            $search = trim($request->search);
             $query->where(function($q) use ($search) {
                 $q->where('url', 'like', "%{$search}%")
-                  ->orWhere('location_url', 'like', "%{$search}%");
+                  ->orWhere('location_url', 'like', "%{$search}%")
+                  ->orWhereHas('user', function($uq) use ($search) {
+                      $uq->where('name', 'like', "%{$search}%")
+                         ->orWhere('email', 'like', "%{$search}%");
+                  });
             });
         }
 
+        // Type Filter (biolink, link, warotator, qrcode, etc.)
         if ($request->filled('type')) {
             $query->where('type', $request->type);
         }
 
-        $links = $query->latest()->paginate(25);
+        // Domain Filter
+        if ($request->filled('domain_id')) {
+            if ($request->domain_id === '0' || $request->domain_id === 'default') {
+                $query->where(function($q) {
+                    $q->whereNull('domain_id')->orWhere('domain_id', 0);
+                });
+            } else {
+                $query->where('domain_id', $request->domain_id);
+            }
+        }
 
-        return view('admin.modules.links', compact('links'));
+        // User / Owner Filter
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        // Status Filter (Active / Inactive)
+        if ($request->filled('status')) {
+            if ($request->status === 'active' || $request->status === '1') {
+                $query->where('is_enabled', 1);
+            } elseif ($request->status === 'inactive' || $request->status === '0') {
+                $query->where('is_enabled', 0);
+            }
+        }
+
+        // Verified Filter (Verified / Unverified)
+        if ($request->filled('verified')) {
+            if ($request->verified === 'yes' || $request->verified === '1') {
+                $query->where('is_verified', 1);
+            } elseif ($request->verified === 'no' || $request->verified === '0') {
+                $query->where(function($q) {
+                    $q->where('is_verified', 0)->orWhereNull('is_verified');
+                });
+            }
+        }
+
+        // Sort Order
+        $sort = $request->get('sort', 'latest');
+        if ($sort === 'oldest') {
+            $query->oldest();
+        } elseif ($sort === 'clicks_desc') {
+            $query->orderBy('clicks', 'desc');
+        } elseif ($sort === 'clicks_asc') {
+            $query->orderBy('clicks', 'asc');
+        } elseif ($sort === 'url_asc') {
+            $query->orderBy('url', 'asc');
+        } elseif ($sort === 'url_desc') {
+            $query->orderBy('url', 'desc');
+        } else {
+            $query->latest();
+        }
+
+        // Per Page Pagination
+        $perPage = (int) $request->get('per_page', 25);
+        if (!in_array($perPage, [10, 25, 50, 100])) {
+            $perPage = 25;
+        }
+
+        $links = $query->paginate($perPage)->withQueryString();
+
+        // Dropdown Data
+        $domains = Domain::orderBy('host')->get();
+        $users = User::select('id', 'name', 'email')->orderBy('name')->get();
+
+        // Statistics Count
+        $totalAll = Link::count();
+        $totalBiolink = Link::where('type', 'biolink')->count();
+        $totalShortlink = Link::where('type', 'link')->count();
+        $totalWaRotator = Link::where('type', 'warotator')->count();
+        $totalQrCode = Link::where('type', 'qrcode')->count();
+
+        return view('admin.modules.links', compact(
+            'links',
+            'domains',
+            'users',
+            'totalAll',
+            'totalBiolink',
+            'totalShortlink',
+            'totalWaRotator',
+            'totalQrCode'
+        ));
     }
 
     /**
@@ -181,5 +266,38 @@ class AdminController extends Controller
             'is_verified' => (bool)$link->is_verified,
             'message' => $link->is_verified ? 'Link berhasil diverifikasi!' : 'Verifikasi link berhasil dicabut!'
         ]);
+    }
+
+    /**
+     * Toggle active status of a link (Admin).
+     */
+    public function toggleStatusLink(Request $request, $id)
+    {
+        $link = Link::findOrFail($id);
+        $link->update(['is_enabled' => !$link->is_enabled]);
+
+        return response()->json([
+            'success' => true,
+            'is_enabled' => (bool)$link->is_enabled,
+            'message' => $link->is_enabled ? 'Link berhasil diaktifkan!' : 'Link berhasil dinonaktifkan!'
+        ]);
+    }
+
+    /**
+     * Delete a link (Admin).
+     */
+    public function destroyLink(Request $request, $id)
+    {
+        $link = Link::findOrFail($id);
+        $link->delete();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Link berhasil dihapus.'
+            ]);
+        }
+
+        return back()->with('success', 'Link berhasil dihapus.');
     }
 }

@@ -33,4 +33,13 @@ class Link extends Model
     {
         return $this->hasMany(BiolinkBlock::class)->orderBy('order');
     }
+
+    public function getFullUrlAttribute()
+    {
+        if ($this->domain_id > 0 && $this->domain) {
+            $scheme = $this->domain->scheme ?: 'https://';
+            return rtrim($scheme . $this->domain->host, '/') . '/' . ltrim($this->url, '/');
+        }
+        return url($this->url);
+    }
 }
