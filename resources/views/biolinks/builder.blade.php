@@ -365,7 +365,7 @@
                                 <textarea name="description" class="form-control form-control-solid form-control-sm" rows="3" placeholder="Tulis bio singkat...">{{ $link->settings['description'] ?? '' }}</textarea>
                             </div>
 
-                            <!-- Toggle Visibility -->
+                            <!-- Toggle Visibility & Verification -->
                             <div class="card bg-light p-4 rounded-3 mb-5 border-0">
                                 <div class="d-flex align-items-center justify-content-between mb-3">
                                     <label class="form-check-label fs-7 fw-semibold text-gray-800 mb-0 cursor-pointer" for="showAvatarSwitch">Tampilkan Foto Profil</label>
@@ -375,11 +375,24 @@
                                     </div>
                                 </div>
                                 <div class="separator separator-dashed my-2"></div>
-                                <div class="d-flex align-items-center justify-content-between pt-1">
+                                <div class="d-flex align-items-center justify-content-between mb-3 pt-1">
                                     <label class="form-check-label fs-7 fw-semibold text-gray-800 mb-0 cursor-pointer" for="showCoverSwitch">Tampilkan Foto Sampul</label>
                                     <div class="form-check form-switch form-check-custom form-check-solid">
                                         <input type="hidden" name="settings[show_cover]" value="0">
                                         <input class="form-check-input h-20px w-35px cursor-pointer" type="checkbox" role="switch" name="settings[show_cover]" value="1" id="showCoverSwitch" {{ ($link->settings['show_cover'] ?? '1') == '1' ? 'checked' : '' }}>
+                                    </div>
+                                </div>
+                                <div class="separator separator-dashed my-2"></div>
+                                <div class="d-flex align-items-center justify-content-between pt-1">
+                                    <div>
+                                        <label class="form-check-label fs-7 fw-semibold text-gray-800 mb-0 cursor-pointer" for="verifiedBadgeSwitch">
+                                            <i class="ki-outline ki-verify fs-4 text-primary me-1"></i> Checklist Verified (Centang Biru)
+                                        </label>
+                                        <div class="text-muted fs-8">Tampilkan centang biru verified di samping judul biolink.</div>
+                                    </div>
+                                    <div class="form-check form-switch form-check-custom form-check-solid">
+                                        <input type="hidden" name="settings[verified_badge]" value="0">
+                                        <input class="form-check-input h-20px w-35px cursor-pointer" type="checkbox" role="switch" name="settings[verified_badge]" value="1" id="verifiedBadgeSwitch" {{ ((!empty($link->settings['verified_badge']) && $link->settings['verified_badge'] == '1') || $link->is_verified) ? 'checked' : '' }}>
                                     </div>
                                 </div>
                             </div>
@@ -590,6 +603,86 @@
                                             <input type="color" name="settings[text_color]" class="color-picker-input" value="{{ $link->settings['text_color'] ?? '#111827' }}" style="position: absolute; top: -10px; left: -10px; width: 56px; height: 56px; border: none; padding: 0; cursor: pointer;">
                                         </div>
                                         <input type="text" class="form-control form-control-solid form-control-sm text-uppercase fw-semibold color-hex-text" value="{{ $link->settings['text_color'] ?? '#111827' }}" style="font-family: monospace; text-align: center;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Avatar Border & Shape Customization -->
+                            <div class="separator separator-dashed my-5"></div>
+                            <div class="mb-5">
+                                <h4 class="text-gray-900 fw-bold fs-6 mb-3">
+                                    <i class="ki-outline ki-user-square fs-4 text-primary me-1"></i> Border & Bentuk Foto Profil (Avatar)
+                                </h4>
+                                <div class="row g-4">
+                                    <div class="col-md-4">
+                                        <label class="form-label fs-7 fw-semibold text-gray-900">Ketebalan Border</label>
+                                        <select name="settings[avatar_border_width]" id="avatarBorderWidthSelector" class="form-select form-select-solid form-select-sm">
+                                            <option value="0px" {{ ($link->settings['avatar_border_width'] ?? '4px') == '0px' ? 'selected' : '' }}>0px (Tanpa Border)</option>
+                                            <option value="1px" {{ ($link->settings['avatar_border_width'] ?? '4px') == '1px' ? 'selected' : '' }}>1px (Sangat Tipis)</option>
+                                            <option value="2px" {{ ($link->settings['avatar_border_width'] ?? '4px') == '2px' ? 'selected' : '' }}>2px (Tipis)</option>
+                                            <option value="3px" {{ ($link->settings['avatar_border_width'] ?? '4px') == '3px' ? 'selected' : '' }}>3px (Sedang)</option>
+                                            <option value="4px" {{ ($link->settings['avatar_border_width'] ?? '4px') == '4px' ? 'selected' : '' }}>4px (Standar / Tebal)</option>
+                                            <option value="6px" {{ ($link->settings['avatar_border_width'] ?? '4px') == '6px' ? 'selected' : '' }}>6px (Sangat Tebal)</option>
+                                            <option value="8px" {{ ($link->settings['avatar_border_width'] ?? '4px') == '8px' ? 'selected' : '' }}>8px (Ekstra Tebal)</option>
+                                            <option value="10px" {{ ($link->settings['avatar_border_width'] ?? '4px') == '10px' ? 'selected' : '' }}>10px (Maksimal)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fs-7 fw-semibold text-gray-900">Warna Border Avatar</label>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="position-relative" style="width: 36px; height: 36px; border-radius: 8px; overflow: hidden; border: 1px solid var(--bs-border-color); flex-shrink: 0;">
+                                                <input type="color" name="settings[avatar_border_color]" class="color-picker-input" value="{{ $link->settings['avatar_border_color'] ?? '#ffffff' }}" style="position: absolute; top: -10px; left: -10px; width: 56px; height: 56px; border: none; padding: 0; cursor: pointer;">
+                                            </div>
+                                            <input type="text" class="form-control form-control-solid form-control-sm text-uppercase fw-semibold color-hex-text" value="{{ $link->settings['avatar_border_color'] ?? '#ffffff' }}" style="font-family: monospace; text-align: center;">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label fs-7 fw-semibold text-gray-900">Bentuk Sudut (Radius)</label>
+                                        <select name="settings[avatar_border_radius]" id="avatarBorderRadiusSelector" class="form-select form-select-solid form-select-sm">
+                                            <option value="50%" {{ ($link->settings['avatar_border_radius'] ?? '50%') == '50%' ? 'selected' : '' }}>Bulat Penuh (Circle)</option>
+                                            <option value="24px" {{ ($link->settings['avatar_border_radius'] ?? '50%') == '24px' ? 'selected' : '' }}>Membulat Halus (Rounded)</option>
+                                            <option value="12px" {{ ($link->settings['avatar_border_radius'] ?? '50%') == '12px' ? 'selected' : '' }}>Sedikit Membulat (12px)</option>
+                                            <option value="0px" {{ ($link->settings['avatar_border_radius'] ?? '50%') == '0px' ? 'selected' : '' }}>Kotak Persegi (Square)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Verified Badge & Branding Settings -->
+                            <div class="separator separator-dashed my-5"></div>
+                            <div class="mb-5">
+                                <h4 class="text-gray-900 fw-bold fs-6 mb-3">
+                                    <i class="ki-outline ki-shield-tick fs-4 text-primary me-1"></i> Verifikasi & Footer Branding
+                                </h4>
+                                <div class="card bg-light p-4 rounded-3 border-0">
+                                    <!-- Checklist Verified Toggle -->
+                                    <div class="d-flex align-items-center justify-content-between mb-3">
+                                        <div>
+                                            <label class="form-check-label fs-7 fw-semibold text-gray-800 mb-0 cursor-pointer" for="verifiedBadgeSwitchStyling">
+                                                <i class="ki-outline ki-verify fs-5 text-primary me-1"></i> Checklist Verified (Centang Biru)
+                                            </label>
+                                            <div class="text-muted fs-8">Tampilkan centang verified resmi di samping nama/judul.</div>
+                                        </div>
+                                        <div class="form-check form-switch form-check-custom form-check-solid">
+                                            <input type="hidden" name="settings[verified_badge]" value="0">
+                                            <input class="form-check-input h-20px w-35px cursor-pointer" type="checkbox" role="switch" name="settings[verified_badge]" value="1" id="verifiedBadgeSwitchStyling" {{ ((!empty($link->settings['verified_badge']) && $link->settings['verified_badge'] == '1') || $link->is_verified) ? 'checked' : '' }}>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="separator separator-dashed my-2"></div>
+
+                                    <!-- Hide Branding Switch -->
+                                    <div class="d-flex align-items-center justify-content-between pt-1">
+                                        <div>
+                                            <label class="form-check-label fs-7 fw-semibold text-gray-800 mb-0 cursor-pointer" for="hideBrandingSwitch">
+                                                <i class="ki-outline ki-eye-slash fs-5 text-danger me-1"></i> Sembunyikan "Powered by Newlink"
+                                            </label>
+                                            <div class="text-muted fs-8">Hapus teks watermark branding Newlink dari bagian bawah biolink.</div>
+                                        </div>
+                                        <div class="form-check form-switch form-check-custom form-check-solid">
+                                            <input type="hidden" name="settings[hide_branding]" value="0">
+                                            <input class="form-check-input h-20px w-35px cursor-pointer" type="checkbox" role="switch" name="settings[hide_branding]" value="1" id="hideBrandingSwitch" {{ ($link->settings['hide_branding'] ?? '0') == '1' ? 'checked' : '' }}>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1186,9 +1279,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 const btnText = $('input[name="settings[btn_text_color]"]').val();
                 const textColor = $('input[name="settings[text_color]"]').val();
                 
-                // 1. Cover & Avatar visibility sync
+                // 1. Cover & Avatar visibility & border sync
                 const showAvatar = $('#showAvatarSwitch').is(':checked');
                 const showCover = $('#showCoverSwitch').is(':checked');
+                const avatarBorderWidth = $('select[name="settings[avatar_border_width]"]').val() || '4px';
+                const avatarBorderColor = $('input[name="settings[avatar_border_color]"]').val() || '#ffffff';
+                const avatarBorderRadius = $('select[name="settings[avatar_border_radius]"]').val() || '50%';
                 
                 const coverEl = iframeDoc.querySelector('.cover-photo-full');
                 const contentEl = iframeDoc.querySelector('.biolink-content');
@@ -1202,9 +1298,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 if (avatarEl) {
                     avatarEl.style.display = showAvatar ? 'block' : 'none';
+                    avatarEl.style.border = `${avatarBorderWidth} solid ${avatarBorderColor}`;
+                    avatarEl.style.borderRadius = avatarBorderRadius;
                 }
                 
-                // 2. Title & Description text sync
+                // 2. Title, Description text & Verified Badge sync
                 const pTitleText = iframeDoc.querySelector('.profile-title-text');
                 if (pTitleText && titleVal !== undefined) {
                     pTitleText.textContent = (titleVal && titleVal.trim() !== '') ? titleVal : 'My Biolink';
@@ -1212,6 +1310,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 const pDesc = iframeDoc.querySelector('.profile-desc');
                 if (pDesc && descVal !== undefined) {
                     pDesc.textContent = descVal;
+                }
+                const isVerified = $('#verifiedBadgeSwitch').is(':checked') || $('#verifiedBadgeSwitchStyling').is(':checked');
+                const verifiedBadgeEl = iframeDoc.querySelector('.verified-badge-icon');
+                if (verifiedBadgeEl) {
+                    verifiedBadgeEl.style.display = isVerified ? 'inline-block' : 'none';
                 }
 
                 // 3. Update Background
@@ -1246,13 +1349,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (btnText) btn.style.color = btnText;
                 });
                 
-                // 5. Update Text colors
+                // 5. Update Text colors & Branding Footer visibility
+                const hideBranding = $('#hideBrandingSwitch').is(':checked');
+                const watermark = iframeDoc.querySelector('.watermark');
+                if (watermark) {
+                    watermark.style.display = hideBranding ? 'none' : 'block';
+                }
+
                 if (textColor) {
                     iframeDoc.body.style.color = textColor;
                     const pTitle = iframeDoc.querySelector('.profile-title');
                     if (pTitle) pTitle.style.color = textColor;
                     if (pDesc) pDesc.style.color = textColor;
-                    const watermark = iframeDoc.querySelector('.watermark');
                     if (watermark) watermark.style.color = textColor;
                     const bTexts = iframeDoc.querySelectorAll('.block-text');
                     bTexts.forEach(txt => txt.style.color = textColor);
@@ -1268,8 +1376,18 @@ document.addEventListener('DOMContentLoaded', function() {
         syncStylingToPreview();
     });
 
-    // Listen to profile visibility switches
-    $(document).on('change', '#showAvatarSwitch, #showCoverSwitch', function() {
+    // Listen to profile & verified visibility switches
+    $(document).on('change', '#showAvatarSwitch, #showCoverSwitch, #hideBrandingSwitch', function() {
+        syncStylingToPreview();
+    });
+
+    $(document).on('change', '#verifiedBadgeSwitch', function() {
+        $('#verifiedBadgeSwitchStyling').prop('checked', $(this).is(':checked'));
+        syncStylingToPreview();
+    });
+
+    $(document).on('change', '#verifiedBadgeSwitchStyling', function() {
+        $('#verifiedBadgeSwitch').prop('checked', $(this).is(':checked'));
         syncStylingToPreview();
     });
 

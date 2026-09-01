@@ -64,7 +64,7 @@ class BiolinkController extends Controller
 
         $link->update(['settings' => $settings]);
 
-        if ($request->wantsJson()) {
+        if ($request->ajax() || $request->wantsJson()) {
             return response()->json(['success' => true, 'message' => 'Pengaturan profil biolink berhasil diperbarui!']);
         }
 

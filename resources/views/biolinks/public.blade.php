@@ -17,6 +17,12 @@
         $btnBgColor = $link->settings['btn_bg_color'] ?? '#ffffff';
         $btnTextColor = $link->settings['btn_text_color'] ?? '#111827';
         $textColor = $link->settings['text_color'] ?? '#111827';
+        $avatarBorderWidth = $link->settings['avatar_border_width'] ?? '4px';
+        $avatarBorderColor = $link->settings['avatar_border_color'] ?? '#ffffff';
+        $avatarBorderRadius = $link->settings['avatar_border_radius'] ?? '50%';
+        $hasVerifiedBadge = (!empty($link->settings['verified_badge']) && $link->settings['verified_badge'] == '1') || $link->is_verified;
+        $verifiedBadgeColor = $link->settings['verified_badge_color'] ?? '#0095f6';
+        $hideBranding = ($link->settings['hide_branding'] ?? '0') == '1';
 
         if ($bgType === 'gradient') {
             $backgroundStyle = "linear-gradient(135deg, {$bgGradientStart} 0%, {$bgGradientEnd} 100%)";
@@ -126,12 +132,13 @@
         .profile-image {
             width: 120px;
             height: 120px;
-            border-radius: 50%;
-            border: 4px solid #ffffff;
+            border-radius: {{ $avatarBorderRadius }};
+            border: {{ $avatarBorderWidth }} solid {{ $avatarBorderColor }};
             box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
             object-fit: cover;
             background-color: #ffffff;
             margin-bottom: 12px;
+            transition: all 0.2s ease;
         }
         .profile-title {
             font-size: 1.35rem;
@@ -223,11 +230,9 @@
         <!-- Profile Title & Verified Badge -->
         <h1 class="profile-title">
             <span class="profile-title-text">{{ $link->settings['title'] ?? 'My Biolink' }}</span>
-            @if($link->is_verified)
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#0095f6" style="color: white; flex-shrink: 0; margin-top: 1px;" title="Verified Profile">
-                    <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
-                </svg>
-            @endif
+            <svg class="verified-badge-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="{{ $verifiedBadgeColor }}" style="display: {{ $hasVerifiedBadge ? 'inline-block' : 'none' }}; flex-shrink: 0; margin-left: 4px; vertical-align: middle;" title="Verified Profile">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
         </h1>
 
         <!-- Profile Description -->
@@ -250,7 +255,7 @@
                 @endif
             @endforeach
 
-            <a href="{{ url('/') }}" class="watermark">Powered by Newlink</a>
+            <a href="{{ url('/') }}" class="watermark" style="display: {{ $hideBranding ? 'none' : 'block' }};">Powered by Newlink</a>
         </div>
     </div>
 
