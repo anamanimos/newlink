@@ -152,12 +152,14 @@ class AdminController extends Controller
         $query = Link::with(['user', 'domain', 'project'])
             ->withCount('biolinkBlocks');
 
-        // Search Filter (Slug, Destination URL, User Name, User Email)
+        // Search Filter (Title, Slug, Destination URL, User Name, User Email)
         if ($request->filled('search')) {
             $search = trim($request->search);
             $query->where(function($q) use ($search) {
                 $q->where('url', 'like', "%{$search}%")
                   ->orWhere('location_url', 'like', "%{$search}%")
+                  ->orWhere('settings->title', 'like', "%{$search}%")
+                  ->orWhere('settings->name', 'like', "%{$search}%")
                   ->orWhereHas('user', function($uq) use ($search) {
                       $uq->where('name', 'like', "%{$search}%")
                          ->orWhere('email', 'like', "%{$search}%");
@@ -342,6 +344,68 @@ class AdminController extends Controller
             'message' => $message,
             'count' => $count
         ]);
+    }
+
+    /**
+     * Update link details (title, slug, domain, destination) from admin.
+     */
+    public function updateLink(Request $request, $id)
+    {
+        $link = Link::findOrFail($id);
+
+        $domainId = $request->domain_id ? (int)$request->domain_id : 0;
+
+        $rules = [
+            'title' => 'nullable|string|max:255',
+            'url' => [
+                'required',
+                'string',
+                'alpha_dash',
+                'max:256',
+                \Illuminate\Validation\Rule::unique('links', 'url')->where(function ($query) use ($domainId, $id) {
+                    return $query->where('domain_id', $domainId)->where('id', '!=', $id);
+                })
+            ],
+            'domain_id' => 'nullable|integer',
+        ];
+
+        if ($link->type === 'link') {
+            $rules['location_url'] = 'required|url|max:2048';
+        }
+
+        $request->validate($rules);
+
+        $settings = $link->settings ?? [];
+        if ($request->has('title')) {
+            $settings['title'] = $request->input('title');
+        }
+
+        $updateData = [
+            'url' => $request->input('url'),
+            'domain_id' => $domainId,
+            'settings' => $settings,
+        ];
+
+        if ($request->has('location_url') && $link->type === 'link') {
+            $updateData['location_url'] = $request->input('location_url');
+        }
+
+        $link->update($updateData);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Data tautan & judul berhasil diperbarui!',
+                'link' => [
+                    'id' => $link->id,
+                    'title' => $link->display_title,
+                    'url' => $link->url,
+                    'full_url' => $link->full_url,
+                ]
+            ]);
+        }
+
+        return back()->with('success', 'Data tautan & judul berhasil diperbarui!');
     }
 
     /**

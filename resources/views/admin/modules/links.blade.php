@@ -171,7 +171,7 @@
 
                 <div class="d-flex align-items-center position-relative">
                     <i class="ki-outline ki-magnifier fs-3 position-absolute ms-3 text-gray-500"></i>
-                    <input type="text" name="search" id="searchInput" class="form-control form-control-sm form-control-solid ps-10 w-225px w-md-275px" placeholder="Cari slug, tujuan, atau user..." value="{{ request('search') }}" />
+                    <input type="text" name="search" id="searchInput" class="form-control form-control-sm form-control-solid ps-10 w-225px w-md-275px" placeholder="Cari judul, slug, tujuan, user..." value="{{ request('search') }}" />
                 </div>
             </form>
         </div>
@@ -301,7 +301,7 @@
                                 <input class="form-check-input" type="checkbox" id="selectAllLinks" title="Pilih Semua" />
                             </div>
                         </th>
-                        <th class="min-w-200px">Tautan / Slug</th>
+                        <th class="min-w-220px">Judul & Tautan</th>
                         <th class="min-w-160px">Tujuan / Konten</th>
                         <th class="min-w-140px">Pemilik</th>
                         <th class="min-w-120px">Domain</th>
@@ -309,13 +309,15 @@
                         <th class="min-w-90px text-center">Status</th>
                         <th class="min-w-90px text-center">Verifikasi</th>
                         <th class="min-w-100px">Dibuat</th>
-                        <th class="text-end min-w-120px pe-3 text-nowrap">Aksi</th>
+                        <th class="text-end min-w-130px pe-3 text-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="text-gray-700 fw-semibold">
                     @forelse($links as $link)
                         @php
                             $fullPublicUrl = $link->full_url;
+                            $customTitle = $link->custom_title;
+                            $displayTitle = $link->display_title;
                         @endphp
                         <tr id="link-row-{{ $link->id }}">
                             <!-- Bulk Checkbox -->
@@ -325,10 +327,10 @@
                                 </div>
                             </td>
 
-                            <!-- Slug & Link Title -->
+                            <!-- Judul & Slug / Live URL -->
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <div class="symbol symbol-35px symbol-circle me-3">
+                                    <div class="symbol symbol-40px symbol-circle me-3 flex-shrink-0">
                                         @if($link->type === 'biolink')
                                             <span class="symbol-label bg-light-primary" title="Bio Link">
                                                 <i class="ki-outline ki-profile-user fs-3 text-primary"></i>
@@ -348,21 +350,27 @@
                                         @endif
                                     </div>
                                     <div class="d-flex flex-column">
-                                        <div class="d-flex align-items-center gap-1">
-                                            <a href="{{ $fullPublicUrl }}" target="_blank" class="fw-bolder text-gray-900 text-hover-primary fs-6">
-                                                /{{ $link->url }}
-                                            </a>
-                                            <button type="button" class="btn btn-icon btn-sm btn-light-secondary ms-1 py-0 px-1 btn-copy-url" data-url="{{ $fullPublicUrl }}" title="Salin Tautan Lengkap" style="width: 22px; height: 22px;">
-                                                <i class="ki-outline ki-copy fs-7 text-muted"></i>
-                                            </button>
+                                        <!-- Primary: Judul Link -->
+                                        <div class="d-flex align-items-center gap-1 mb-1">
+                                            <span class="fw-bolder text-gray-900 fs-6 text-truncate" id="link-title-{{ $link->id }}" style="max-width: 220px;" title="{{ $displayTitle }}">
+                                                {{ $displayTitle }}
+                                            </span>
                                             <span id="verified-badge-{{ $link->id }}" class="badge-verify-container d-inline-flex {{ $link->is_verified ? '' : 'd-none' }}" title="Terverifikasi">
                                                 <i class="ki-outline ki-verify fs-6 text-primary"></i>
                                             </span>
                                         </div>
-                                        <a href="{{ $fullPublicUrl }}" target="_blank" class="text-muted text-hover-primary fs-8 text-truncate d-inline-block" style="max-width: 250px;" title="{{ $fullPublicUrl }}">
-                                            {{ $fullPublicUrl }}
-                                            <i class="ki-outline ki-exit-right-corner fs-9 text-muted ms-1"></i>
-                                        </a>
+
+                                        <!-- Secondary: Slug & Live Link with Copy -->
+                                        <div class="d-flex align-items-center gap-1">
+                                            <span class="badge badge-light-secondary text-gray-700 fs-8 fw-bold" id="link-slug-badge-{{ $link->id }}">/{{ $link->url }}</span>
+                                            <button type="button" class="btn btn-icon btn-sm btn-light-secondary py-0 px-1 btn-copy-url" data-url="{{ $fullPublicUrl }}" title="Salin Tautan Lengkap" style="width: 20px; height: 20px;">
+                                                <i class="ki-outline ki-copy fs-8 text-muted"></i>
+                                            </button>
+                                            <a href="{{ $fullPublicUrl }}" target="_blank" id="link-live-url-{{ $link->id }}" class="text-muted text-hover-primary fs-8 text-truncate d-inline-block ms-1" style="max-width: 140px;" title="{{ $fullPublicUrl }}">
+                                                {{ $fullPublicUrl }}
+                                                <i class="ki-outline ki-exit-right-corner fs-9 text-muted"></i>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </td>
@@ -459,6 +467,19 @@
                             <!-- Actions -->
                             <td class="text-end pe-3 text-nowrap">
                                 <div class="d-inline-flex align-items-center justify-content-end gap-1">
+                                    <!-- Edit Link & Title -->
+                                    <button type="button" class="btn btn-icon btn-sm btn-light-primary btn-edit-link" 
+                                        data-id="{{ $link->id }}"
+                                        data-title="{{ $customTitle ?? $displayTitle }}"
+                                        data-url="{{ $link->url }}"
+                                        data-domain-id="{{ $link->domain_id ?? 0 }}"
+                                        data-location-url="{{ $link->location_url }}"
+                                        data-type="{{ $link->type }}"
+                                        data-update-url="{{ route('admin.links.update', $link->id) }}"
+                                        title="Edit Judul & Tautan">
+                                        <i class="ki-outline ki-pencil fs-5"></i>
+                                    </button>
+
                                     <!-- View/Open Link -->
                                     <a href="{{ $fullPublicUrl }}" target="_blank" class="btn btn-icon btn-sm btn-light-info" title="Buka Tautan">
                                         <i class="ki-outline ki-exit-right-corner fs-5"></i>
@@ -508,6 +529,71 @@
                 </div>
             </div>
         @endif
+    </div>
+</div>
+
+<!-- Modal Edit Link (Judul, Slug, Domain, Target) -->
+<div class="modal fade" id="modal_edit_link" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mw-550px">
+        <div class="modal-content">
+            <form id="editLinkForm">
+                <input type="hidden" id="edit_link_id" />
+                <input type="hidden" id="edit_link_update_url" />
+
+                <div class="modal-header pb-0 border-0 justify-content-between">
+                    <div>
+                        <h2 class="fw-bold fs-4 mb-0">Edit Judul & Tautan</h2>
+                        <span class="text-muted fs-8">Ubah judul khusus, alias/slug, dan domain tautan</span>
+                    </div>
+                    <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                        <i class="ki-outline ki-cross fs-2"></i>
+                    </div>
+                </div>
+
+                <div class="modal-body py-5 px-lg-8">
+                    <!-- Judul Tautan -->
+                    <div class="fv-row mb-5">
+                        <label class="required fs-7 fw-bolder mb-2">Judul Tautan (Title):</label>
+                        <input type="text" name="title" id="edit_link_title" class="form-control form-control-solid form-control-sm" placeholder="Contoh: Promo Diskon 50%, My Bio Link, CS Sales 1..." required />
+                        <div class="text-muted fs-9 mt-1">Judul yang akan ditampilkan sebagai nama utama link ini.</div>
+                    </div>
+
+                    <!-- Slug / Alias -->
+                    <div class="fv-row mb-5">
+                        <label class="required fs-7 fw-bolder mb-2">Slug / Alias URL:</label>
+                        <div class="input-group input-group-sm input-group-solid">
+                            <span class="input-group-text fw-semibold" id="edit_domain_prefix">/</span>
+                            <input type="text" name="url" id="edit_link_slug" class="form-control" placeholder="my-custom-slug" required />
+                        </div>
+                        <div class="text-muted fs-9 mt-1">Hanya gunakan huruf, angka, tanda minus (-), dan underscore (_).</div>
+                    </div>
+
+                    <!-- Domain -->
+                    <div class="fv-row mb-5">
+                        <label class="fs-7 fw-bolder mb-2">Domain Terhubung:</label>
+                        <select name="domain_id" id="edit_link_domain_id" class="form-select form-select-solid form-select-sm">
+                            <option value="0">Domain Utama Platform (Default)</option>
+                            @foreach($domains as $dom)
+                                <option value="{{ $dom->id }}">{{ $dom->host }} ({{ $dom->type == 1 ? 'System' : 'Custom' }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Destination Target (for Short Links) -->
+                    <div class="fv-row mb-3" id="edit_location_url_container">
+                        <label class="fs-7 fw-bolder mb-2">URL Target Asli (Destination URL):</label>
+                        <input type="url" name="location_url" id="edit_link_location_url" class="form-control form-control-solid form-control-sm" placeholder="https://..." />
+                    </div>
+                </div>
+
+                <div class="modal-footer justify-content-between pt-0 border-0">
+                    <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-sm btn-primary fw-bold" id="btn_save_edit_link">
+                        <span class="indicator-label">Simpan Perubahan</span>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -816,6 +902,106 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // ----------------------------------------------------
+    // EDIT LINK & TITLE MODAL HANDLER
+    // ----------------------------------------------------
+    document.querySelectorAll('.btn-edit-link').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const id = this.getAttribute('data-id');
+            const title = this.getAttribute('data-title');
+            const slug = this.getAttribute('data-url');
+            const domainId = this.getAttribute('data-domain-id') || '0';
+            const locationUrl = this.getAttribute('data-location-url') || '';
+            const type = this.getAttribute('data-type');
+            const updateUrl = this.getAttribute('data-update-url');
+
+            document.getElementById('edit_link_id').value = id;
+            document.getElementById('edit_link_update_url').value = updateUrl;
+            document.getElementById('edit_link_title').value = title || '';
+            document.getElementById('edit_link_slug').value = slug || '';
+            document.getElementById('edit_link_domain_id').value = domainId;
+            document.getElementById('edit_link_location_url').value = locationUrl;
+
+            const locContainer = document.getElementById('edit_location_url_container');
+            if (locContainer) {
+                if (type === 'link') {
+                    locContainer.classList.remove('d-none');
+                } else {
+                    locContainer.classList.add('d-none');
+                }
+            }
+
+            const modalEl = document.getElementById('modal_edit_link');
+            if (modalEl) {
+                const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                modal.show();
+            }
+        });
+    });
+
+    const editLinkForm = document.getElementById('editLinkForm');
+    if (editLinkForm) {
+        editLinkForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const updateUrl = document.getElementById('edit_link_update_url').value;
+            const submitBtn = document.getElementById('btn_save_edit_link');
+            const title = document.getElementById('edit_link_title').value;
+            const slug = document.getElementById('edit_link_slug').value;
+            const domainId = document.getElementById('edit_link_domain_id').value;
+            const locationUrl = document.getElementById('edit_link_location_url').value;
+
+            submitBtn.disabled = true;
+
+            fetch(updateUrl, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: title,
+                    url: slug,
+                    domain_id: domainId,
+                    location_url: locationUrl
+                })
+            })
+            .then(res => res.json())
+            .then(res => {
+                submitBtn.disabled = false;
+                if (res.success) {
+                    const modalEl = document.getElementById('modal_edit_link');
+                    if (modalEl) {
+                        const modal = bootstrap.Modal.getInstance(modalEl);
+                        if (modal) modal.hide();
+                    }
+
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: res.message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        alert(res.message);
+                        window.location.reload();
+                    }
+                } else {
+                    alert(res.message || 'Gagal menyimpan perubahan.');
+                }
+            })
+            .catch(err => {
+                submitBtn.disabled = false;
+                alert('Terjadi kesalahan saat menyimpan data.');
+            });
+        });
+    }
 
     // ----------------------------------------------------
     // FILTER MODAL HANDLER

@@ -42,4 +42,20 @@ class Link extends Model
         }
         return url($this->url);
     }
+
+    public function getDisplayTitleAttribute()
+    {
+        if (!empty($this->settings['title'])) {
+            return $this->settings['title'];
+        }
+        if (!empty($this->settings['name'])) {
+            return $this->settings['name'];
+        }
+        return ucfirst(str_replace(['-', '_'], ' ', $this->url));
+    }
+
+    public function getCustomTitleAttribute()
+    {
+        return $this->settings['title'] ?? ($this->settings['name'] ?? null);
+    }
 }
