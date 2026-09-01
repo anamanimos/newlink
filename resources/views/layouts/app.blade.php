@@ -704,6 +704,7 @@
     </script>
 
     @stack('scripts')
+    @stack('js')
     @yield('scripts')
 </body>
 </html>

@@ -80,22 +80,10 @@
 </div>
 
 <div class="card card-flush shadow-sm border-0 mb-6">
-    <!-- Card Header: Search, Per Page, Filter Button -->
+    <!-- Card Header: Per Page, Filter Button, Search on Right -->
     <div class="card-header align-items-center py-5 gap-3 flex-wrap">
-        <!-- Left: Search & Per Page -->
+        <!-- Left: Per Page & Filter Button -->
         <div class="d-flex align-items-center flex-wrap gap-3">
-            <form method="GET" action="{{ route('admin.links') }}" id="searchForm" class="d-flex align-items-center">
-                <!-- Keep existing query params except search -->
-                @foreach(request()->except(['search', 'page']) as $k => $v)
-                    <input type="hidden" name="{{ $k }}" value="{{ $v }}" />
-                @endforeach
-
-                <div class="d-flex align-items-center position-relative">
-                    <i class="ki-outline ki-magnifier fs-3 position-absolute ms-3 text-gray-500"></i>
-                    <input type="text" name="search" id="searchInput" class="form-control form-control-sm form-control-solid ps-10 w-225px w-md-275px" placeholder="Cari slug, tujuan, atau user..." value="{{ request('search') }}" />
-                </div>
-            </form>
-
             <div class="d-flex align-items-center gap-2">
                 <label class="text-muted fs-8 fw-semibold text-nowrap d-none d-sm-inline">Tampil:</label>
                 <select name="per_page" id="perPageSelect" class="form-select form-select-sm form-select-solid w-80px">
@@ -105,10 +93,7 @@
                     <option value="100" {{ request('per_page') == 100 ? 'selected' : '' }}>100</option>
                 </select>
             </div>
-        </div>
 
-        <!-- Right: Filter Button & Reset -->
-        <div class="d-flex align-items-center gap-2 ms-auto">
             @php
                 $activeFilterCount = 0;
                 if (request('type')) $activeFilterCount++;
@@ -119,7 +104,7 @@
                 if (request('sort') && request('sort') !== 'latest') $activeFilterCount++;
             @endphp
 
-            <button type="button" class="btn btn-sm btn-light-primary fw-bold d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#modal_filter_links">
+            <button type="button" class="btn btn-sm btn-light-primary fw-bold d-flex align-items-center gap-2" id="btn_open_filter_modal" data-bs-toggle="modal" data-bs-target="#modal_filter_links">
                 <i class="ki-outline ki-filter fs-4"></i>
                 Filter
                 @if($activeFilterCount > 0)
@@ -133,6 +118,23 @@
                     <span class="d-none d-sm-inline">Reset</span>
                 </a>
             @endif
+        </div>
+
+        <!-- Right: Search Form on the far right -->
+        <div class="d-flex align-items-center gap-2 ms-auto">
+            <form method="GET" action="{{ route('admin.links') }}" id="searchForm" class="d-flex align-items-center">
+                <!-- Keep existing query params except search & page -->
+                @foreach(request()->except(['search', 'page']) as $k => $v)
+                    @if($v !== null && $v !== '')
+                        <input type="hidden" name="{{ $k }}" value="{{ $v }}" />
+                    @endif
+                @endforeach
+
+                <div class="d-flex align-items-center position-relative">
+                    <i class="ki-outline ki-magnifier fs-3 position-absolute ms-3 text-gray-500"></i>
+                    <input type="text" name="search" id="searchInput" class="form-control form-control-sm form-control-solid ps-10 w-225px w-md-275px" placeholder="Cari slug, tujuan, atau user..." value="{{ request('search') }}" />
+                </div>
+            </form>
         </div>
     </div>
 
@@ -553,6 +555,41 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Filter Modal Trigger
+    const btnOpenFilterModal = document.getElementById('btn_open_filter_modal');
+    if (btnOpenFilterModal) {
+        btnOpenFilterModal.addEventListener('click', function(e) {
+            e.preventDefault();
+            const modalEl = document.getElementById('modal_filter_links');
+            if (modalEl) {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                    modal.show();
+                } else if (typeof $ !== 'undefined' && $.fn.modal) {
+                    $('#modal_filter_links').modal('show');
+                }
+            }
+        });
+    }
+
+    // Filter Form Submit (Clean empty values)
+    const filterModalForm = document.getElementById('filterModalForm');
+    if (filterModalForm) {
+        filterModalForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const params = new URLSearchParams();
+
+            for (const [key, value] of formData.entries()) {
+                if (value !== '' && value !== null) {
+                    params.append(key, value);
+                }
+            }
+
+            window.location.href = this.action + (params.toString() ? '?' + params.toString() : '');
+        });
+    }
+
     // Per-page change submit
     const perPageSelect = document.getElementById('perPageSelect');
     if (perPageSelect) {
