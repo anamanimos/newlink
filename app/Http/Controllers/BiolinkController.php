@@ -316,11 +316,14 @@ class BiolinkController extends Controller
             'user_id' => Auth::id(),
             'domain_id' => $original->domain_id,
             'project_id' => $original->project_id,
+            'biolink_theme_id' => $original->biolink_theme_id,
             'type' => 'biolink',
             'url' => $newSlug,
             'location_url' => $original->location_url,
             'settings' => $newSettings,
-            'pixels' => $original->pixels,
+            'pixels_ids' => $original->pixels_ids,
+            'is_verified' => $original->is_verified,
+            'directory_is_enabled' => $original->directory_is_enabled,
             'is_enabled' => 1,
             'clicks' => 0
         ]);
