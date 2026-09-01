@@ -10,7 +10,10 @@ class DomainController extends Controller
 {
     public function index()
     {
-        $domains = Domain::with('user')->latest()->get();
+        $domains = Domain::with('user')
+            ->withCount(['links', 'shortLinks', 'biolinks', 'waRotators'])
+            ->latest()
+            ->get();
         return view('admin.modules.domains', compact('domains'));
     }
 

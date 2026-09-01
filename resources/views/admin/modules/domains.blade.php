@@ -51,11 +51,12 @@
                     <tr class="text-start text-muted fw-bold fs-8 text-uppercase gs-0">
                         <th class="min-w-180px">Host Domain</th>
                         <th class="min-w-140px">Pemilik</th>
-                        <th class="min-w-120px">Tipe</th>
+                        <th class="min-w-100px">Tipe</th>
+                        <th class="min-w-160px">Tautan Terkoneksi</th>
                         <th class="min-w-140px">Status DNS</th>
                         <th class="min-w-140px">Status SSL (HTTPS)</th>
                         <th class="min-w-100px">Status</th>
-                        <th class="text-end min-w-140px pe-3">Aksi</th>
+                        <th class="text-end min-w-120px pe-3">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="text-gray-700 fw-semibold">
@@ -91,6 +92,40 @@
                                 <span class="badge {{ $domain->type == 1 ? 'badge-light-secondary' : 'badge-light-primary' }} fw-semibold fs-8">
                                     {{ $domain->type == 1 ? 'System' : 'Custom' }}
                                 </span>
+                            </td>
+
+                            <!-- Connected Links Count -->
+                            <td>
+                                @if($domain->links_count > 0)
+                                    <div class="d-flex flex-column gap-1">
+                                        <div class="d-flex align-items-center gap-1">
+                                            <span class="badge badge-light-primary fw-bolder fs-8">
+                                                <i class="ki-outline ki-abstract-26 fs-8 text-primary me-1"></i>{{ $domain->links_count }} Total
+                                            </span>
+                                        </div>
+                                        <div class="d-flex flex-wrap align-items-center gap-1">
+                                            @if($domain->short_links_count > 0)
+                                                <span class="badge badge-light-info fs-9 py-1 px-2" title="Tautan Pendek (Short Links)">
+                                                    <i class="ki-outline ki-link fs-9 me-1 text-info"></i>{{ $domain->short_links_count }} Link
+                                                </span>
+                                            @endif
+                                            @if($domain->biolinks_count > 0)
+                                                <span class="badge badge-light-success fs-9 py-1 px-2" title="Halaman Bio (Biolinks)">
+                                                    <i class="ki-outline ki-profile-user fs-9 me-1 text-success"></i>{{ $domain->biolinks_count }} Bio
+                                                </span>
+                                            @endif
+                                            @if($domain->wa_rotators_count > 0)
+                                                <span class="badge badge-light-warning fs-9 py-1 px-2" title="WhatsApp Rotator">
+                                                    <i class="ki-outline ki-whatsapp fs-9 me-1 text-warning"></i>{{ $domain->wa_rotators_count }} Rotator
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @else
+                                    <span class="badge badge-light text-muted fs-8">
+                                        <i class="ki-outline ki-cross fs-8 text-muted me-1"></i>0 Tautan
+                                    </span>
+                                @endif
                             </td>
 
                             <!-- DNS Status -->

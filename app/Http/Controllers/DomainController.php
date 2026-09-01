@@ -11,7 +11,10 @@ class DomainController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $domains = Domain::where('user_id', $user->id)->latest()->get();
+        $domains = Domain::where('user_id', $user->id)
+            ->withCount(['links', 'shortLinks', 'biolinks', 'waRotators'])
+            ->latest()
+            ->get();
         
         $planSettings = json_decode($user->plan_settings, true) ?? [];
         $domainLimit = $planSettings['domains_limit'] ?? 0;
