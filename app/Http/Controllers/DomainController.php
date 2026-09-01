@@ -12,14 +12,17 @@ class DomainController extends Controller
     {
         $user = Auth::user();
         $domains = Domain::where('user_id', $user->id)
+            ->with(['rootLink'])
             ->withCount(['links', 'shortLinks', 'biolinks', 'waRotators'])
             ->latest()
             ->get();
         
+        $links = \App\Models\Link::where('user_id', $user->id)->orderBy('url')->get();
+
         $planSettings = json_decode($user->plan_settings, true) ?? [];
         $domainLimit = $planSettings['domains_limit'] ?? 0;
         
-        return view('modules.domains', compact('domains', 'domainLimit'));
+        return view('modules.domains', compact('domains', 'links', 'domainLimit'));
     }
 
     public function store(Request $request)
@@ -42,6 +45,7 @@ class DomainController extends Controller
 
         $request->validate([
             'host' => 'required|string|max:256|unique:domains,host',
+            'link_id' => 'nullable|integer',
             'custom_index_url' => 'nullable|url|max:256',
             'custom_not_found_url' => 'nullable|url|max:256',
         ]);
@@ -50,6 +54,7 @@ class DomainController extends Controller
             'user_id' => $user->id,
             'scheme' => 'https://',
             'host' => strtolower(trim($request->host)),
+            'link_id' => $request->filled('link_id') ? $request->link_id : null,
             'custom_index_url' => $request->custom_index_url,
             'custom_not_found_url' => $request->custom_not_found_url,
             'type' => 0, // 0 = Custom Domain
@@ -72,11 +77,13 @@ class DomainController extends Controller
         $domain = Domain::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
 
         $request->validate([
+            'link_id' => 'nullable|integer',
             'custom_index_url' => 'nullable|url|max:256',
             'custom_not_found_url' => 'nullable|url|max:256',
         ]);
 
         $domain->update([
+            'link_id' => $request->filled('link_id') ? $request->link_id : null,
             'custom_index_url' => $request->custom_index_url,
             'custom_not_found_url' => $request->custom_not_found_url,
         ]);

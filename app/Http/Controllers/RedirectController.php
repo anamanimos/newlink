@@ -20,16 +20,47 @@ class RedirectController extends Controller
         if ($host !== $mainHost && $host !== 'localhost' && $host !== '127.0.0.1') {
             $domain = Domain::where('host', $host)->where('is_enabled', 1)->first();
             if ($domain) {
+                // 1. Check if domain has a designated Root Link (Biolink / Rotator / Shortlink)
+                if (!empty($domain->link_id)) {
+                    $link = Link::where('id', $domain->link_id)->where('is_enabled', 1)->first();
+                    if ($link) {
+                        return $this->renderLink($request, $link);
+                    }
+                }
+
+                // 2. Custom Index URL
                 if (!empty($domain->custom_index_url)) {
                     return redirect()->away($domain->custom_index_url, 301);
                 }
+
+                // 3. Custom Not Found URL
                 if (!empty($domain->custom_not_found_url)) {
                     return redirect()->away($domain->custom_not_found_url, 302);
                 }
+
+                abort(404);
             }
         }
 
-        return auth()->check() ? redirect()->route('dashboard') : redirect()->route('login');
+        // Platform Main Domain
+        if (auth()->check()) {
+            return redirect()->route('dashboard');
+        }
+
+        // Check if platform has a default root link configured
+        $mainSettings = \App\Models\Setting::get('main', []);
+        if (!empty($mainSettings['default_root_link_id'])) {
+            $link = Link::where('id', $mainSettings['default_root_link_id'])->where('is_enabled', 1)->first();
+            if ($link) {
+                return $this->renderLink($request, $link);
+            }
+        }
+
+        if (!empty($mainSettings['custom_index_url'])) {
+            return redirect()->away($mainSettings['custom_index_url'], 301);
+        }
+
+        return redirect()->route('login');
     }
 
     public function resolve(Request $request, $slug)
@@ -62,6 +93,14 @@ class RedirectController extends Controller
             abort(404);
         }
 
+        return $this->renderLink($request, $link);
+    }
+
+    /**
+     * Render or redirect the link and record detailed analytics.
+     */
+    protected function renderLink(Request $request, Link $link)
+    {
         $userAgent = $request->header('User-Agent');
 
         // Check if it's a known bot/crawler

@@ -757,7 +757,7 @@
                             </div>
 
                             <!-- Project -->
-                            <div class="mb-6">
+                            <div class="mb-5">
                                 <label class="form-label fs-7 fw-semibold text-gray-900">Project / Kategori</label>
                                 <select name="project_id" class="form-select form-select-solid form-select-sm">
                                     <option value="">Tanpa Project</option>
@@ -769,6 +769,20 @@
                                         @endforeach
                                     @endif
                                 </select>
+                            </div>
+
+                            <!-- Set as Domain Root Index Switch -->
+                            <div class="d-flex align-items-center justify-content-between p-3 bg-light-primary rounded-3 border border-primary border-dashed mb-6">
+                                <div>
+                                    <label class="form-check-label fs-7 fw-bold text-gray-900 mb-0 cursor-pointer" for="setAsRootIndexSwitch">
+                                        <i class="ki-outline ki-home fs-5 text-primary me-1"></i> Jadikan Halaman Utama Domain Ini (Root Index)
+                                    </label>
+                                    <div class="text-muted fs-8">Biolink ini akan langsung terbuka saat pengunjung mengakses domain tanpa slug (misal: <code>https://domain.com/</code>).</div>
+                                </div>
+                                <div class="form-check form-switch form-check-custom form-check-solid">
+                                    <input type="hidden" name="is_root_index" value="0">
+                                    <input class="form-check-input h-20px w-35px cursor-pointer" type="checkbox" role="switch" name="is_root_index" value="1" id="setAsRootIndexSwitch" {{ ($link->domain && $link->domain->link_id == $link->id) ? 'checked' : '' }}>
+                                </div>
                             </div>
 
                             <div class="d-flex justify-content-end">
@@ -922,7 +936,7 @@
                     </div>
 
                     <!-- Project -->
-                    <div class="mb-2">
+                    <div class="mb-4">
                         <label class="form-label fs-7 fw-semibold text-gray-900">Project / Kategori</label>
                         <select name="project_id" class="form-select form-select-solid form-select-sm">
                             <option value="">Tanpa Project</option>
@@ -934,6 +948,20 @@
                                 @endforeach
                             @endif
                         </select>
+                    </div>
+
+                    <!-- Set as Domain Root Index Switch -->
+                    <div class="d-flex align-items-center justify-content-between p-3 bg-light-primary rounded-3 border border-primary border-dashed mb-2">
+                        <div>
+                            <label class="form-check-label fs-7 fw-bold text-gray-900 mb-0 cursor-pointer" for="modalSetAsRootIndexSwitch">
+                                <i class="ki-outline ki-home fs-5 text-primary me-1"></i> Jadikan Halaman Utama Domain
+                            </label>
+                            <div class="text-muted fs-8">Buka biolink langsung di domain tanpa path/slug.</div>
+                        </div>
+                        <div class="form-check form-switch form-check-custom form-check-solid">
+                            <input type="hidden" name="is_root_index" value="0">
+                            <input class="form-check-input h-20px w-35px cursor-pointer" type="checkbox" role="switch" name="is_root_index" value="1" id="modalSetAsRootIndexSwitch" {{ ($link->domain && $link->domain->link_id == $link->id) ? 'checked' : '' }}>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -1589,6 +1617,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     $(document).on('input', '#modal_biolink_alias_input', function() {
         $('#biolink_alias_input').val($(this).val());
+    });
+
+    // Sync root index switch between tab and modal
+    $(document).on('change', '#setAsRootIndexSwitch', function() {
+        $('#modalSetAsRootIndexSwitch').prop('checked', $(this).is(':checked'));
+    });
+    $(document).on('change', '#modalSetAsRootIndexSwitch', function() {
+        $('#setAsRootIndexSwitch').prop('checked', $(this).is(':checked'));
     });
 
     // Also run sync after slight delay on page load

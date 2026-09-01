@@ -113,6 +113,30 @@ class LinkController extends Controller
             'settings' => $settings,
         ]);
 
+        // Handle Root Index Toggle for Domain or Platform
+        if ($request->has('is_root_index')) {
+            $isRoot = (bool)$request->input('is_root_index');
+            $newDomainId = (int)($request->domain_id ?? 0);
+
+            if ($newDomainId > 0) {
+                $domain = \App\Models\Domain::where('id', $newDomainId)->where('user_id', Auth::id())->first();
+                if ($domain) {
+                    $domain->update(['link_id' => $isRoot ? $link->id : ($domain->link_id == $link->id ? null : $domain->link_id)]);
+                }
+            } elseif ($newDomainId === 0) {
+                // Main Platform Domain
+                $mainSettings = \App\Models\Setting::get('main', []);
+                if ($isRoot) {
+                    $mainSettings['default_root_link_id'] = $link->id;
+                } else {
+                    if (($mainSettings['default_root_link_id'] ?? null) == $link->id) {
+                        unset($mainSettings['default_root_link_id']);
+                    }
+                }
+                \App\Models\Setting::set('main', $mainSettings);
+            }
+        }
+
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'success' => true,

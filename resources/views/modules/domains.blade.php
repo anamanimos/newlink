@@ -100,6 +100,11 @@
                                                     <span class="text-muted fs-8">
                                                         {{ $domain->type == 1 ? 'System Domain' : 'Custom Domain' }}
                                                     </span>
+                                                    @if($domain->rootLink)
+                                                        <span class="badge badge-light-success fs-9 py-1 px-2 mt-1 d-inline-flex align-items-center gap-1" title="Halaman Utama Root (Tanpa Slug)">
+                                                            <i class="ki-outline ki-home fs-9 text-success"></i> Root: {{ $domain->rootLink->settings['title'] ?? $domain->rootLink->url }}
+                                                        </span>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </td>
@@ -224,9 +229,28 @@
                                                         </div>
 
                                                         <div class="fv-row mb-5">
+                                                            <label class="form-label fs-6 fw-semibold text-gray-900 d-flex align-items-center">
+                                                                <i class="ki-outline ki-home fs-5 text-primary me-2"></i> Halaman Utama / Root Link (Tanpa Slug)
+                                                            </label>
+                                                            <select name="link_id" class="form-select form-select-solid">
+                                                                <option value="">-- Tidak Ada (Gunakan Index URL atau Default) --</option>
+                                                                @if(isset($links))
+                                                                    @foreach($links as $l)
+                                                                        <option value="{{ $l->id }}" {{ $domain->link_id == $l->id ? 'selected' : '' }}>
+                                                                            [{{ strtoupper($l->type) }}] {{ $l->settings['title'] ?? $l->url }} ({{ $l->url ? '/' . $l->url : 'root' }})
+                                                                        </option>
+                                                                    @endforeach
+                                                                @endif
+                                                            </select>
+                                                            <div class="form-text text-muted fs-8">
+                                                                Ketika pengunjung membuka <strong>https://{{ $domain->host }}/</strong> (tanpa slug), halaman ini akan langsung ditampilkan.
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="fv-row mb-5">
                                                             <label class="form-label fs-6 fw-semibold text-gray-900">Custom Index URL (Opsional)</label>
                                                             <input type="url" class="form-control form-control-solid" name="custom_index_url" value="{{ $domain->custom_index_url }}" placeholder="https://websiteanda.com" />
-                                                            <div class="form-text text-muted fs-8">Alihkan pengunjung halaman utama ({{ $domain->host }}) ke URL ini.</div>
+                                                            <div class="form-text text-muted fs-8">Alihkan pengunjung halaman utama ({{ $domain->host }}) ke URL eksternal ini jika tidak menggunakan Root Link di atas.</div>
                                                         </div>
 
                                                         <div class="fv-row mb-2">
@@ -291,6 +315,23 @@
                         <label class="form-label fs-6 fw-semibold text-gray-900 required">Host Domain</label>
                         <input type="text" class="form-control form-control-solid" name="host" placeholder="link.domainanda.com" required />
                         <div class="form-text text-muted fs-8">Pastikan Anda telah mengarahkan A Record domain ke IP: <strong>{{ $serverIp }}</strong></div>
+                    </div>
+
+                    <div class="fv-row mb-5">
+                        <label class="form-label fs-6 fw-semibold text-gray-900 d-flex align-items-center">
+                            <i class="ki-outline ki-home fs-5 text-primary me-2"></i> Halaman Utama / Root Link (Tanpa Slug)
+                        </label>
+                        <select name="link_id" class="form-select form-select-solid">
+                            <option value="">-- Tidak Ada (Gunakan Index URL atau Default) --</option>
+                            @if(isset($links))
+                                @foreach($links as $l)
+                                    <option value="{{ $l->id }}">
+                                        [{{ strtoupper($l->type) }}] {{ $l->settings['title'] ?? $l->url }} ({{ $l->url ? '/' . $l->url : 'root' }})
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                        <div class="form-text text-muted fs-8">Ketika pengunjung membuka domain tanpa slug, halaman ini akan langsung terbuka.</div>
                     </div>
 
                     <div class="fv-row mb-5">

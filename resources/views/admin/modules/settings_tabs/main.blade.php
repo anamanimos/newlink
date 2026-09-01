@@ -9,7 +9,40 @@
         <label for="title" class="form-label fs-7 fw-semibold text-gray-900 required d-flex align-items-center">
             <i class="ki-outline ki-global fs-5 text-gray-500 me-2"></i> Website Title
         </label>
-        <input type="text" class="form-control form-control-solid form-control-sm" id="title" name="title" value="NewLink" required placeholder="Enter website title">
+        <input type="text" class="form-control form-control-solid form-control-sm" id="title" name="title" value="{{ $settings['title'] ?? 'NewLink' }}" required placeholder="Enter website title">
+    </div>
+
+    <!-- Platform Root Action (Halaman Utama Platform) -->
+    <div class="row g-5 mb-3">
+        <div class="col-md-6">
+            <label for="default_root_link_id" class="form-label fs-7 fw-semibold text-gray-900 d-flex align-items-center">
+                <i class="ki-outline ki-home fs-5 text-primary me-2"></i> Halaman Utama Platform / Root Link (Tanpa Slug)
+            </label>
+            @php
+                $allBiolinks = \App\Models\Link::where('is_enabled', 1)->orderBy('url')->get();
+                $currentRootLinkId = $settings['default_root_link_id'] ?? null;
+            @endphp
+            <select class="form-select form-select-solid form-select-sm" id="default_root_link_id" name="default_root_link_id">
+                <option value="">-- Halaman Login / Dashboard Platform (Default) --</option>
+                @foreach($allBiolinks as $l)
+                    <option value="{{ $l->id }}" {{ $currentRootLinkId == $l->id ? 'selected' : '' }}>
+                        [{{ strtoupper($l->type) }}] {{ $l->settings['title'] ?? $l->url }} (/{{ $l->url }})
+                    </option>
+                @endforeach
+            </select>
+            <div class="form-text fs-8 text-muted">
+                Ketika pengunjung mengakses URL platform utama (<code>{{ config('app.url') }}</code>) tanpa path/slug, halaman ini yang akan ditampilkan.
+            </div>
+        </div>
+        <div class="col-md-6">
+            <label for="custom_index_url" class="form-label fs-7 fw-semibold text-gray-900 d-flex align-items-center">
+                <i class="ki-outline ki-exit-right-corner fs-5 text-primary me-2"></i> Custom Index URL (Eksternal)
+            </label>
+            <input type="url" class="form-control form-control-solid form-control-sm" id="custom_index_url" name="custom_index_url" value="{{ $settings['custom_index_url'] ?? '' }}" placeholder="https://external-landing-page.com">
+            <div class="form-text fs-8 text-muted">
+                Alihkan pengunjung halaman depan ke URL eksternal ini jika tidak memilih Root Link di samping.
+            </div>
+        </div>
     </div>
 </div>
 

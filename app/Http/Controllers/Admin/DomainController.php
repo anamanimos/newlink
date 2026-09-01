@@ -10,17 +10,19 @@ class DomainController extends Controller
 {
     public function index()
     {
-        $domains = Domain::with('user')
+        $domains = Domain::with(['user', 'rootLink'])
             ->withCount(['links', 'shortLinks', 'biolinks', 'waRotators'])
             ->latest()
             ->get();
-        return view('admin.modules.domains', compact('domains'));
+        $links = \App\Models\Link::where('is_enabled', 1)->orderBy('url')->get();
+        return view('admin.modules.domains', compact('domains', 'links'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'host' => 'required|string|max:256|unique:domains,host',
+            'link_id' => 'nullable|integer',
             'custom_index_url' => 'nullable|url|max:256',
             'custom_not_found_url' => 'nullable|url|max:256',
         ]);
@@ -29,6 +31,7 @@ class DomainController extends Controller
             'user_id' => null, // System domains don't belong to a specific user
             'scheme' => 'https://',
             'host' => strtolower(trim($request->host)),
+            'link_id' => $request->filled('link_id') ? $request->link_id : null,
             'custom_index_url' => $request->custom_index_url,
             'custom_not_found_url' => $request->custom_not_found_url,
             'type' => 1, // 1 = System Domain
@@ -52,12 +55,14 @@ class DomainController extends Controller
 
         $request->validate([
             'is_enabled' => 'required|boolean',
+            'link_id' => 'nullable|integer',
             'custom_index_url' => 'nullable|url|max:256',
             'custom_not_found_url' => 'nullable|url|max:256',
         ]);
 
         $domain->update([
             'is_enabled' => $request->is_enabled,
+            'link_id' => $request->filled('link_id') ? $request->link_id : null,
             'custom_index_url' => $request->custom_index_url,
             'custom_not_found_url' => $request->custom_not_found_url,
         ]);
