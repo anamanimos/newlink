@@ -121,10 +121,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/sync-legacy/step', [\App\Http\Controllers\Admin\SyncController::class, 'processStep'])->name('admin.sync.step');
 });
 
-// Root redirects to login or dashboard
-Route::get('/', function () {
-    return auth()->check() ? redirect()->route('dashboard') : redirect()->route('login');
-});
+// Root route (Handles domain custom_index_url and auth redirects)
+Route::get('/', [RedirectController::class, 'root'])->name('root');
 
 // Production Legacy Import Endpoint
 Route::get('/api/import-legacy', function (Request $request) {

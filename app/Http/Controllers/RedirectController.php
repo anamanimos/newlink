@@ -8,14 +8,40 @@ use App\Models\Domain;
 
 class RedirectController extends Controller
 {
+    /**
+     * Handle Root / Index request
+     */
+    public function root(Request $request)
+    {
+        $host = strtolower($request->getHost());
+        $mainHost = strtolower(parse_url(config('app.url'), PHP_URL_HOST) ?? '');
+
+        // If accessed through a custom or system domain
+        if ($host !== $mainHost && $host !== 'localhost' && $host !== '127.0.0.1') {
+            $domain = Domain::where('host', $host)->where('is_enabled', 1)->first();
+            if ($domain) {
+                if (!empty($domain->custom_index_url)) {
+                    return redirect()->away($domain->custom_index_url, 301);
+                }
+                if (!empty($domain->custom_not_found_url)) {
+                    return redirect()->away($domain->custom_not_found_url, 302);
+                }
+            }
+        }
+
+        return auth()->check() ? redirect()->route('dashboard') : redirect()->route('login');
+    }
+
     public function resolve(Request $request, $slug)
     {
-        $host = $request->getHost();
+        $host = strtolower($request->getHost());
+        $mainHost = strtolower(parse_url(config('app.url'), PHP_URL_HOST) ?? '');
         $domainId = 0;
+        $domain = null;
 
         // Check if custom domain
-        if ($host !== parse_url(config('app.url'), PHP_URL_HOST)) {
-            $domain = Domain::where('host', $host)->first();
+        if ($host !== $mainHost) {
+            $domain = Domain::where('host', $host)->where('is_enabled', 1)->first();
             if ($domain) {
                 $domainId = $domain->id;
             } else {
@@ -27,7 +53,14 @@ class RedirectController extends Controller
         $link = Link::where('url', $slug)
                     ->where('domain_id', $domainId)
                     ->where('is_enabled', 1)
-                    ->firstOrFail();
+                    ->first();
+
+        if (!$link) {
+            if ($domain && !empty($domain->custom_not_found_url)) {
+                return redirect()->away($domain->custom_not_found_url, 302);
+            }
+            abort(404);
+        }
 
         $userAgent = $request->header('User-Agent');
 
