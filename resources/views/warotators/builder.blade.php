@@ -72,9 +72,9 @@
     </div>
 </div>
 
-<div class="row g-6 g-xl-9 align-items-start">
+<div class="row g-6 g-xl-9 align-items-start mb-12" style="min-height: 720px;">
     <!-- Left Panel: Builder Options & Settings -->
-    <div class="col-lg-7 col-xl-8 pe-lg-5">
+    <div class="col-lg-7 col-xl-8 pe-lg-5 pb-10">
         
         <!-- Tab Controls Navigation -->
         <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bold mb-5" id="builderTabs" role="tablist">
@@ -349,8 +349,8 @@
     </div>
 
     <!-- Right Panel: Live Mobile Mockup Preview Frame -->
-    <div class="col-lg-5 col-xl-4 d-none d-lg-flex justify-content-center align-items-start ps-lg-5">
-        <div class="mockup-container position-relative shadow-2xl overflow-hidden" style="width: 360px; height: 720px; border-radius: 36px; border: 12px solid #111827; background: #000; flex-shrink: 0; position: sticky; top: 115px; z-index: 10;">
+    <div class="col-lg-5 col-xl-4 d-none d-lg-flex justify-content-center align-items-start ps-lg-5 pb-10">
+        <div class="mockup-container position-relative shadow-2xl overflow-hidden" style="width: 340px; height: calc(100vh - 180px); max-height: 680px; min-height: 520px; border-radius: 36px; border: 12px solid #111827; background: #000; flex-shrink: 0; position: sticky; top: 100px; z-index: 5; margin-bottom: 2rem;">
             <!-- Camera Notch -->
             <div class="position-absolute start-50 translate-middle-x" style="top: 0; width: 120px; height: 20px; background: #111827; border-radius: 0 0 12px 12px; z-index: 5;"></div>
             
