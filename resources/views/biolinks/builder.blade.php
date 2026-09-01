@@ -931,7 +931,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Intercept form submissions via AJAX (Add Block, Edit Block, Profile Form, Styling Form)
-    $('#addLinkBlockModal form, #addTextBlockModal form, [id^=editLinkBlockModal] form, [id^=editTextBlockModal] form, #profileTabForm, #stylingTabForm').on('submit', function(e) {
+    $(document).on('submit', '#addLinkBlockModal form, #addTextBlockModal form, [id^=editLinkBlockModal] form, [id^=editTextBlockModal] form, #profileTabForm, #stylingTabForm', function(e) {
         e.preventDefault();
         const form = $(this);
         const modalEl = form.closest('.modal')[0];
@@ -948,16 +948,33 @@ document.addEventListener('DOMContentLoaded', function() {
             data: formData,
             processData: false,
             contentType: false,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            },
             dataType: 'json',
             success: function(response) {
                 if (modal) {
                     modal.hide();
-                    form[0].reset();
+                    $('.modal-backdrop').remove();
+                    $('body').removeClass('modal-open').css('padding-right', '');
                 }
                 refreshBuilderUI(response.message || 'Berhasil disimpan!');
             },
-            error: function() {
-                alert('Terjadi kesalahan, silakan coba lagi.');
+            error: function(xhr) {
+                let errMsg = 'Terjadi kesalahan, silakan coba lagi.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errMsg = xhr.responseJSON.message;
+                } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    errMsg = Object.values(xhr.responseJSON.errors).flat().join('<br>');
+                }
+                Swal.fire({
+                    html: errMsg,
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    buttonsStyling: false,
+                    customClass: { confirmButton: 'btn btn-primary btn-sm' }
+                });
             },
             complete: function() {
                 submitBtn.prop('disabled', false).text(originalText);
@@ -973,12 +990,26 @@ document.addEventListener('DOMContentLoaded', function() {
             url: form.attr('action'),
             method: 'POST',
             data: form.serialize(),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            },
             dataType: 'json',
             success: function(response) {
                 refreshBuilderUI(response.message || 'Blok berhasil dihapus!');
             },
-            error: function() {
-                alert('Gagal menghapus blok.');
+            error: function(xhr) {
+                let errMsg = 'Gagal menghapus blok.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errMsg = xhr.responseJSON.message;
+                }
+                Swal.fire({
+                    text: errMsg,
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    buttonsStyling: false,
+                    customClass: { confirmButton: 'btn btn-primary btn-sm' }
+                });
             }
         });
     });

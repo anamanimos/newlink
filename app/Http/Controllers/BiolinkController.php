@@ -92,7 +92,7 @@ class BiolinkController extends Controller
             'is_enabled' => 1
         ]);
 
-        if ($request->wantsJson()) {
+        if ($request->ajax() || $request->wantsJson()) {
             return response()->json(['success' => true, 'message' => 'Blok berhasil ditambahkan!']);
         }
 
@@ -117,17 +117,21 @@ class BiolinkController extends Controller
             'settings' => $settings
         ]);
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['success' => true, 'message' => 'Blok berhasil diperbarui!']);
+        }
+
         return back()->with('success', 'Blok berhasil diperbarui!');
     }
 
-    public function destroyBlock($id, $blockId)
+    public function destroyBlock(Request $request, $id, $blockId)
     {
         $link = Link::where('user_id', Auth::id())->where('type', 'biolink')->findOrFail($id);
         $block = $link->biolinkBlocks()->findOrFail($blockId);
         
         $block->delete();
 
-        if (request()->wantsJson()) {
+        if ($request->ajax() || $request->wantsJson()) {
             return response()->json(['success' => true, 'message' => 'Blok berhasil dihapus!']);
         }
 
