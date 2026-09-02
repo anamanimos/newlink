@@ -13,6 +13,11 @@ class Domain extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function rootLink()
+    {
+        return $this->belongsTo(Link::class, 'link_id');
+    }
+
     public function links()
     {
         return $this->hasMany(Link::class);
