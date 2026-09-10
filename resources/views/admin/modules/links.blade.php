@@ -333,15 +333,23 @@
                             <!-- Judul & Slug / Live URL -->
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <div class="symbol symbol-40px symbol-circle me-3 flex-shrink-0">
+                                    <div class="symbol symbol-40px symbol-circle me-3 flex-shrink-0" style="width: 40px; height: 40px; min-width: 40px; max-width: 40px;">
                                         @if($link->type === 'biolink')
-                                            <span class="symbol-label bg-light-primary" title="Bio Link">
-                                                <i class="ki-outline ki-profile-circle fs-3 text-primary"></i>
-                                            </span>
+                                            @if(!empty($link->settings['avatar_url']))
+                                                <img src="{{ asset($link->settings['avatar_url']) }}" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; min-width: 40px; min-height: 40px; max-width: 40px; max-height: 40px; object-fit: cover; display: block;" />
+                                            @else
+                                                <span class="symbol-label bg-light-primary" title="Bio Link">
+                                                    <i class="ki-outline ki-profile-circle fs-3 text-primary"></i>
+                                                </span>
+                                            @endif
                                         @elseif($link->type === 'warotator')
-                                            <span class="symbol-label bg-light-success" title="WhatsApp Rotator">
-                                                <i class="ki-outline ki-whatsapp fs-3 text-success"></i>
-                                            </span>
+                                            @if(!empty($link->settings['avatar_url']))
+                                                <img src="{{ asset($link->settings['avatar_url']) }}" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; min-width: 40px; min-height: 40px; max-width: 40px; max-height: 40px; object-fit: cover; display: block;" />
+                                            @else
+                                                <span class="symbol-label bg-light-success" title="WhatsApp Rotator">
+                                                    <i class="ki-outline ki-whatsapp fs-3 text-success"></i>
+                                                </span>
+                                            @endif
                                         @elseif($link->type === 'qrcode')
                                             <span class="symbol-label bg-light-warning" title="QR Code">
                                                 <i class="ki-outline ki-scan-barcode fs-3 text-warning"></i>

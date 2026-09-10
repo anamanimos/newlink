@@ -35,8 +35,12 @@
     <div class="card-body p-6">
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-4">
             <div class="d-flex align-items-center gap-4">
-                <div class="symbol symbol-50px symbol-circle bg-light-success d-flex align-items-center justify-content-center">
-                    <i class="ki-outline ki-whatsapp fs-2x text-success"></i>
+                <div class="symbol symbol-50px symbol-circle bg-light-success d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; min-width: 50px; max-width: 50px;">
+                    @if(!empty($link->settings['avatar_url']))
+                        <img src="{{ asset($link->settings['avatar_url']) }}" alt="Avatar" class="rounded-circle" style="width: 50px; height: 50px; min-width: 50px; min-height: 50px; max-width: 50px; max-height: 50px; object-fit: cover; display: block;" />
+                    @else
+                        <i class="ki-outline ki-whatsapp fs-2x text-success"></i>
+                    @endif
                 </div>
                 <div class="d-flex flex-column">
                     @php
