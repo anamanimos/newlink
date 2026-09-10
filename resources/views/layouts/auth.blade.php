@@ -75,7 +75,7 @@
                 <div class="d-flex flex-column flex-center py-7 py-lg-15 px-5 px-md-15 w-100">
                     <!-- Logo -->
                     <a href="{{ url('/') }}" class="mb-12 d-flex align-items-center gap-3 text-decoration-none">
-                        <img alt="NewLink Logo" src="{{ asset('favicon.svg') }}" class="h-45px w-45px rounded-3 shadow-lg" />
+                        <img alt="NewLink Logo" src="{{ asset('assets/media/logos/logo-glyph.svg') }}" class="h-42px w-auto" />
                         <span class="fs-2hx fw-bolder text-white">
                             New<span class="text-primary">Link</span>
                         </span>

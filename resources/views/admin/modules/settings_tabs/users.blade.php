@@ -1,6 +1,6 @@
 <div class="mb-7">
     <h4 class="fw-bold text-gray-900 mb-5">
-        <i class="ki-outline ki-profile-user fs-3 text-primary me-2"></i> User Registration & Authentication
+        <i class="ki-outline ki-profile-circle fs-3 text-primary me-2"></i> User Registration & Authentication
     </h4>
 
     <!-- Registration Enabled -->

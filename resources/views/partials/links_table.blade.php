@@ -153,16 +153,20 @@
                             <div class="d-flex align-items-center">
                                 <div class="symbol symbol-40px symbol-circle me-3 flex-shrink-0">
                                     @if($link->type == 'biolink')
-                                        <span class="symbol-label bg-light-primary">
-                                            <i class="ki-outline ki-profile-user fs-2 text-primary"></i>
-                                        </span>
+                                        @if(!empty($link->settings['avatar_url']))
+                                            <img src="{{ asset($link->settings['avatar_url']) }}" class="h-100 w-100 rounded-circle object-fit-cover" alt="Avatar" />
+                                        @else
+                                            <span class="symbol-label bg-light-primary">
+                                                <i class="ki-outline ki-profile-circle fs-2 text-primary"></i>
+                                            </span>
+                                        @endif
                                     @elseif($link->type == 'warotator')
                                         <span class="symbol-label bg-light-success">
                                             <i class="ki-outline ki-whatsapp fs-2 text-success"></i>
                                         </span>
                                     @else
                                         <span class="symbol-label bg-light-info">
-                                            <i class="ki-outline ki-link fs-2 text-info"></i>
+                                            <i class="ki-outline ki-fasten fs-2 text-info"></i>
                                         </span>
                                     @endif
                                 </div>

@@ -126,7 +126,7 @@
                                                         @endif
                                                         @if($domain->biolinks_count > 0)
                                                             <span class="badge badge-light-success fs-9 py-1 px-2" title="Halaman Bio (Biolinks)">
-                                                                <i class="ki-outline ki-profile-user fs-9 me-1 text-success"></i>{{ $domain->biolinks_count }} Bio
+                                                                <i class="ki-outline ki-profile-circle fs-9 me-1 text-success"></i>{{ $domain->biolinks_count }} Bio
                                                             </span>
                                                         @endif
                                                         @if($domain->wa_rotators_count > 0)

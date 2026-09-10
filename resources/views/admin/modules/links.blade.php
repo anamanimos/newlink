@@ -74,7 +74,7 @@
         <a href="{{ route('admin.links', array_merge(request()->except(['page']), ['types' => ['biolink']])) }}" class="card card-flush shadow-sm border-0 h-100 text-hover-primary {{ in_array('biolink', $selectedTypes) ? 'border-primary border-2' : '' }}">
             <div class="card-body p-4 d-flex align-items-center gap-3">
                 <div class="symbol symbol-40px symbol-circle bg-light-info">
-                    <span class="symbol-label"><i class="ki-outline ki-profile-user fs-2 text-info"></i></span>
+                    <span class="symbol-label"><i class="ki-outline ki-profile-circle fs-2 text-info"></i></span>
                 </div>
                 <div>
                     <div class="fs-4 fw-bolder text-gray-900">{{ number_format($totalBiolink) }}</div>
@@ -336,7 +336,7 @@
                                     <div class="symbol symbol-40px symbol-circle me-3 flex-shrink-0">
                                         @if($link->type === 'biolink')
                                             <span class="symbol-label bg-light-primary" title="Bio Link">
-                                                <i class="ki-outline ki-profile-user fs-3 text-primary"></i>
+                                                <i class="ki-outline ki-profile-circle fs-3 text-primary"></i>
                                             </span>
                                         @elseif($link->type === 'warotator')
                                             <span class="symbol-label bg-light-success" title="WhatsApp Rotator">
@@ -383,7 +383,7 @@
                                 @if($link->type === 'biolink')
                                     <div class="d-flex flex-column">
                                         <span class="badge badge-light-primary fw-bold fs-8 align-self-start mb-1">
-                                            <i class="ki-outline ki-profile-user fs-8 me-1 text-primary"></i>Bio Link
+                                            <i class="ki-outline ki-profile-circle fs-8 me-1 text-primary"></i>Bio Link
                                         </span>
                                         <span class="text-muted fs-8">{{ $link->biolink_blocks_count ?? 0 }} Blok Konten</span>
                                     </div>

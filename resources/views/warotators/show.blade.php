@@ -268,7 +268,7 @@
                             @empty
                                 <tr>
                                     <td colspan="7" class="text-center py-10 text-muted">
-                                        <i class="ki-outline ki-profile-user fs-4x text-muted mb-3"></i>
+                                        <i class="ki-outline ki-profile-circle fs-4x text-muted mb-3"></i>
                                         <p class="fs-6 fw-semibold mb-0">No lead submissions recorded yet.</p>
                                     </td>
                                 </tr>

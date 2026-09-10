@@ -25,7 +25,7 @@
             <div class="card-body d-flex align-items-center p-5">
                 <div class="symbol symbol-45px symbol-circle me-4">
                     <span class="symbol-label bg-light-primary">
-                        <i class="ki-outline ki-profile-user fs-2x text-primary"></i>
+                        <i class="ki-outline ki-profile-circle fs-2x text-primary"></i>
                     </span>
                 </div>
                 <div class="d-flex flex-column min-w-0">

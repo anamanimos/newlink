@@ -10,16 +10,18 @@
             $iconClass = 'ki-element-11';
             if ($iconName == 'hash') {
                 $iconClass = 'ki-abstract-26';
-            } elseif ($iconName == 'app') {
-                $iconClass = 'ki-profile-user';
+            } elseif ($iconName == 'app' || $iconName == 'biolink') {
+                $iconClass = 'ki-profile-circle';
             } elseif ($iconName == 'link') {
-                $iconClass = 'ki-disconnect';
+                $iconClass = 'ki-fasten';
+            } elseif ($iconName == 'warotator') {
+                $iconClass = 'ki-whatsapp';
             } elseif ($iconName == 'qrcode') {
                 $iconClass = 'ki-scan-barcode';
             } elseif ($iconName == 'card') {
                 $iconClass = 'ki-credit-cart';
             } elseif ($iconName == 'clicks') {
-                $iconClass = 'ki-chart-simple';
+                $iconClass = 'ki-pointers';
             } elseif ($iconName == 'calendar') {
                 $iconClass = 'ki-calendar';
             } elseif ($iconName == 'chart') {

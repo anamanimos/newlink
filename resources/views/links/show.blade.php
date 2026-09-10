@@ -117,7 +117,7 @@
                     <div class="card-body d-flex align-items-center p-6">
                         <div class="symbol symbol-50px symbol-circle me-4">
                             <span class="symbol-label bg-light-success">
-                                <i class="ki-outline ki-profile-user fs-2x text-success"></i>
+                                <i class="ki-outline ki-profile-circle fs-2x text-success"></i>
                             </span>
                         </div>
                         <div class="d-flex flex-column">

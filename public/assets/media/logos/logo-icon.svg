@@ -1,57 +1,54 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
   <defs>
-    <!-- Background Gradient -->
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0F172A" />
-      <stop offset="50%" stop-color="#1E1B4B" />
-      <stop offset="100%" stop-color="#090D16" />
+      <stop offset="0%" stop-color="#1E1B4B" />
+      <stop offset="50%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#020617" />
     </linearGradient>
 
-    <!-- Border Glow Gradient -->
     <linearGradient id="borderGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.8" />
-      <stop offset="50%" stop-color="#818CF8" stop-opacity="0.3" />
-      <stop offset="100%" stop-color="#C084FC" stop-opacity="0.8" />
+      <stop offset="0%" stop-color="#00D2FF" stop-opacity="0.8" />
+      <stop offset="50%" stop-color="#6366F1" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#EC4899" stop-opacity="0.8" />
     </linearGradient>
 
-    <!-- Primary Link Gradient (Cyan to Indigo to Purple) -->
     <linearGradient id="linkGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00F2FE" />
-      <stop offset="50%" stop-color="#38BDF8" />
+      <stop offset="0%" stop-color="#00D2FF" />
+      <stop offset="60%" stop-color="#3B82F6" />
       <stop offset="100%" stop-color="#6366F1" />
     </linearGradient>
 
-    <!-- Secondary Link Gradient -->
     <linearGradient id="linkGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#818CF8" />
-      <stop offset="50%" stop-color="#A855F7" />
+      <stop offset="0%" stop-color="#8B5CF6" />
+      <stop offset="60%" stop-color="#A855F7" />
       <stop offset="100%" stop-color="#EC4899" />
     </linearGradient>
 
-    <!-- Accent Connector Glow -->
     <linearGradient id="accentGlow" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#38BDF8" />
-      <stop offset="100%" stop-color="#C084FC" />
+      <stop offset="0%" stop-color="#00D2FF" />
+      <stop offset="50%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#EC4899" />
     </linearGradient>
   </defs>
 
-  <!-- Squircle Base Container -->
-  <rect x="16" y="16" width="480" height="480" rx="116" ry="116" fill="url(#bgGrad)" stroke="url(#borderGlow)" stroke-width="6" />
+  <!-- Squircle Base Container with Smooth Border -->
+  <rect x="18" y="18" width="476" height="476" rx="120" ry="120" fill="url(#bgGrad)" stroke="url(#borderGlow)" stroke-width="6" />
 
-  <!-- Inner Link Symbol -->
-  <g id="link-glyph">
-    <!-- Left Loop (Cyan-Indigo) -->
-    <path d="M196 140 H164 C115 140 76 179 76 228 C76 277 115 316 164 316 H196 C209 316 220 305 220 292 C220 279 209 268 196 268 H164 C142 268 124 250 124 228 C124 206 142 188 164 188 H196 C209 188 220 177 220 164 C220 151 209 140 196 140 Z" fill="url(#linkGrad1)" />
+  <g>
+    <!-- Left Loop (Cyan to Blue to Indigo) -->
+    <path d="M210 148 H164 C108 148 64 192 64 248 C64 304 108 348 164 348 H210 C223 348 234 337 234 324 C234 311 223 300 210 300 H164 C135 300 112 277 112 248 C112 219 135 196 164 196 H210 C223 196 234 185 234 172 C234 159 223 148 210 148 Z" fill="url(#linkGrad1)" />
 
-    <!-- Right Loop (Purple-Pink) -->
-    <path d="M316 372 H348 C397 372 436 333 436 284 C436 235 397 196 348 196 H316 C303 196 292 207 292 220 C292 233 303 244 316 244 H348 C370 244 388 262 388 284 C388 306 370 324 348 324 H316 C303 324 292 335 292 348 C292 361 303 372 316 372 Z" fill="url(#linkGrad2)" />
+    <!-- Right Loop (Purple to Pink) -->
+    <path d="M302 364 H348 C404 364 448 320 448 264 C448 208 404 164 348 164 H302 C289 164 278 175 278 188 C278 201 289 212 302 212 H348 C377 212 400 235 400 264 C400 293 377 316 348 316 H302 C289 316 278 327 278 340 C278 353 289 364 302 364 Z" fill="url(#linkGrad2)" />
 
-    <!-- Center Interlocking Diagonal Connector Bar -->
-    <rect x="182" y="232" width="148" height="48" rx="24" transform="rotate(-38 256 256)" fill="url(#accentGlow)" />
-    
-    <!-- Core Spark Dots -->
-    <circle cx="164" cy="228" r="14" fill="#FFFFFF" opacity="0.9" />
-    <circle cx="348" cy="284" r="14" fill="#FFFFFF" opacity="0.9" />
-    <circle cx="256" cy="256" r="10" fill="#FFFFFF" opacity="0.95" />
+    <!-- Diagonal Interlocking Bridge -->
+    <rect x="180" y="234" width="152" height="44" rx="22" transform="rotate(-38 256 256)" fill="url(#accentGlow)" />
+
+    <!-- Dynamic Pulse Nodes -->
+    <circle cx="164" cy="248" r="16" fill="#00D2FF" />
+    <circle cx="164" cy="248" r="9" fill="#FFFFFF" />
+    <circle cx="348" cy="264" r="16" fill="#EC4899" />
+    <circle cx="348" cy="264" r="9" fill="#FFFFFF" />
+    <circle cx="256" cy="256" r="11" fill="#FFFFFF" />
   </g>
 </svg>

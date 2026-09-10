@@ -22,7 +22,7 @@
                     @php
                         $settingNavs = [
                             ['tab' => 'main', 'label' => 'Main', 'icon' => 'ki-home'],
-                            ['tab' => 'users', 'label' => 'Users', 'icon' => 'ki-profile-user'],
+                            ['tab' => 'users', 'label' => 'Users', 'icon' => 'ki-profile-circle'],
                             ['tab' => 'content', 'label' => 'Content', 'icon' => 'ki-element-11'],
                             ['tab' => 'links', 'label' => 'Links system', 'icon' => 'ki-disconnect'],
                             ['tab' => 'tools', 'label' => 'Tools', 'icon' => 'ki-wrench'],

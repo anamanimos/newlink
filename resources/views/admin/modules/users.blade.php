@@ -353,7 +353,7 @@
                         <tr>
                             <td colspan="5" class="text-center py-12 text-muted">
                                 <div class="symbol symbol-65px symbol-circle bg-light-primary mb-4 d-inline-flex align-items-center justify-content-center">
-                                    <i class="ki-outline ki-profile-user fs-2x text-primary"></i>
+                                    <i class="ki-outline ki-profile-circle fs-2x text-primary"></i>
                                 </div>
                                 <h5 class="fs-6 fw-bold text-gray-800 mb-1">No users found</h5>
                                 <p class="fs-7 text-muted mb-5">No user accounts match your search or filter criteria.</p>

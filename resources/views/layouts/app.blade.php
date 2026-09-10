@@ -73,9 +73,9 @@
                             <i class="ki-outline ki-abstract-14 fs-2"></i>
                         </div>
                         <!-- Logo -->
-                        <a href="{{ route('dashboard') }}" class="d-flex align-items-center gap-3 text-decoration-none">
-                            <img alt="NewLink Logo" src="{{ asset('favicon.svg') }}" class="h-32px w-32px rounded-2 shadow-sm" />
-                            <span class="fs-3 fw-bolder text-gray-900 text-hover-primary d-flex align-items-center" style="letter-spacing: -0.5px;">
+                        <a href="{{ route('dashboard') }}" class="d-flex align-items-center gap-2 text-decoration-none">
+                            <img alt="NewLink Logo" src="{{ asset('assets/media/logos/logo-glyph.svg') }}" class="h-28px w-auto" />
+                            <span class="fs-2 fw-bolder text-gray-900 text-hover-primary d-flex align-items-center" style="letter-spacing: -0.5px;">
                                 New<span class="text-primary">Link</span>
                             </span>
                         </a>
