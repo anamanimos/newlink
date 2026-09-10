@@ -87,10 +87,10 @@
                     <!-- Logo -->
                     <a href="{{ url('/') }}" class="mb-12 d-flex align-items-center gap-3 text-decoration-none">
                         @if(!empty($siteLogoDark) && file_exists(public_path('uploads/logos/' . $siteLogoDark)))
-                            <img alt="{{ $siteTitle }}" src="{{ asset('uploads/logos/' . $siteLogoDark) }}" class="h-45px w-auto" />
+                            <img alt="{{ $siteTitle }}" src="{{ asset('uploads/logos/' . $siteLogoDark) }}" class="h-32px w-auto" />
                         @else
-                            <img alt="{{ $siteTitle }} Logo" src="{{ asset('assets/media/logos/logo-glyph.svg') }}" class="h-42px w-auto" />
-                            <span class="fs-2hx fw-bolder text-white">
+                            <img alt="{{ $siteTitle }} Logo" src="{{ asset('assets/media/logos/logo-glyph.svg') }}" class="h-30px w-auto" />
+                            <span class="fs-1 fw-bold text-white">
                                 {{ $siteTitle }}
                             </span>
                         @endif
