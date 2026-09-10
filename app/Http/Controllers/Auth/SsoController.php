@@ -151,35 +151,45 @@ class SsoController extends Controller
                 }
             }
 
-            $ssoId = $userData['sub'] ?? $userData['id'] ?? null;
-            $email = $userData['email'] ?? null;
-            $name = $userData['name'] ?? null;
-
-            if (empty($email)) {
+            $emailClean = strtolower(trim($email));
+            if (empty($emailClean)) {
                 return redirect()->route('login')->with('error', 'Data pengguna dari provider SSO tidak memuat alamat email yang valid.');
             }
 
             if (empty($name)) {
-                $name = explode('@', $email)[0];
+                $name = explode('@', $emailClean)[0];
             }
 
-            // Find existing user by sso_id or by email
-            $user = User::where('sso_id', $ssoId)
-                        ->orWhere('email', $email)
-                        ->first();
+            // 1. First priority: Find existing user by sso_id
+            $user = null;
+            if (!empty($ssoId)) {
+                $user = User::where('sso_id', $ssoId)->first();
+            }
+
+            // 2. Second priority: Find existing user by matching email (connect existing account)
+            if (!$user) {
+                $user = User::whereRaw('LOWER(email) = ?', [$emailClean])->first();
+            }
 
             if ($user) {
-                // Update SSO link and activity
+                // Connect existing account with SSO credentials
                 $user->sso_provider = 'damaijaya';
-                $user->sso_id = $ssoId;
+                if (!empty($ssoId)) {
+                    $user->sso_id = $ssoId;
+                }
+                if (empty($user->email_verified_at)) {
+                    $user->email_verified_at = now();
+                }
                 $user->last_activity = now();
                 $user->increment('total_logins');
                 $user->save();
+
+                Log::info("SSO Account Linked: User #{$user->id} ({$user->email}) connected via Damai Jaya SSO.");
             } else {
-                // Create new user
+                // 3. Create new user only if email does not exist yet
                 $user = User::create([
                     'name' => $name,
-                    'email' => $email,
+                    'email' => $emailClean,
                     'email_verified_at' => now(),
                     'password' => null,
                     'status' => 1,
@@ -198,6 +208,8 @@ class SsoController extends Controller
                     'total_logins' => 1,
                     'last_activity' => now(),
                 ]);
+
+                Log::info("SSO New User Created: User #{$user->id} ({$user->email}) registered via Damai Jaya SSO.");
             }
 
             if ($user->status == 0) {
