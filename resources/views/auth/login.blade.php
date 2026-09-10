@@ -12,6 +12,27 @@
         <div class="text-gray-500 fw-semibold fs-6">Enter your credentials to access your account</div>
     </div>
 
+    <!-- Flash Alerts -->
+    @if (session('error'))
+        <div class="alert alert-danger d-flex align-items-center p-4 mb-6 rounded-3">
+            <i class="ki-outline ki-cross-circle fs-2hx text-danger me-4"></i>
+            <div class="d-flex flex-column">
+                <h5 class="mb-1 text-danger fw-bold">Login Gagal</h5>
+                <span class="fs-7 text-gray-800">{{ session('error') }}</span>
+            </div>
+        </div>
+    @endif
+
+    @if (session('success'))
+        <div class="alert alert-success d-flex align-items-center p-4 mb-6 rounded-3">
+            <i class="ki-outline ki-check-circle fs-2hx text-success me-4"></i>
+            <div class="d-flex flex-column">
+                <h5 class="mb-1 text-success fw-bold">Berhasil</h5>
+                <span class="fs-7 text-gray-800">{{ session('success') }}</span>
+            </div>
+        </div>
+    @endif
+
     <!-- Error Alert -->
     @if ($errors->any())
         <div class="alert alert-danger d-flex align-items-center p-4 mb-6 rounded-3">
@@ -20,6 +41,24 @@
                 <h5 class="mb-1 text-danger fw-bold">Login Failed</h5>
                 <span class="fs-7 text-gray-800">{{ $errors->first() }}</span>
             </div>
+        </div>
+    @endif
+
+    @php
+        $ssoConfig = \App\Http\Controllers\Auth\SsoController::getConfig();
+    @endphp
+
+    <!-- SSO Login Button -->
+    @if($ssoConfig['enabled'])
+        <div class="mb-8">
+            <a href="{{ route('sso.redirect') }}" class="btn btn-flex btn-light-primary border border-primary border-opacity-25 w-100 py-3 d-flex align-items-center justify-content-center shadow-xs text-hover-primary text-decoration-none">
+                <i class="ki-outline ki-shield-tick fs-2 text-primary me-2"></i>
+                <span class="fw-bold fs-6 text-gray-900">{{ $ssoConfig['button_text'] }}</span>
+            </a>
+        </div>
+
+        <div class="separator separator-content my-8">
+            <span class="w-125px text-gray-500 fw-semibold fs-7">Atau dengan Email</span>
         </div>
     @endif
 

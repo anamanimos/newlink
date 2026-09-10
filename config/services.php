@@ -35,4 +35,13 @@ return [
         ],
     ],
 
+    'sso' => [
+        'enabled' => env('SSO_ENABLED', true),
+        'base_url' => env('SSO_BASE_URL', 'https://app.damaijaya.my.id'),
+        'client_id' => env('SSO_CLIENT_ID', ''),
+        'client_secret' => env('SSO_CLIENT_SECRET', ''),
+        'redirect_uri' => env('SSO_REDIRECT_URI', ''),
+        'button_text' => env('SSO_BUTTON_TEXT', 'Masuk dengan Akun Damai Jaya (SSO)'),
+    ],
+
 ];

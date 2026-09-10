@@ -28,6 +28,10 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'login']);
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [RegisterController::class, 'register']);
+
+    // SSO / OpenID Connect Routes
+    Route::get('/auth/sso/redirect', [\App\Http\Controllers\Auth\SsoController::class, 'redirect'])->name('sso.redirect');
+    Route::get('/auth/sso/callback', [\App\Http\Controllers\Auth\SsoController::class, 'callback'])->name('sso.callback');
 });
 
 // Logout Route
