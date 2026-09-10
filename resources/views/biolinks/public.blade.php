@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $link->settings['title'] ?? 'Biolink' }}</title>
+    
+    @if(!empty($link->settings['avatar_url']))
+        <link rel="icon" href="{{ asset($link->settings['avatar_url']) }}">
+        <link rel="apple-touch-icon" href="{{ asset($link->settings['avatar_url']) }}">
+    @else
+        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+    @endif
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -256,7 +266,10 @@
                 @endif
             @endforeach
 
-            <a href="{{ url('/') }}" class="watermark" style="display: {{ $hideBranding ? 'none' : 'block' }};">Powered by Newlink</a>
+            <a href="{{ url('/') }}" class="watermark d-inline-flex align-items-center justify-content-center gap-1 text-decoration-none" style="display: {{ $hideBranding ? 'none' : 'inline-flex' }};">
+                <img src="{{ asset('favicon.svg') }}" style="width: 14px; height: 14px; vertical-align: middle; border-radius: 3px; margin-right: 4px;" alt="Logo">
+                Powered by <strong>NewLink</strong>
+            </a>
         </div>
     </div>
 

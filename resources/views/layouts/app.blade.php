@@ -7,6 +7,10 @@
 
     <title>@yield('title', 'Dashboard') | {{ config('app.name', 'NewLink') }}</title>
 
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}" />
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
 
     <!-- Google Fonts Inter -->
@@ -69,9 +73,10 @@
                             <i class="ki-outline ki-abstract-14 fs-2"></i>
                         </div>
                         <!-- Logo -->
-                        <a href="{{ route('dashboard') }}" class="d-flex align-items-center gap-2 text-decoration-none">
-                            <span class="fs-3 fw-bolder text-gray-900 text-hover-primary" style="letter-spacing: -0.5px;">
-                                <i class="ki-outline ki-fasten text-primary fs-2x me-1"></i>{{ config('app.name', 'NewLink') }}
+                        <a href="{{ route('dashboard') }}" class="d-flex align-items-center gap-3 text-decoration-none">
+                            <img alt="NewLink Logo" src="{{ asset('favicon.svg') }}" class="h-32px w-32px rounded-2 shadow-sm" />
+                            <span class="fs-3 fw-bolder text-gray-900 text-hover-primary d-flex align-items-center" style="letter-spacing: -0.5px;">
+                                New<span class="text-primary">Link</span>
                             </span>
                         </a>
                     </div>

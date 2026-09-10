@@ -7,6 +7,10 @@
 
     <title>@yield('title', 'Authentication') | {{ config('app.name', 'NewLink') }}</title>
 
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}" />
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
 
     <!-- Google Fonts Inter -->
@@ -70,9 +74,10 @@
             <div class="d-flex flex-lg-row-fluid w-lg-50 bgi-size-cover bgi-position-center order-1 order-lg-2" style="background-image: url('{{ asset('assets/media/misc/auth-bg.png') }}')">
                 <div class="d-flex flex-column flex-center py-7 py-lg-15 px-5 px-md-15 w-100">
                     <!-- Logo -->
-                    <a href="{{ url('/') }}" class="mb-12">
+                    <a href="{{ url('/') }}" class="mb-12 d-flex align-items-center gap-3 text-decoration-none">
+                        <img alt="NewLink Logo" src="{{ asset('favicon.svg') }}" class="h-45px w-45px rounded-3 shadow-lg" />
                         <span class="fs-2hx fw-bolder text-white">
-                            <i class="ki-outline ki-fasten text-primary fs-3x me-2"></i>{{ config('app.name', 'NewLink') }}
+                            New<span class="text-primary">Link</span>
                         </span>
                     </a>
 
