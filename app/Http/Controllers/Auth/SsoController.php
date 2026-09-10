@@ -144,17 +144,34 @@ class SsoController extends Controller
 
                     if ($userInfoRes->successful()) {
                         $userInfo = $userInfoRes->json();
-                        $userData = array_merge($userData, $userInfo);
+                        if (is_array($userInfo)) {
+                            $userData = array_merge($userData, $userInfo);
+                        }
                     }
                 } catch (\Exception $e) {
                     Log::warning('SSO userinfo fetch warning: ' . $e->getMessage());
                 }
             }
 
-            $emailClean = strtolower(trim($email));
-            if (empty($emailClean)) {
+            // Also check if user object was returned directly in token response
+            if (isset($tokenData['user']) && is_array($tokenData['user'])) {
+                $userData = array_merge($userData, $tokenData['user']);
+            }
+
+            // Extract user claims safely
+            $ssoId = $userData['sub'] ?? ($userData['id'] ?? ($userData['user_id'] ?? ($userData['user']['id'] ?? null)));
+            $email = $userData['email'] ?? ($userData['user']['email'] ?? ($userData['mail'] ?? null));
+            $name = $userData['name'] ?? ($userData['user']['name'] ?? ($userData['username'] ?? ($userData['user']['username'] ?? null)));
+
+            if (empty($email)) {
+                Log::error('SSO Missing Email in Payload', [
+                    'userData' => $userData,
+                    'tokenDataKeys' => array_keys($tokenData)
+                ]);
                 return redirect()->route('login')->with('error', 'Data pengguna dari provider SSO tidak memuat alamat email yang valid.');
             }
+
+            $emailClean = strtolower(trim($email));
 
             if (empty($name)) {
                 $name = explode('@', $emailClean)[0];
