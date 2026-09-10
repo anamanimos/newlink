@@ -20,10 +20,10 @@ class SsoController extends Controller
     {
         $db = Setting::get('sso', []);
         
-        $enabled = isset($db['is_enabled']) ? (bool)$db['is_enabled'] : config('services.sso.enabled', true);
+        $enabled = isset($db['is_enabled']) ? (bool)$db['is_enabled'] : (isset($db['sso_is_enabled']) ? (bool)$db['sso_is_enabled'] : config('services.sso.enabled', true));
         $baseUrl = !empty($db['base_url']) ? rtrim($db['base_url'], '/') : config('services.sso.base_url', 'https://app.damaijaya.my.id');
-        $clientId = !empty($db['client_id']) ? trim($db['client_id']) : config('services.sso.client_id', '');
-        $clientSecret = !empty($db['client_secret']) ? trim($db['client_secret']) : config('services.sso.client_secret', '');
+        $clientId = !empty($db['client_id']) ? trim($db['client_id']) : (!empty($db['sso_api']) ? trim($db['sso_api']) : config('services.sso.client_id', ''));
+        $clientSecret = !empty($db['client_secret']) ? trim($db['client_secret']) : (!empty($db['sso_secret']) ? trim($db['sso_secret']) : config('services.sso.client_secret', ''));
         $redirectUri = !empty($db['redirect_uri']) ? trim($db['redirect_uri']) : (config('services.sso.redirect_uri') ?: route('sso.callback'));
         $buttonText = !empty($db['button_text']) ? $db['button_text'] : config('services.sso.button_text', 'Masuk dengan Akun Damai Jaya (SSO)');
 
