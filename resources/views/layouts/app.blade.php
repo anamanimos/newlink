@@ -42,15 +42,16 @@
             flex-shrink: 0 !important;
         }
         .app-header-logo img {
-            max-height: 22px !important;
+            max-height: 44px !important;
+            height: 44px !important;
             width: auto !important;
             object-fit: contain;
         }
         .app-brand-title {
             white-space: nowrap !important;
-            font-size: 1.05rem !important;
-            font-weight: 600 !important;
-            letter-spacing: -0.2px;
+            font-size: 1.35rem !important;
+            font-weight: 700 !important;
+            letter-spacing: -0.4px;
             line-height: 1;
         }
         [data-bs-theme="dark"] .app-brand-title {
@@ -108,16 +109,16 @@
                             <i class="ki-outline ki-abstract-14 fs-2"></i>
                         </div>
                         <!-- Logo -->
-                        <a href="{{ route('dashboard') }}" class="d-flex align-items-center gap-2 text-decoration-none text-nowrap flex-shrink-0">
+                        <a href="{{ route('dashboard') }}" class="d-flex align-items-center gap-3 text-decoration-none text-nowrap flex-shrink-0">
                             @if(!empty($siteLogoLight) && file_exists(public_path('uploads/logos/' . $siteLogoLight)))
                                 @if(!empty($siteLogoDark) && file_exists(public_path('uploads/logos/' . $siteLogoDark)))
-                                    <img alt="{{ $siteTitle }}" src="{{ asset('uploads/logos/' . $siteLogoLight) }}" class="h-22px w-auto theme-light-show" />
-                                    <img alt="{{ $siteTitle }}" src="{{ asset('uploads/logos/' . $siteLogoDark) }}" class="h-22px w-auto theme-dark-show" />
+                                    <img alt="{{ $siteTitle }}" src="{{ asset('uploads/logos/' . $siteLogoLight) }}" class="h-44px w-auto theme-light-show" />
+                                    <img alt="{{ $siteTitle }}" src="{{ asset('uploads/logos/' . $siteLogoDark) }}" class="h-44px w-auto theme-dark-show" />
                                 @else
-                                    <img alt="{{ $siteTitle }}" src="{{ asset('uploads/logos/' . $siteLogoLight) }}" class="h-22px w-auto" />
+                                    <img alt="{{ $siteTitle }}" src="{{ asset('uploads/logos/' . $siteLogoLight) }}" class="h-44px w-auto" />
                                 @endif
                             @else
-                                <img alt="{{ $siteTitle }} Logo" src="{{ asset('assets/media/logos/logo-glyph.svg') }}" class="h-22px w-auto flex-shrink-0" />
+                                <img alt="{{ $siteTitle }} Logo" src="{{ asset('assets/media/logos/logo-glyph.svg') }}" class="h-44px w-auto flex-shrink-0" />
                                 <span class="app-brand-title text-gray-900 text-hover-primary text-nowrap d-flex align-items-center">
                                     {{ $siteTitle }}
                                 </span>
