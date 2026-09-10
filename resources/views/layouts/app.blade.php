@@ -5,13 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'Dashboard') | {{ config('app.name', 'NewLink') }}</title>
+    @php
+        $siteTitle = $siteTitle ?? \App\Models\Setting::get('main', [])['title'] ?? config('app.name', 'NewLink');
+        $siteLogoLight = $mainSettings['logo_light'] ?? null;
+        $siteFavicon = $mainSettings['favicon'] ?? null;
+    @endphp
 
-    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}" />
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}" />
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}" />
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
+    <title>@yield('title', 'Dashboard') | {{ $siteTitle }}</title>
+
+    @if(!empty($siteFavicon) && file_exists(public_path('uploads/logos/' . $siteFavicon)))
+        <link rel="icon" href="{{ asset('uploads/logos/' . $siteFavicon) }}" />
+        <link rel="shortcut icon" href="{{ asset('uploads/logos/' . $siteFavicon) }}" />
+    @else
+        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}" />
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}" />
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}" />
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
+    @endif
 
     <!-- Google Fonts Inter -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
@@ -74,10 +85,14 @@
                         </div>
                         <!-- Logo -->
                         <a href="{{ route('dashboard') }}" class="d-flex align-items-center gap-2 text-decoration-none">
-                            <img alt="NewLink Logo" src="{{ asset('assets/media/logos/logo-glyph.svg') }}" class="h-28px w-auto" />
-                            <span class="fs-2 fw-bolder text-gray-900 text-hover-primary d-flex align-items-center" style="letter-spacing: -0.5px;">
-                                New<span class="text-primary">Link</span>
-                            </span>
+                            @if(!empty($siteLogoLight) && file_exists(public_path('uploads/logos/' . $siteLogoLight)))
+                                <img alt="{{ $siteTitle }}" src="{{ asset('uploads/logos/' . $siteLogoLight) }}" class="h-30px w-auto" />
+                            @else
+                                <img alt="{{ $siteTitle }} Logo" src="{{ asset('assets/media/logos/logo-glyph.svg') }}" class="h-28px w-auto" />
+                                <span class="fs-2 fw-bolder text-gray-900 text-hover-primary d-flex align-items-center" style="letter-spacing: -0.5px;">
+                                    {{ $siteTitle }}
+                                </span>
+                            @endif
                         </a>
                     </div>
 

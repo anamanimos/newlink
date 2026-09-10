@@ -64,6 +64,12 @@
             <div class="form-text fs-8 text-muted">
                 .jpg, .png, .svg, .webp allowed. Max 64MB.
             </div>
+            @if(!empty($settings['logo_light']) && file_exists(public_path('uploads/logos/' . $settings['logo_light'])))
+                <div class="mt-2 p-2 bg-light rounded d-inline-flex align-items-center border">
+                    <img src="{{ asset('uploads/logos/' . $settings['logo_light']) }}" alt="Logo Light" class="h-30px w-auto me-2" />
+                    <span class="fs-9 text-gray-600">{{ $settings['logo_light'] }}</span>
+                </div>
+            @endif
         </div>
 
         <!-- Logo Dark -->
@@ -75,6 +81,12 @@
             <div class="form-text fs-8 text-muted">
                 .jpg, .png, .svg, .webp allowed. Max 64MB.
             </div>
+            @if(!empty($settings['logo_dark']) && file_exists(public_path('uploads/logos/' . $settings['logo_dark'])))
+                <div class="mt-2 p-2 bg-dark rounded d-inline-flex align-items-center border border-secondary">
+                    <img src="{{ asset('uploads/logos/' . $settings['logo_dark']) }}" alt="Logo Dark" class="h-30px w-auto me-2" />
+                    <span class="fs-9 text-gray-400">{{ $settings['logo_dark'] }}</span>
+                </div>
+            @endif
         </div>
 
         <!-- Logo Emails -->
@@ -86,6 +98,12 @@
             <div class="form-text fs-8 text-muted">
                 .jpg, .png, .gif allowed. Max 64MB.
             </div>
+            @if(!empty($settings['logo_email']) && file_exists(public_path('uploads/logos/' . $settings['logo_email'])))
+                <div class="mt-2 p-2 bg-light rounded d-inline-flex align-items-center border">
+                    <img src="{{ asset('uploads/logos/' . $settings['logo_email']) }}" alt="Logo Email" class="h-30px w-auto me-2" />
+                    <span class="fs-9 text-gray-600">{{ $settings['logo_email'] }}</span>
+                </div>
+            @endif
         </div>
 
         <!-- Favicon -->
@@ -97,6 +115,12 @@
             <div class="form-text fs-8 text-muted">
                 .ico, .png, .svg, .webp allowed. Max 64MB.
             </div>
+            @if(!empty($settings['favicon']) && file_exists(public_path('uploads/logos/' . $settings['favicon'])))
+                <div class="mt-2 p-2 bg-light rounded d-inline-flex align-items-center border">
+                    <img src="{{ asset('uploads/logos/' . $settings['favicon']) }}" alt="Favicon" class="h-24px w-auto me-2" />
+                    <span class="fs-9 text-gray-600">{{ $settings['favicon'] }}</span>
+                </div>
+            @endif
         </div>
 
         <!-- Opengraph Image -->
@@ -108,6 +132,12 @@
             <div class="form-text fs-8 text-muted">
                 .jpg, .png, .webp allowed. Max 64MB. (Recommended: 1200x630px).
             </div>
+            @if(!empty($settings['opengraph']) && file_exists(public_path('uploads/logos/' . $settings['opengraph'])))
+                <div class="mt-2 p-2 bg-light rounded d-inline-flex align-items-center border">
+                    <img src="{{ asset('uploads/logos/' . $settings['opengraph']) }}" alt="Opengraph" class="h-50px w-auto me-2" />
+                    <span class="fs-9 text-gray-600">{{ $settings['opengraph'] }}</span>
+                </div>
+            @endif
         </div>
     </div>
 </div>

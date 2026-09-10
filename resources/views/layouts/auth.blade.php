@@ -5,13 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'Authentication') | {{ config('app.name', 'NewLink') }}</title>
+    @php
+        $siteTitle = $siteTitle ?? \App\Models\Setting::get('main', [])['title'] ?? config('app.name', 'NewLink');
+        $siteLogoDark = $mainSettings['logo_dark'] ?? null;
+        $siteFavicon = $mainSettings['favicon'] ?? null;
+    @endphp
 
-    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}" />
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}" />
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}" />
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
+    <title>@yield('title', 'Authentication') | {{ $siteTitle }}</title>
+
+    @if(!empty($siteFavicon) && file_exists(public_path('uploads/logos/' . $siteFavicon)))
+        <link rel="icon" href="{{ asset('uploads/logos/' . $siteFavicon) }}" />
+        <link rel="shortcut icon" href="{{ asset('uploads/logos/' . $siteFavicon) }}" />
+    @else
+        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}" />
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}" />
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}" />
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
+    @endif
 
     <!-- Google Fonts Inter -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
@@ -62,7 +73,7 @@
                 <!-- Footer -->
                 <div class="w-lg-500px d-flex flex-stack px-10 mx-auto">
                     <div class="text-gray-500 fw-semibold fs-6">
-                        &copy; {{ date('Y') }} {{ config('app.name', 'NewLink') }}
+                        &copy; {{ date('Y') }} {{ $siteTitle }}
                     </div>
                     <div class="d-flex fw-semibold text-primary fs-base gap-5">
                         <a href="{{ url('/') }}" class="text-muted text-hover-primary">Home</a>
@@ -75,10 +86,14 @@
                 <div class="d-flex flex-column flex-center py-7 py-lg-15 px-5 px-md-15 w-100">
                     <!-- Logo -->
                     <a href="{{ url('/') }}" class="mb-12 d-flex align-items-center gap-3 text-decoration-none">
-                        <img alt="NewLink Logo" src="{{ asset('assets/media/logos/logo-glyph.svg') }}" class="h-42px w-auto" />
-                        <span class="fs-2hx fw-bolder text-white">
-                            New<span class="text-primary">Link</span>
-                        </span>
+                        @if(!empty($siteLogoDark) && file_exists(public_path('uploads/logos/' . $siteLogoDark)))
+                            <img alt="{{ $siteTitle }}" src="{{ asset('uploads/logos/' . $siteLogoDark) }}" class="h-45px w-auto" />
+                        @else
+                            <img alt="{{ $siteTitle }} Logo" src="{{ asset('assets/media/logos/logo-glyph.svg') }}" class="h-42px w-auto" />
+                            <span class="fs-2hx fw-bolder text-white">
+                                {{ $siteTitle }}
+                            </span>
+                        @endif
                     </a>
 
                     <!-- Image Illustration -->

@@ -5,10 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $link->settings['title'] ?? 'WhatsApp Rotator' }}</title>
     
-    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}" />
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}" />
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
+    @php
+        $siteTitle = $siteTitle ?? \App\Models\Setting::get('main', [])['title'] ?? config('app.name', 'NewLink');
+        $siteFavicon = $mainSettings['favicon'] ?? null;
+    @endphp
+
+    @if(!empty($siteFavicon) && file_exists(public_path('uploads/logos/' . $siteFavicon)))
+        <link rel="icon" href="{{ asset('uploads/logos/' . $siteFavicon) }}" />
+        <link rel="shortcut icon" href="{{ asset('uploads/logos/' . $siteFavicon) }}" />
+    @else
+        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}" />
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}" />
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}" />
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" />
+    @endif
 
     <!-- Meta Descriptions -->
     <meta name="description" content="{{ $link->settings['description'] ?? 'WhatsApp Rotator' }}">
@@ -503,7 +513,7 @@
             </form>
         </div>
 
-        <a href="{{ url('/') }}" class="watermark">Powered by Newlink</a>
+        <a href="{{ url('/') }}" class="watermark">Powered by {{ $siteTitle ?? config('app.name', 'NewLink') }}</a>
     </div>
 
     <!-- jQuery (required for Select2) -->

@@ -130,6 +130,26 @@ class AdminController extends Controller
             ];
 
             \App\Models\Setting::set('payment', $paymentData);
+        } elseif ($tab === 'main') {
+            $existing = \App\Models\Setting::get('main', []);
+            $uploadFields = ['logo_light', 'logo_dark', 'logo_email', 'favicon', 'opengraph'];
+
+            $uploadPath = public_path('uploads/logos');
+            if (!file_exists($uploadPath)) {
+                @mkdir($uploadPath, 0777, true);
+            }
+
+            foreach ($uploadFields as $field) {
+                if ($request->hasFile($field)) {
+                    $file = $request->file($field);
+                    $filename = $field . '_' . time() . '.' . $file->getClientOriginalExtension();
+                    $file->move($uploadPath, $filename);
+                    $data[$field] = $filename;
+                } elseif (isset($existing[$field])) {
+                    $data[$field] = $existing[$field];
+                }
+            }
+            \App\Models\Setting::set('main', $data);
         } else {
             \App\Models\Setting::set($tab, $data);
         }

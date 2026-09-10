@@ -267,8 +267,8 @@
             @endforeach
 
             <a href="{{ url('/') }}" class="watermark d-inline-flex align-items-center justify-content-center gap-1 text-decoration-none" style="display: {{ $hideBranding ? 'none' : 'inline-flex' }};">
-                <img src="{{ asset('favicon.svg') }}" style="width: 14px; height: 14px; vertical-align: middle; border-radius: 3px; margin-right: 4px;" alt="Logo">
-                Powered by <strong>NewLink</strong>
+                <img src="{{ !empty($mainSettings['favicon']) && file_exists(public_path('uploads/logos/' . $mainSettings['favicon'])) ? asset('uploads/logos/' . $mainSettings['favicon']) : asset('favicon.svg') }}" style="width: 14px; height: 14px; vertical-align: middle; border-radius: 3px; margin-right: 4px;" alt="Logo">
+                Powered by <strong>{{ $siteTitle ?? config('app.name', 'NewLink') }}</strong>
             </a>
         </div>
     </div>
