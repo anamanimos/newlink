@@ -8,6 +8,7 @@
     @php
         $siteTitle = $siteTitle ?? \App\Models\Setting::get('main', [])['title'] ?? config('app.name', 'NewLink');
         $siteLogoLight = $mainSettings['logo_light'] ?? null;
+        $siteLogoDark = $mainSettings['logo_dark'] ?? null;
         $siteFavicon = $mainSettings['favicon'] ?? null;
     @endphp
 
@@ -33,6 +34,23 @@
 
     @stack('styles')
     @yield('styles')
+
+    <style>
+        .app-header .app-header-logo {
+            width: auto !important;
+            min-width: max-content !important;
+            flex-shrink: 0 !important;
+        }
+        .app-brand-title {
+            white-space: nowrap !important;
+            font-size: 1.15rem !important;
+            font-weight: 700 !important;
+            letter-spacing: -0.3px;
+        }
+        [data-bs-theme="dark"] .app-brand-title {
+            color: #ffffff !important;
+        }
+    </style>
 </head>
 
 <body id="kt_app_body" 
@@ -73,23 +91,28 @@
             
             <!-- App Header -->
             <div id="kt_app_header" class="app-header d-flex flex-column flex-stack">
-                <div class="d-flex flex-stack flex-grow-1">
-                    <div class="app-header-logo d-flex align-items-center ps-lg-10" id="kt_app_header_logo">
+                <div class="d-flex flex-stack flex-grow-1 px-4 px-lg-8">
+                    <div class="app-header-logo d-flex align-items-center me-4" id="kt_app_header_logo">
                         <!-- Sidebar toggle desktop -->
-                        <div id="kt_app_sidebar_toggle" class="app-sidebar-toggle btn btn-sm btn-icon bg-body btn-color-gray-500 btn-active-color-primary w-30px h-30px ms-n2 me-4 d-none d-lg-flex" data-kt-toggle="true" data-kt-toggle-state="active" data-kt-toggle-target="body" data-kt-toggle-name="app-sidebar-minimize">
-                            <i class="ki-outline ki-abstract-14 fs-3 mt-1"></i>
+                        <div id="kt_app_sidebar_toggle" class="app-sidebar-toggle btn btn-sm btn-icon bg-body btn-color-gray-500 btn-active-color-primary w-30px h-30px me-3 d-none d-lg-flex" data-kt-toggle="true" data-kt-toggle-state="active" data-kt-toggle-target="body" data-kt-toggle-name="app-sidebar-minimize">
+                            <i class="ki-outline ki-abstract-14 fs-3"></i>
                         </div>
                         <!-- Sidebar toggle mobile -->
-                        <div class="btn btn-icon btn-active-color-primary w-35px h-35px ms-3 me-2 d-flex d-lg-none" id="kt_app_sidebar_mobile_toggle">
+                        <div class="btn btn-icon btn-active-color-primary w-35px h-35px me-2 d-flex d-lg-none" id="kt_app_sidebar_mobile_toggle">
                             <i class="ki-outline ki-abstract-14 fs-2"></i>
                         </div>
                         <!-- Logo -->
-                        <a href="{{ route('dashboard') }}" class="d-flex align-items-center gap-2 text-decoration-none">
+                        <a href="{{ route('dashboard') }}" class="d-flex align-items-center gap-2 text-decoration-none text-nowrap flex-shrink-0">
                             @if(!empty($siteLogoLight) && file_exists(public_path('uploads/logos/' . $siteLogoLight)))
-                                <img alt="{{ $siteTitle }}" src="{{ asset('uploads/logos/' . $siteLogoLight) }}" class="h-30px w-auto" />
+                                @if(!empty($siteLogoDark) && file_exists(public_path('uploads/logos/' . $siteLogoDark)))
+                                    <img alt="{{ $siteTitle }}" src="{{ asset('uploads/logos/' . $siteLogoLight) }}" class="h-30px w-auto theme-light-show" />
+                                    <img alt="{{ $siteTitle }}" src="{{ asset('uploads/logos/' . $siteLogoDark) }}" class="h-30px w-auto theme-dark-show" />
+                                @else
+                                    <img alt="{{ $siteTitle }}" src="{{ asset('uploads/logos/' . $siteLogoLight) }}" class="h-30px w-auto" />
+                                @endif
                             @else
-                                <img alt="{{ $siteTitle }} Logo" src="{{ asset('assets/media/logos/logo-glyph.svg') }}" class="h-28px w-auto" />
-                                <span class="fs-2 fw-bolder text-gray-900 text-hover-primary d-flex align-items-center" style="letter-spacing: -0.5px;">
+                                <img alt="{{ $siteTitle }} Logo" src="{{ asset('assets/media/logos/logo-glyph.svg') }}" class="h-28px w-auto flex-shrink-0" />
+                                <span class="app-brand-title text-gray-900 text-hover-primary text-nowrap d-flex align-items-center">
                                     {{ $siteTitle }}
                                 </span>
                             @endif
@@ -97,7 +120,7 @@
                     </div>
 
                     <!-- Header Navbar -->
-                    <div class="app-navbar flex-grow-1 justify-content-end pe-lg-10" id="kt_app_header_navbar">
+                    <div class="app-navbar flex-grow-1 justify-content-end" id="kt_app_header_navbar">
                         
                         <!-- Quick View / External Page Button -->
                         @yield('header_actions')
